@@ -1,0 +1,60 @@
+# -----------------------
+# Base root types
+# -----------------------
+type Query {
+    _empty: String
+}
+
+type Mutation {
+    _noop: String
+}
+
+# -----------------------
+# User entity
+# -----------------------
+type User {
+    id: ID!
+    firstName: String!
+    lastName: String!
+    email: String!
+    phoneNumber: String!
+    role: Role!
+    createdAt: String!
+    updatedAt: String!
+}
+
+# -----------------------
+# Queries
+# -----------------------
+extend type Query {
+    users: [User]
+}
+
+# -----------------------
+# Mutations
+# -----------------------
+extend type Mutation {
+    CreateUser(userDto: UserDto!): User
+    updateUser(id: ID!, input: UserDto!): User
+    deleteUser(id: ID!): Boolean
+}
+
+# -----------------------
+# Inputs
+# -----------------------
+input UserDto {
+    firstName: String!
+    lastName: String!
+    email: String!
+    password: String!
+    phoneNumber: String!
+    role: Role!
+}
+
+# -----------------------
+# Enums
+# -----------------------
+enum Role {
+    ADMIN
+    USER
+}

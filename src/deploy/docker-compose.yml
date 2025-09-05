@@ -1,0 +1,203 @@
+name: Smart-Street
+
+services:
+  # ------------------------
+  # PostgreSQL (database)
+  # ------------------------
+  postgresql:
+    image: postgres:15
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U admin -d SmartS" ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: SmartS
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+      - ./ops/postgres/init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "5432:5432"
+    networks:
+      - SmartS
+  # ------------------------
+  # Zookeeper (Kafka dependency)
+  # ------------------------
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.1
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - SmartS
+  # ------------------------
+  # Kafka (event streaming)
+  # ------------------------
+  kafka:
+    image: confluentinc/cp-kafka:7.5.1
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+    networks:
+      - SmartS
+  # ------------------------
+  # Redis (cache)
+  # ------------------------
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis-data:/data
+    restart: on-failure
+    networks:
+      - SmartS
+  # ------------------------
+  # Keycloak (auth server)
+  # ------------------------
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.2
+    container_name: keycloak
+    command: ["start-dev"]
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8083:8080"
+    volumes:
+      - ./ops/keycloak/data:/opt/keycloak/data
+    networks:
+      - SmartS
+  # ------------------------
+  # Nginx (reverse proxy / static server)
+  # ------------------------
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-standalone
+    ports:
+      - "8084:80"
+    volumes:
+      - ./ops/nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./ops/nginx/static:/usr/share/nginx/html:ro
+      - ./ops/nginx/certs:/etc/nginx/certs:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/ || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+    networks:
+      - SmartS
+  # ------------------------
+  # GraphQL Router (Gateway)
+  # ------------------------
+  api-gateway:
+    image: ghcr.io/apollographql/router:v1.49.0
+    container_name: api-gateway
+    command: [ "--hot-reload", "--supergraph", "/etc/router/supergraph.graphql", "-c", "/etc/router/router.yaml" ]
+    depends_on:
+      keycloak:
+        condition: service_started
+      user-service:
+        condition: service_started
+      vehicles-service:
+        condition: service_started
+      # add others when you enable them:
+      # trips-service:
+      # telemetry-ingest:
+      # maintenance-service:
+      # geofence-service:
+      # billing-service:
+    ports:
+      - "4000:4000"
+    volumes:
+      - ../services/api-gateway/router.yaml:/etc/router/router.yaml:ro
+      - ../services/api-gateway/supergraph.graphql:/etc/router/supergraph.graphql:ro
+    environment:
+      APOLLO_ROUTER_LOG: info
+    restart: unless-stopped
+    networks:
+      - SmartS
+
+  # ------------------------
+  # Microservices
+  # ------------------------
+  vehicles-service:
+    build: { context: ../services/vehicles-service, dockerfile: Dockerfile }
+    image: smartstreet/vehicles-service:dev
+    container_name: vehicles-service
+    ports: ["8080:8080"]
+    networks: [SmartS]
+    depends_on:
+      postgresql:
+        condition: service_healthy
+
+  user-service:
+    build: { context: ../services/user-service, dockerfile: Dockerfile }
+    image: smartstreet/user-service:dev
+    container_name: user-service
+    ports: ["8090:8080"]
+    networks: [SmartS]
+    depends_on:
+      postgresql:
+        condition: service_healthy
+
+  trips-service:
+    build: { context: ../services/trips-service, dockerfile: Dockerfile }
+    image: smartstreet/trips-service:dev
+    container_name: trips-service
+    ports: ["8101:8080"]
+    networks: [SmartS]
+
+  telemetry-ingest:
+    build: { context: ../services/telemetry-ingest, dockerfile: Dockerfile }
+    image: smartstreet/telemetry-ingest:dev
+    container_name: telemetry-ingest
+    ports: ["8110:8080"]
+    networks: [SmartS]
+
+  maintenance-service:
+    build: { context: ../services/maintenance-service, dockerfile: Dockerfile }
+    image: smartstreet/maintenance-service:dev
+    container_name: maintenance-service
+    ports: ["8120:8080"]
+    networks: [SmartS]
+
+  geofence-service:
+    build: { context: ../services/geofence-service, dockerfile: Dockerfile }
+    image: smartstreet/geofence-service:dev
+    container_name: geofence-service
+    ports: ["8130:8080"]
+    networks: [SmartS]
+
+  billing-service:
+    build: { context: ../services/billing-service, dockerfile: Dockerfile }
+    image: smartstreet/billing-service:dev
+    container_name: billing-service
+    ports: ["8140:8080"]
+    networks: [SmartS]
+
+# ------------------------
+# Networks & Volumes
+# ------------------------
+networks:
+  SmartS:
+    driver: bridge
+
+volumes:
+  postgres:
+

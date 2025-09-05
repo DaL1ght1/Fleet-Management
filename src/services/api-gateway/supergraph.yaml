@@ -1,0 +1,37 @@
+federation_version: 2
+subgraphs:
+  vehicles:
+    routing_url: http://vehicles-service:8080/graphql
+    schema:
+      subgraph_url: http://vehicles-service:8080/graphql
+
+  users:
+    routing_url: http://user-service:8080/graphql
+    schema:
+      subgraph_url: http://user-service:8080/graphql
+
+  #trips:
+  #  routing_url: http://trips-service:8080/graphql
+  #  schema:
+  #    subgraph_url: http://trips-service:8080/graphql
+#
+  #telemetry:
+  #  routing_url: http://telemetry-ingest:8080/graphql
+  #  schema:
+  #    subgraph_url: http://telemetry-ingest:8080/graphql
+#
+  #maintenance:
+  #  routing_url: http://maintenance-service:8080/graphql
+  #  schema:
+  #    subgraph_url: http://maintenance-service:8080/graphql
+#
+  #geofence:
+  #  routing_url: http://geofence-service:8080/graphql
+  #  schema:
+  #    subgraph_url: http://geofence-service:8080/graphql
+#
+  #billing:
+  #  routing_url: http://billing-service:8080/graphql
+  #  schema:
+  #    subgraph_url: http://billing-service:8080/graphql
+#

@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: vehicles
+  graphql:
+    graphiql:
+      enabled: true
+      path: /graphiql
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://postgresql:5432/vehicle
+    username: admin
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "http://keycloak:8080/realms/Smart-Street"
+server:
+  port: 8080
