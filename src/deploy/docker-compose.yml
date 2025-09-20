@@ -106,7 +106,7 @@ services:
   # GraphQL Router (Gateway)
   # ------------------------
   api-gateway:
-    image: ghcr.io/apollographql/router:v1.49.0
+    image: ghcr.io/apollographql/router:v2.6.0
     container_name: api-gateway
     command: [ "--hot-reload", "--supergraph", "/etc/router/supergraph.graphql", "-c", "/etc/router/router.yaml" ]
     depends_on:
@@ -116,8 +116,9 @@ services:
         condition: service_started
       vehicles-service:
         condition: service_started
+      trips-service:
+        condition: service_started
       # add others when you enable them:
-      # trips-service:
       # telemetry-ingest:
       # maintenance-service:
       # geofence-service:
@@ -128,8 +129,10 @@ services:
       - ../services/api-gateway/router.yaml:/etc/router/router.yaml:ro
       - ../services/api-gateway/supergraph.graphql:/etc/router/supergraph.graphql:ro
     environment:
-      APOLLO_ROUTER_LOG: info
-    restart: unless-stopped
+      APOLLO_ROUTER_LOG: debug
+      APOLLO_KEY: "service:Smart-Street:kFqxBodXxTrCcHEj8CzuZA"
+      APOLLO_GRAPH_REF: "Smart-Street@current"
+      APOLLO_ROUTER_HTTP_LISTEN: "0.0.0.0:4000"
     networks:
       - SmartS
 
@@ -140,11 +143,19 @@ services:
     build: { context: ../services/vehicles-service, dockerfile: Dockerfile }
     image: smartstreet/vehicles-service:dev
     container_name: vehicles-service
-    ports: ["8080:8080"]
+    expose: ["8080"]
     networks: [SmartS]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql:5432/vehicle
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_APPLICATION_NAME: vehicles-service
     depends_on:
       postgresql:
         condition: service_healthy
+      kafka:
+        condition: service_started
 
   user-service:
     build: { context: ../services/user-service, dockerfile: Dockerfile }
@@ -152,16 +163,41 @@ services:
     container_name: user-service
     ports: ["8090:8080"]
     networks: [SmartS]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql:5432/SmartS
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_APPLICATION_NAME: user-service
     depends_on:
       postgresql:
         condition: service_healthy
+      kafka:
+        condition: service_started
 
   trips-service:
-    build: { context: ../services/trips-service, dockerfile: Dockerfile }
+    build: { context: .., dockerfile: services/trips-service/Dockerfile }
     image: smartstreet/trips-service:dev
     container_name: trips-service
     ports: ["8101:8080"]
     networks: [SmartS]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql:5432/trips
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_APPLICATION_NAME: trips-service
+      SERVICES_USER_SERVICE_URL: http://user-service:8080
+      SERVICES_VEHICLE_SERVICE_URL: http://vehicles-service:8080
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+      user-service:
+        condition: service_started
+      vehicles-service:
+        condition: service_started
 
   telemetry-ingest:
     build: { context: ../services/telemetry-ingest, dockerfile: Dockerfile }

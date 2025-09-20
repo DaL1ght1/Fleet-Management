@@ -48,6 +48,9 @@ public class Vehicle {
     private LocalDate lastMaintenanceDate;
     @Column(nullable = false)
     private int maintenanceIntervalDays;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDate nextMaintenanceDate;
+
+
+
 }

@@ -1,0 +1,364 @@
+﻿schema
+  @link(url: "https://specs.apollo.dev/link/v1.0")
+  @link(url: "https://specs.apollo.dev/join/v0.3", for: EXECUTION)
+{
+  query: Query
+  mutation: Mutation
+}
+
+directive @join__enumValue(graph: join__Graph!) repeatable on ENUM_VALUE
+
+directive @join__field(graph: join__Graph, requires: join__FieldSet, provides: join__FieldSet, type: String, external: Boolean, override: String, usedOverridden: Boolean) repeatable on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+directive @join__graph(name: String!, url: String!) on ENUM_VALUE
+
+directive @join__implements(graph: join__Graph!, interface: String!) repeatable on OBJECT | INTERFACE
+
+directive @join__type(graph: join__Graph!, key: join__FieldSet, extension: Boolean! = false, resolvable: Boolean! = true, isInterfaceObject: Boolean! = false) repeatable on OBJECT | INTERFACE | UNION | ENUM | INPUT_OBJECT | SCALAR
+
+directive @join__unionMember(graph: join__Graph!, member: String!) repeatable on UNION
+
+directive @link(url: String, as: String, for: link__Purpose, import: [link__Import]) repeatable on SCHEMA
+
+type ApiResponseLong
+  @join__type(graph: VEHICLES)
+{
+  success: Boolean!
+  message: String
+  data: Long
+}
+
+type ApiResponseVehicle
+  @join__type(graph: VEHICLES)
+{
+  success: Boolean!
+  message: String
+  data: Vehicle
+}
+
+type ApiResponseVehicleList
+  @join__type(graph: VEHICLES)
+{
+  success: Boolean!
+  message: String
+  data: [Vehicle!]!
+}
+
+type ApiResponseVoid
+  @join__type(graph: VEHICLES)
+{
+  success: Boolean!
+  message: String
+}
+
+scalar BigDecimal
+  @join__type(graph: TRIPS)
+
+"""Fields required to create a Trip."""
+input CreateTripInput
+  @join__type(graph: TRIPS)
+{
+  vehicleId: UUID!
+  driverId: UUID
+  type: TripType!
+  status: TripStatus = SCHEDULED
+  startLocation: LocationInput
+  endLocation: LocationInput
+  waypoints: [LocationInput!]
+  startTime: Date
+  endTime: Date
+  scheduledStartTime: Date!
+  scheduledEndTime: Date
+  distance: BigDecimal
+  duration: Int
+  estimatedDuration: Int
+  baseRate: BigDecimal
+  totalCost: BigDecimal
+  fuelCost: BigDecimal
+  additionalFees: BigDecimal
+  notes: String
+  customerNotes: String
+  internalNotes: String
+}
+
+scalar Date
+  @join__type(graph: TRIPS)
+  @join__type(graph: VEHICLES)
+
+"""Driver entity representing a driver in the system."""
+type Driver
+  @join__type(graph: TRIPS)
+{
+  id: UUID!
+  firstName: String!
+  lastName: String!
+  email: String
+  phone: String
+  licenseNumber: String
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+enum FuelType
+  @join__type(graph: VEHICLES)
+{
+  GASOLINE @join__enumValue(graph: VEHICLES)
+  DIESEL @join__enumValue(graph: VEHICLES)
+  ELECTRIC @join__enumValue(graph: VEHICLES)
+  HYBRID @join__enumValue(graph: VEHICLES)
+}
+
+scalar join__FieldSet
+
+enum join__Graph {
+  TRIPS @join__graph(name: "trips", url: "http://trips-service:8080/graphql")
+  USERS @join__graph(name: "users", url: "http://user-service:8080/graphql")
+  VEHICLES @join__graph(name: "vehicles", url: "http://vehicles-service:8080/graphql")
+}
+
+scalar link__Import
+
+enum link__Purpose {
+  """
+  `SECURITY` features provide metadata necessary to securely resolve fields.
+  """
+  SECURITY
+
+  """
+  `EXECUTION` features provide metadata necessary for operation execution.
+  """
+  EXECUTION
+}
+
+"""Embedded location used in Trip."""
+type Location
+  @join__type(graph: TRIPS)
+{
+  latitude: Float!
+  longitude: Float!
+  address: String!
+  city: String
+  state: String
+  zipCode: String
+}
+
+"""Input for embedded Location."""
+input LocationInput
+  @join__type(graph: TRIPS)
+{
+  latitude: Float!
+  longitude: Float!
+  address: String!
+  city: String
+  state: String
+  zipCode: String
+}
+
+scalar Long
+  @join__type(graph: VEHICLES)
+
+type Mutation
+  @join__type(graph: TRIPS)
+  @join__type(graph: USERS)
+  @join__type(graph: VEHICLES)
+{
+  """Create a new Trip."""
+  createTrip(input: CreateTripInput!): Trip! @join__field(graph: TRIPS)
+
+  """
+  Update an existing Trip by id. Applies only non-null fields from input.
+  """
+  updateTrip(input: UpdateTripInput!): Trip! @join__field(graph: TRIPS)
+
+  """Delete a Trip by id. Returns true if the trip was deleted."""
+  deleteTrip(id: UUID!): Boolean! @join__field(graph: TRIPS)
+  CreateUser(userDto: UserDto!): User! @join__field(graph: USERS)
+  updateUser(id: UUID!, input: UserDto!): User! @join__field(graph: USERS)
+  deleteUser(id: UUID!): Boolean! @join__field(graph: USERS)
+  registerVehicle(vehicle: VehicleInput!): ApiResponseVehicle! @join__field(graph: VEHICLES)
+  updateVehicle(id: UUID!, vehicle: VehicleInput!): ApiResponseVehicle! @join__field(graph: VEHICLES)
+  updateVehicleStatus(id: UUID!, status: Status!): ApiResponseVoid! @join__field(graph: VEHICLES)
+  changeVehicleMileage(id: UUID!, mileage: Long!): ApiResponseLong! @join__field(graph: VEHICLES)
+  deleteVehicle(id: UUID!): ApiResponseVoid! @join__field(graph: VEHICLES)
+}
+
+type Query
+  @join__type(graph: TRIPS)
+  @join__type(graph: USERS)
+  @join__type(graph: VEHICLES)
+{
+  """Get a single trip by its ID."""
+  getTripById(id: UUID!): Trip @join__field(graph: TRIPS)
+
+  """List all trips."""
+  getAllTrips: [Trip!]! @join__field(graph: TRIPS)
+
+  """Driver helpers (optional but handy)."""
+  getDriverById(id: UUID!): Driver @join__field(graph: TRIPS)
+  getAllDrivers: [Driver!]! @join__field(graph: TRIPS)
+  users: [User!]! @join__field(graph: USERS)
+  getUserById(id: UUID!): User @join__field(graph: USERS)
+  getAllVehicle: ApiResponseVehicleList! @join__field(graph: VEHICLES)
+  getVehicleById(id: UUID!): ApiResponseVehicle! @join__field(graph: VEHICLES)
+  getVehicleByLicensePlate(licensePlate: String!): ApiResponseVehicleList! @join__field(graph: VEHICLES)
+  getVehicleByVin(vin: String!): ApiResponseVehicle! @join__field(graph: VEHICLES)
+  getVehicleByMakeAndModel(make: String!, model: String!): ApiResponseVehicleList! @join__field(graph: VEHICLES)
+}
+
+enum Status
+  @join__type(graph: VEHICLES)
+{
+  ACTIVE @join__enumValue(graph: VEHICLES)
+  INACTIVE @join__enumValue(graph: VEHICLES)
+  MAINTENANCE @join__enumValue(graph: VEHICLES)
+}
+
+"""Trip entity representing a trip taken by a vehicle."""
+type Trip
+  @join__type(graph: TRIPS)
+{
+  id: UUID!
+  vehicleId: UUID!
+  driverId: UUID
+  driver: User
+  vehicle: Vehicle
+  type: TripType!
+  status: TripStatus!
+  startLocation: Location
+  endLocation: Location
+  waypoints: [Location!]!
+  startTime: Date
+  endTime: Date
+  scheduledStartTime: Date!
+  scheduledEndTime: Date
+  distance: BigDecimal
+  duration: Int
+  estimatedDuration: Int
+  baseRate: BigDecimal
+  totalCost: BigDecimal
+  fuelCost: BigDecimal
+  additionalFees: BigDecimal
+  notes: String
+  customerNotes: String
+  internalNotes: String
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+"""Trip status enum (from TripStatus.java)."""
+enum TripStatus
+  @join__type(graph: TRIPS)
+{
+  SCHEDULED @join__enumValue(graph: TRIPS)
+  IN_PROGRESS @join__enumValue(graph: TRIPS)
+  COMPLETED @join__enumValue(graph: TRIPS)
+  CANCELLED @join__enumValue(graph: TRIPS)
+}
+
+"""Trip type enum (from TripType.java)."""
+enum TripType
+  @join__type(graph: TRIPS)
+{
+  RENTAL @join__enumValue(graph: TRIPS)
+  MAINTENANCE @join__enumValue(graph: TRIPS)
+  RELOCATION @join__enumValue(graph: TRIPS)
+  EMERGENCY @join__enumValue(graph: TRIPS)
+}
+
+"""PATCH-style update: only non-null fields are applied."""
+input UpdateTripInput
+  @join__type(graph: TRIPS)
+{
+  id: UUID!
+  vehicleId: UUID
+  driverId: UUID
+  type: TripType
+  status: TripStatus
+  startLocation: LocationInput
+  endLocation: LocationInput
+  waypoints: [LocationInput!]
+  startTime: Date
+  endTime: Date
+  scheduledStartTime: Date
+  scheduledEndTime: Date
+  distance: BigDecimal
+  duration: Int
+  estimatedDuration: Int
+  baseRate: BigDecimal
+  totalCost: BigDecimal
+  fuelCost: BigDecimal
+  additionalFees: BigDecimal
+  notes: String
+  customerNotes: String
+  internalNotes: String
+}
+
+type User
+  @join__type(graph: TRIPS, key: "id", extension: true)
+  @join__type(graph: USERS, key: "id")
+{
+  id: UUID!
+  firstName: String! @join__field(graph: USERS)
+  lastName: String! @join__field(graph: USERS)
+  email: String! @join__field(graph: USERS)
+  licenseNumber: String! @join__field(graph: USERS)
+  phoneNumber: String! @join__field(graph: USERS)
+  createdAt: String! @join__field(graph: USERS)
+  updatedAt: String! @join__field(graph: USERS)
+}
+
+input UserDto
+  @join__type(graph: USERS)
+{
+  firstName: String!
+  lastName: String!
+  email: String!
+  licenseNumber: String!
+  phoneNumber: String!
+}
+
+scalar UUID
+  @join__type(graph: TRIPS)
+  @join__type(graph: USERS)
+  @join__type(graph: VEHICLES)
+
+type Vehicle
+  @join__type(graph: TRIPS, key: "id", extension: true)
+  @join__type(graph: VEHICLES, key: "id")
+{
+  id: UUID!
+  make: String! @join__field(graph: VEHICLES)
+  model: String! @join__field(graph: VEHICLES)
+  year: Int! @join__field(graph: VEHICLES)
+  licensePlate: String! @join__field(graph: VEHICLES)
+  status: Status! @join__field(graph: VEHICLES)
+  vin: String! @join__field(graph: VEHICLES)
+  color: String! @join__field(graph: VEHICLES)
+  mileage: Long! @join__field(graph: VEHICLES)
+  fuelType: FuelType! @join__field(graph: VEHICLES)
+  seatingCapacity: Int! @join__field(graph: VEHICLES)
+  rentalPricePerDay: Long! @join__field(graph: VEHICLES)
+  gpsEnabled: Boolean! @join__field(graph: VEHICLES)
+  lastMaintenanceDate: Date! @join__field(graph: VEHICLES)
+  maintenanceIntervalDays: Int! @join__field(graph: VEHICLES)
+  nextMaintenanceDate: Date! @join__field(graph: VEHICLES)
+}
+
+input VehicleInput
+  @join__type(graph: VEHICLES)
+{
+  make: String!
+  model: String!
+  year: Int!
+  licensePlate: String!
+  status: Status!
+  vin: String!
+  color: String!
+  mileage: Long!
+  fuelType: FuelType!
+  seatingCapacity: Int!
+  rentalPricePerDay: Long!
+  gpsEnabled: Boolean!
+  lastMaintenanceDate: Date!
+  maintenanceIntervalDays: Int!
+}

@@ -1,7 +1,6 @@
 package com.pcd.userservice.Entity.DTO;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.pcd.userservice.Entity.Role;
 import com.pcd.userservice.Entity.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -24,15 +23,11 @@ public class UserDto implements Serializable {
 
     @NotNull @Email(message = "Email should be valid")
     private String email;
-
-    @NotNull @Size(min = 8, message = "Password must be at least 8 characters long")
-    private String password;
-
     @NotNull
     private String phoneNumber;
 
     @NotNull
-    private Role role;
+    private String licenseNumber;
 
 
     public User toUser() {
@@ -40,12 +35,10 @@ public class UserDto implements Serializable {
                 .firstName(firstName)
                 .lastName(lastName)
                 .email(email)
-                .password(password)
+                .licenseNumber(licenseNumber)
                 .phoneNumber(phoneNumber)
-                .enabled(false)
                 .createdAt(java.time.LocalDateTime.now())
                 .updatedAt(java.time.LocalDateTime.now())
-                .role(role)
                 .build();
     }
     public UserDto fromUser(User user) {
@@ -53,9 +46,8 @@ public class UserDto implements Serializable {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getEmail(),
-                user.getPassword(),
                 user.getPhoneNumber(),
-                user.getRole()
-        );
+                user.getLicenseNumber()
+                );
     }
 }

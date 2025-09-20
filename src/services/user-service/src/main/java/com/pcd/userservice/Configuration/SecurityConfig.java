@@ -3,9 +3,7 @@ package com.pcd.userservice.Configuration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -14,7 +12,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-
 import java.util.List;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -22,7 +19,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
 
     @Bean
@@ -32,15 +28,14 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req -> req
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        .requestMatchers(HttpMethod.POST, "/graphql").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/graphql").permitAll()
                         .requestMatchers("/graphiql", "/graphiql/**").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
 
-                        // DEV vs PROD choice (pick one)
-                         .requestMatchers(HttpMethod.POST, "/graphql").permitAll()
-                        //.requestMatchers(HttpMethod.POST, "/graphql").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/graphql").denyAll()
-
+                        // Documentation endpoints
                         .requestMatchers(
-                                "/auth/**",
                                 "/v2/api-docs",
                                 "/v3/api-docs",
                                 "/v3/api-docs/**",
@@ -52,11 +47,7 @@ public class SecurityConfig {
                                 "/webjars/**",
                                 "/swagger-ui.html"
                         ).permitAll()
-
-                        .anyRequest().authenticated()
-                )
-                .oauth2ResourceServer(auth ->
-                        auth.jwt(token -> token.jwtAuthenticationConverter(new KeycloakJwtAuthenticationConverter()))
+                        .anyRequest().permitAll()
                 );
 
         return http.build();
@@ -66,13 +57,15 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         var cfg = new CorsConfiguration();
         cfg.setAllowCredentials(true);
-        cfg.setAllowedOrigins(List.of("http://localhost:4200")); // Remove trailing slash
-        cfg.setAllowedHeaders(List.of("*")); // Allow all headers for testing
-        cfg.setAllowedMethods(List.of("POST","OPTIONS","GET","PUT","PATCH","DELETE"));
+        cfg.setAllowedOrigins(List.of(
+                "http://localhost:4000",
+                "http://localhost:4200"
+        ));
+        cfg.setAllowedHeaders(List.of("*"));
+        cfg.setAllowedMethods(List.of("POST", "OPTIONS", "GET", "PUT", "PATCH", "DELETE"));
 
         var source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", cfg);
         return source;
     }
-
 }

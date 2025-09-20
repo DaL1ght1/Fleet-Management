@@ -1,4 +1,4 @@
-package com.pcd.vehicles.Configuration;
+package com.pcd.tripsservice.Configuration;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -14,4 +14,5 @@ public interface UserRepository extends JpaRepository<User, UUID> {
   Optional<User> findById(@NonNull UUID id);
   void deleteById(@NonNull UUID id);
   boolean existsByEmail(String email);
+  Optional<User> findByEmail(String email);
 }

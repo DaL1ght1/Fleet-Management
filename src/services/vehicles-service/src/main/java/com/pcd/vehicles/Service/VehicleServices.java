@@ -65,6 +65,7 @@ public class VehicleServices implements VehicleServicesImpl {
     @Override
     public Vehicle registerVehicle(VehicleInput vehicle) {
         Vehicle v = vehicle.toVehicle();
+        v.setNextMaintenanceDate(v.getLastMaintenanceDate().plusDays(v.getMaintenanceIntervalDays()));
         return vehicleRepository.save(v);
     }
 
@@ -113,5 +114,9 @@ public class VehicleServices implements VehicleServicesImpl {
     public void deleteVehicle(UUID id) {
         Vehicle v = getVehicleById(id);
         vehicleRepository.delete(v);
+    }
+
+    public Vehicle findById(UUID id) {
+        return vehicleRepository.findById(id).orElseThrow(() -> new VehicleNotFoundException("Vehicle not found with this ID"));
     }
 }

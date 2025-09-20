@@ -1,4 +1,4 @@
-package com.pcd.vehicles.Configuration;
+package com.pcd.userservice.Configuration.graphql;
 
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsEntityFetcher;

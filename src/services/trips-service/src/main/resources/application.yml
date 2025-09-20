@@ -1,1 +1,45 @@
-spring.application.name=trips-service
+spring:
+  application:
+    name: trips-service
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://postgresql:5432/trips
+    username: admin
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  kafka:
+    bootstrap-servers: kafka:9092
+    consumer:
+      group-id: trips-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.pcd.tripsservice.events"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+server:
+  port: 8080
+
+dgs:
+  graphql:
+    virtualthreads:
+      enabled: true
+    graphiql:
+      enabled: true
+      path: /graphiql
+
+router:
+  secret: "03ae177f69e12f507492b6bbe87b083a4c98eeba1bc7f3ba10039891ab1c7472"
+
+# Service URLs for federation
+services:
+  user-service:
+    url: http://user-service:8080
+  vehicle-service:
+    url: http://vehicles-service:8080

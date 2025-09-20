@@ -10,11 +10,11 @@ public interface UserServiceInt {
     boolean userExists(UUID userId);
     List<User> getAllUsers();
     User getUserById(UUID userId);
+    User getUserByEmail(String email);
     User CreateUser(UserDto user);
 
     Boolean deleteUser(UUID id);
 
     User updateUser(UUID id, UserDto input);
 
-    UUID generateNewId(UUID id);
 }

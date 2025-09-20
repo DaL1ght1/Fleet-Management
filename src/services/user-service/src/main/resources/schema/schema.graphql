@@ -3,19 +3,22 @@ schema {
     mutation: Mutation
 }
 
+
 extend schema
 @link(url: "https://specs.apollo.dev/federation/v2.6", import: ["@key"])
 
 # -----------------------
 # User entity
 # -----------------------
+scalar UUID
+
 type User @key(fields: "id") {
-    id: ID!
+    id: UUID!
     firstName: String!
     lastName: String!
     email: String!
+    licenseNumber: String!
     phoneNumber: String!
-    role: Role!
     createdAt: String!
     updatedAt: String!
 }
@@ -25,6 +28,7 @@ type User @key(fields: "id") {
 # -----------------------
 type Query {
     users: [User!]!
+    getUserById(id: UUID!): User
 }
 
 # -----------------------
@@ -32,8 +36,8 @@ type Query {
 # -----------------------
 type Mutation {
     CreateUser(userDto: UserDto!): User!
-    updateUser(id: ID!, input: UserDto!): User!
-    deleteUser(id: ID!): Boolean!
+    updateUser(id: UUID!, input: UserDto!): User!
+    deleteUser(id: UUID!): Boolean!
 }
 
 # -----------------------
@@ -43,15 +47,8 @@ input UserDto {
     firstName: String!
     lastName: String!
     email: String!
-    password: String!
+    licenseNumber: String!
     phoneNumber: String!
-    role: Role!
 }
 
-# -----------------------
-# Enums
-# -----------------------
-enum Role {
-    ADMIN
-    USER
-}
+

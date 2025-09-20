@@ -13,6 +13,8 @@ public class ScalarsConfig {
         return builder
                 .scalar(ExtendedScalars.UUID)
                 .scalar(ExtendedScalars.Date)
-                .scalar(ExtendedScalars.GraphQLLong);
+                .scalar(ExtendedScalars.GraphQLLong)
+                .scalar(ExtendedScalars.GraphQLBigDecimal);
+
     }
 }

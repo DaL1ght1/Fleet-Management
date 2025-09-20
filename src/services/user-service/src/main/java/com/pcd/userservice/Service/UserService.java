@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import static java.lang.String.format;
@@ -36,7 +34,16 @@ public class UserService implements UserServiceInt {
     }
     @Override
     public User getUserById(UUID userId) {
-        return userRepository.findById(userId).orElse(null);
+        return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(
+                format("Cannot Get user: User with id %s not found",userId)
+        ));
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(
+                format("Cannot Get user: User with email %s not found", email)
+        ));
     }
 
     @Override
@@ -62,36 +69,7 @@ public class UserService implements UserServiceInt {
     }
 
 
-    public Map<UUID,UUID> batchGenerate(Set<UUID> ids) {
-        logger.info("Batch generating new IDs for users: " + ids);
-        try {
-            TimeUnit.SECONDS.sleep(1);
-        }
-        catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        Map<UUID, UUID> result =new HashMap<>();
-        ids.forEach(key-> result.put(key,generate(key)));
-        return result;
-
-
-    }
-
-    @Override
-    public UUID generateNewId(UUID id) {
-        logger.info("Generating new ID for user: " + id);
-        try {
-            TimeUnit.SECONDS.sleep(1);
-        }
-        catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        return generate(id);
-    }
-    @NonNull
-    private static UUID generate(UUID id) {
-        return UUID.randomUUID();
-    }
+    // Removed problematic UUID generation methods that were causing ID inconsistencies
 
     public void mergeUser(User user, UserDto request) {
         if (StringUtils.isNotBlank(request.getFirstName())) {
@@ -103,14 +81,8 @@ public class UserService implements UserServiceInt {
         if (StringUtils.isNotBlank(request.getEmail())) {
             user.setEmail(request.getEmail());
         }
-        if (StringUtils.isNotBlank(request.getPassword())) {
-            if (request.getPassword().length() < 8) {
-                throw new IllegalArgumentException("Password must be at least 8 characters");
-            }
-            user.setPassword(passwordEncoder.encode(request.getPassword()));
-        }
-        if (StringUtils.isNotBlank(request.getRole().toString())) {
-            user.setRole(request.getRole());
+        if (StringUtils.isNotBlank(request.getLicenseNumber())) {
+            user.setLicenseNumber(passwordEncoder.encode(request.getLicenseNumber()));
         }
         if (request.getPhoneNumber() != null) {
             user.setPhoneNumber(request.getPhoneNumber());
@@ -121,10 +93,11 @@ public class UserService implements UserServiceInt {
     @Override
     public User CreateUser(UserDto request) {
         User user = request.toUser();
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
         return userRepository.save(user);
     }
 
 
-
+    public User findById(UUID id) {
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found with this ID"));
+    }
 }
