@@ -1,3 +1,11 @@
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+extend schema
+@link(url: "https://specs.apollo.dev/federation/v2.6", import: ["@key"])
+
 scalar UUID
 scalar Date
 scalar Long
@@ -17,7 +25,7 @@ enum FuelType {
 }
 
 # Entity
-type Vehicle  {
+type Vehicle @key(fields: "id") {
     id: UUID!
     make: String!
     model: String!
@@ -78,19 +86,19 @@ input VehicleInput {
     maintenanceIntervalDays: Int!
 }
 
-# IMPORTANT: define base types in each subgraph
+# Base operation roots
 type Query {
-    getAllVehicle: ApiResponseVehicleList
-    getVehicleById(id: UUID!): ApiResponseVehicle
-    getVehicleByLicensePlate(licensePlate: String!): ApiResponseVehicleList
-    getVehicleByVin(vin: String!): ApiResponseVehicle
-    getVehicleByMakeAndModel(make: String!, model: String!): ApiResponseVehicleList
+    getAllVehicle: ApiResponseVehicleList!
+    getVehicleById(id: UUID!): ApiResponseVehicle!
+    getVehicleByLicensePlate(licensePlate: String!): ApiResponseVehicleList!
+    getVehicleByVin(vin: String!): ApiResponseVehicle!
+    getVehicleByMakeAndModel(make: String!, model: String!): ApiResponseVehicleList!
 }
 
 type Mutation {
-    registerVehicle(vehicle: VehicleInput!): ApiResponseVehicle
-    updateVehicle(id: UUID!, vehicle: VehicleInput!): ApiResponseVehicle
-    updateVehicleStatus(id: UUID!, status: Status!): ApiResponseVoid
-    changeVehicleMileage(id: UUID!, mileage: Long!): ApiResponseLong
-    deleteVehicle(id: UUID!): ApiResponseVoid
+    registerVehicle(vehicle: VehicleInput!): ApiResponseVehicle!
+    updateVehicle(id: UUID!, vehicle: VehicleInput!): ApiResponseVehicle!
+    updateVehicleStatus(id: UUID!, status: Status!): ApiResponseVoid!
+    changeVehicleMileage(id: UUID!, mileage: Long!): ApiResponseLong!
+    deleteVehicle(id: UUID!): ApiResponseVoid!
 }

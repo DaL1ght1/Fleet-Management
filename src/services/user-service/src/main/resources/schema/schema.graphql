@@ -1,18 +1,15 @@
-# -----------------------
-# Base root types
-# -----------------------
-type Query {
-    _empty: String
+schema {
+    query: Query
+    mutation: Mutation
 }
 
-type Mutation {
-    _noop: String
-}
+extend schema
+@link(url: "https://specs.apollo.dev/federation/v2.6", import: ["@key"])
 
 # -----------------------
 # User entity
 # -----------------------
-type User {
+type User @key(fields: "id") {
     id: ID!
     firstName: String!
     lastName: String!
@@ -26,17 +23,17 @@ type User {
 # -----------------------
 # Queries
 # -----------------------
-extend type Query {
-    users: [User]
+type Query {
+    users: [User!]!
 }
 
 # -----------------------
 # Mutations
 # -----------------------
-extend type Mutation {
-    CreateUser(userDto: UserDto!): User
-    updateUser(id: ID!, input: UserDto!): User
-    deleteUser(id: ID!): Boolean
+type Mutation {
+    CreateUser(userDto: UserDto!): User!
+    updateUser(id: ID!, input: UserDto!): User!
+    deleteUser(id: ID!): Boolean!
 }
 
 # -----------------------
