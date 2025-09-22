@@ -13,7 +13,7 @@
 
     <groupId>com.pcd</groupId>
     <artifactId>smart-mobility-shared</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
     <name>Smart Mobility Shared</name>
     <description>Shared components and configurations for Smart Mobility microservices</description>

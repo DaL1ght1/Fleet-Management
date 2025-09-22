@@ -6,13 +6,13 @@
 	<parent>
 		<groupId>com.pcd</groupId>
 		<artifactId>smart-mobility-parent</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0</version>
 		<relativePath>../../pom.xml</relativePath>
 	</parent>
 
 	<groupId>com.pcd</groupId>
 	<artifactId>vehicle-service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 
 	<properties>
 		<dgs.platform.version>10.3.0</dgs.platform.version>
