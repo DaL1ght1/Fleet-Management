@@ -1,29 +1,25 @@
-# Stage 1: Build the application
-FROM maven:3.9.6-eclipse-temurin-21 AS builder
+FROM maven:3.9.11-eclipse-temurin-21-alpine AS builder
+
 WORKDIR /app
 
-# Copy everything needed for the build
-COPY . .
+COPY src/pom.xml ./pom.xml
 
-# Build only the trips-service module
-RUN mvn clean package -pl services/trips-service -am -DskipTests
+WORKDIR /app/services/shared
+COPY src/services/shared/pom.xml ./pom.xml
+COPY src/services/shared/src ./src
+RUN mvn -q -DskipTests install
 
-# Stage 2: Create the final image
-FROM eclipse-temurin:21-jre
+WORKDIR /app/services/trips-service
+COPY src/services/trips-service/pom.xml ./pom.xml
+COPY src/services/trips-service/src ./src
+RUN mvn -q -DskipTests dependency:go-offline
+RUN mvn -q -DskipTests package
 
-# 1) Create a non-root user for security
-RUN useradd -r -u 1001 spring
+FROM eclipse-temurin:21-jre-alpine AS runtime
 WORKDIR /app
-
-# 2) Copy the pre-built JAR from the builder stage
-COPY --from=builder /app/services/trips-service/target/*.jar /app/app.jar
-
-# 3) Expose the container port your app listens on (informational)
-EXPOSE 8080
-
-# 4) Memory- & container-friendly JVM flags
+EXPOSE 8101
 ENV JAVA_OPTS="-XX:MaxRAMPercentage=75 -XX:+UseG1GC -XX:+AlwaysActAsServerClassMachine"
-
-# 5) Drop privileges and run
+RUN addgroup -S spring && adduser -S -G spring -u 1001 -s /sbin/nologin spring
+COPY --from=builder /app/services/trips-service/target/trips-service-1.0.jar app.jar
 USER spring
 ENTRYPOINT ["sh","-c","exec java $JAVA_OPTS -jar /app/app.jar"]
