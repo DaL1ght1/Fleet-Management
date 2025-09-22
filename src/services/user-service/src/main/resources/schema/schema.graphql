@@ -29,6 +29,7 @@ type User @key(fields: "id") {
 type Query {
     users: [User!]!
     getUserById(id: UUID!): User
+    driverByEmail(email: String!): User
 }
 
 # -----------------------
