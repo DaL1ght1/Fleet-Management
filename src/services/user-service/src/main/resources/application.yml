@@ -1,9 +1,11 @@
 spring:
   application:
     name: user-service
+  main:
+    allow-bean-definition-overriding: true
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://postgresql:5432/SmartS
+    url: jdbc:postgresql://postgres:5432/SmartS
     username: admin
     password: admin
   jpa:
