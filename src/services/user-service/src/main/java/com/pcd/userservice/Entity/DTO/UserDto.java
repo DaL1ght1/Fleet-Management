@@ -15,18 +15,17 @@ import java.io.Serializable;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDto implements Serializable {
-    @NotNull @Size(min = 2, max = 30, message = "First name must be between 2 and 30 characters")
+    @Size(min = 2, max = 30, message = "First name must be between 2 and 30 characters")
     private String firstName;
 
-    @NotNull @Size(min = 2, max = 30, message = "Last name must be between 2 and 30 characters")
+    @Size(min = 2, max = 30, message = "Last name must be between 2 and 30 characters")
     private String lastName;
 
     @NotNull @Email(message = "Email should be valid")
     private String email;
-    @NotNull
+    
     private String phoneNumber;
 
-    @NotNull
     private String licenseNumber;
 
 

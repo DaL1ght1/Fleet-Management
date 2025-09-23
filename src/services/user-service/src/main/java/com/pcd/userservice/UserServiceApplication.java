@@ -6,10 +6,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-
-
 @SpringBootApplication(scanBasePackages = {"com.pcd.userservice", "com.pcd.shared"})
-@EnableJpaAuditing
+@EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @RequiredArgsConstructor
 public class UserServiceApplication {
 
