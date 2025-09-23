@@ -13,7 +13,7 @@ subgraphs:
   trips:
     routing_url: http://trips-service:8080/graphql
     schema:
-     file: ../trips-service/src/main/resources/schema/schema.graphql
+      file: ../trips-service/src/main/resources/schema/schema.graphql
 #
   #telemetry:
   #  routing_url: http://telemetry-ingest:8080/graphql
