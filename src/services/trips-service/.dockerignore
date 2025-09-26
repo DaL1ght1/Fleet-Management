@@ -1,6 +1,132 @@
-# target
-# **/target
-**/.idea
-**/.mvn
-**/.git
-**/.DS_Store
+
+# Build artifacts
+target/
+*.jar
+*.war
+*.ear
+*.class
+*.zip
+*.tar.gz
+*.rar
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# IDE files
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+.eclipse/
+.metadata/
+.settings/
+.project
+.classpath
+.factorypath
+.springBeans
+.sts4-cache/
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Version control
+.git/
+.gitignore
+.gitattributes
+.gitmodules
+
+# Logs
+*.log
+logs/
+log/
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Dependency directories
+node_modules/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+.env.test
+.env.local
+.env.production
+
+# Temporary folders
+tmp/
+temp/
+.tmp/
+.temp/
+.cache/
+
+# Test reports
+surefire-reports/
+failsafe-reports/
+test-results/
+
+# Documentation
+README.md
+*.md
+docs/
+
+# Other common ignores
+*.swp
+*.swo
+*~
+.sass-cache/
+.connect.lock
+.grunt
+.lock-wscript
+.wafpickle-N
+.*.swp
+.DS_STORE
