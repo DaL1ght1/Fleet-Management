@@ -1,9 +1,12 @@
 package com.pcd.userservice.Controller;
 
 import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsData;
 import com.netflix.graphql.dgs.DgsMutation;
 import com.netflix.graphql.dgs.DgsQuery;
 import com.netflix.graphql.dgs.InputArgument;
+import com.netflix.graphql.dgs.DgsDataFetchingEnvironment;
+import com.pcd.shared.enums.DriverStatus;
 import com.pcd.userservice.Entity.Driver;
 import com.pcd.userservice.Entity.DTO.DriverDto;
 import com.pcd.userservice.Service.DriverService;
@@ -43,7 +46,7 @@ public class DriverController {
     @DgsQuery
     public List<Driver> getDriversByStatus(@InputArgument String status) {
         log.info("Fetching drivers with status: {}", status);
-        Driver.DriverStatus driverStatus = Driver.DriverStatus.valueOf(status.toUpperCase());
+        DriverStatus driverStatus = DriverStatus.valueOf(status.toUpperCase());
         return driverService.getDriversByStatus(driverStatus);
     }
 
@@ -105,5 +108,14 @@ public class DriverController {
     public Driver updateDriverRating(@InputArgument UUID driverId, @InputArgument BigDecimal rating) {
         log.info("Updating driver {} rating to {}", driverId, rating);
         return driverService.updateDriverRating(driverId, rating);
+    }
+
+    /**
+     * Field resolver to map phoneNumber field to phone field in GraphQL responses
+     */
+    @DgsData(parentType = "Driver", field = "phone")
+    public String getDriverPhone(DgsDataFetchingEnvironment dfe) {
+        Driver driver = dfe.getSource();
+        return driver.getPhoneNumber();
     }
 }

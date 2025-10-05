@@ -31,6 +31,7 @@ public class KafkaConfig {
 
     // Topic Names
     public static final String USER_EVENTS_TOPIC = "smart-mobility.user.events";
+    public static final String DRIVER_EVENTS_TOPIC = "smart-mobility.driver.events";
     public static final String VEHICLE_EVENTS_TOPIC = "smart-mobility.vehicle.events";
     public static final String TRIP_EVENTS_TOPIC = "smart-mobility.trip.events";
 
@@ -91,6 +92,16 @@ public class KafkaConfig {
     @Bean
     public NewTopic userEventsTopic() {
         return TopicBuilder.name(USER_EVENTS_TOPIC)
+            .partitions(3)
+            .replicas(1)
+            .config("cleanup.policy", "delete")
+            .config("retention.ms", "604800000") // 7 days
+            .build();
+    }
+
+    @Bean
+    public NewTopic driverEventsTopic() {
+        return TopicBuilder.name(DRIVER_EVENTS_TOPIC)
             .partitions(3)
             .replicas(1)
             .config("cleanup.policy", "delete")

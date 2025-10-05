@@ -22,6 +22,7 @@ import java.util.UUID;
 @Builder
 @Table(name = "customers")
 @EntityListeners(AuditingEntityListener.class)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -33,13 +34,22 @@ public class User{
     @Email(message = "Email should be valid")
     @Column(unique = true, nullable = false)
     private String email ;
-    private String licenseNumber;
     private String phoneNumber;
     @CreatedDate
-    @Column(name = "creation_date", nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     @LastModifiedDate
-    @Column(name = "last_modified_date", nullable = false)
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+    
+    // Custom constructor
+    public User(String firstName, String lastName, String email, String phoneNumber) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
 
 }

@@ -10,7 +10,7 @@ type Vehicle @key(fields: "id") {
     id: UUID!
 }
 
-type User @key(fields: "id") {
+type Driver @key(fields: "id") {
     id: UUID!
 }
 
@@ -45,7 +45,7 @@ type Trip {
     id: UUID!
     vehicleId: UUID!
     driverId: UUID
-    driver: User
+    driver: Driver
     vehicle: Vehicle
     type: TripType!
     status: TripStatus!

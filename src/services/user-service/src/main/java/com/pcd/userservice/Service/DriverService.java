@@ -1,9 +1,9 @@
 package com.pcd.userservice.Service;
 
+import com.pcd.shared.enums.DriverStatus;
 import com.pcd.userservice.Entity.Driver;
 import com.pcd.userservice.Entity.DTO.DriverDto;
 import com.pcd.userservice.Exception.UserNotFoundException;
-import com.pcd.userservice.Service.Interface.DriverServiceInt.DriverStatistics;
 import java.math.BigDecimal;
 import com.pcd.userservice.Repository.DriverRepository;
 import com.pcd.userservice.Service.Interface.DriverServiceInt;
@@ -54,7 +54,7 @@ public class DriverService implements DriverServiceInt {
     }
 
     @Override
-    public List<Driver> getDriversByStatus(Driver.DriverStatus status) {
+    public List<Driver> getDriversByStatus(DriverStatus status) {
         return driverRepository.findByStatus(status);
     }
 
@@ -121,7 +121,7 @@ public class DriverService implements DriverServiceInt {
     public Driver assignDriverToTrip(UUID driverId, UUID tripId) {
         Driver driver = getDriverById(driverId);
         
-        if (driver.getStatus() != Driver.DriverStatus.ACTIVE) {
+        if (driver.getStatus() != DriverStatus.ACTIVE) {
             throw new IllegalStateException("Cannot assign inactive driver to trip");
         }
         
@@ -154,7 +154,7 @@ public class DriverService implements DriverServiceInt {
     @Override
     public DriverStatistics getDriverStatistics() {
         long totalDrivers = driverRepository.count();
-        long activeDrivers = driverRepository.countByStatus(Driver.DriverStatus.ACTIVE);
+        long activeDrivers = driverRepository.countByStatus(DriverStatus.ACTIVE);
         long inactiveDrivers = totalDrivers - activeDrivers;
         long availableDrivers = driverRepository.countAvailableDrivers();
         long busyDrivers = driverRepository.countBusyDrivers();
@@ -177,7 +177,7 @@ public class DriverService implements DriverServiceInt {
             driver.setEmail(driverDto.getEmail());
         }
         if (StringUtils.isNotBlank(driverDto.getPhone())) {
-            driver.setPhone(driverDto.getPhone());
+            driver.setPhoneNumber(driverDto.getPhone());
         }
         if (StringUtils.isNotBlank(driverDto.getLicenseNumber())) {
             driver.setLicenseNumber(driverDto.getLicenseNumber());

@@ -1,5 +1,6 @@
 package com.pcd.userservice.Repository;
 
+import com.pcd.shared.enums.DriverStatus;
 import com.pcd.userservice.Entity.Driver;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,7 +18,7 @@ public interface DriverRepository extends JpaRepository<Driver, UUID> {
 
     Optional<Driver> findByLicenseNumber(String licenseNumber);
 
-    List<Driver> findByStatus(Driver.DriverStatus status);
+    List<Driver> findByStatus(DriverStatus status);
 
     @Query("SELECT d FROM Driver d WHERE d.status = 'ACTIVE' AND d.currentTripId IS NULL")
     List<Driver> findAvailableDrivers();
@@ -35,7 +36,7 @@ public interface DriverRepository extends JpaRepository<Driver, UUID> {
     List<Driver> findDriversWithLicenseExpiringWithin(@Param("days") long days);
 
 
-    long countByStatus(Driver.DriverStatus status);
+    long countByStatus(DriverStatus status);
 
 
     @Query("SELECT COUNT(d) FROM Driver d WHERE d.status = 'ACTIVE' AND d.currentTripId IS NULL")

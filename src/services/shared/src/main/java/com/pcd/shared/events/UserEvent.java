@@ -30,7 +30,6 @@ public class UserEvent {
     private String lastName;
     private String email;
     private String phoneNumber;
-    private String licenseNumber;
     private LocalDateTime timestamp;
     private String correlationId;
     private String source;

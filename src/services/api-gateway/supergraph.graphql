@@ -88,7 +88,6 @@ type Customer
   firstName: String
   lastName: String
   email: String!
-  licenseNumber: String
   phoneNumber: String
   createdAt: String!
   updatedAt: String!
@@ -100,24 +99,25 @@ scalar Date
   @join__type(graph: VEHICLES)
 
 type Driver
+  @join__type(graph: TRIPS, key: "id")
   @join__type(graph: USERS, key: "id")
 {
   id: UUID!
-  firstName: String!
-  lastName: String!
-  email: String!
-  phone: String
-  licenseNumber: String
-  licenseExpiryDate: Date
-  status: DriverStatus!
-  dateOfBirth: Date
-  hireDate: Date
-  emergencyContactName: String
-  emergencyContactPhone: String
-  currentTripId: UUID
-  rating: Float
-  createdAt: String!
-  updatedAt: String!
+  firstName: String! @join__field(graph: USERS)
+  lastName: String! @join__field(graph: USERS)
+  email: String! @join__field(graph: USERS)
+  phone: String! @join__field(graph: USERS)
+  licenseNumber: String @join__field(graph: USERS)
+  licenseExpiryDate: Date @join__field(graph: USERS)
+  status: DriverStatus! @join__field(graph: USERS)
+  dateOfBirth: Date @join__field(graph: USERS)
+  hireDate: Date @join__field(graph: USERS)
+  emergencyContactName: String @join__field(graph: USERS)
+  emergencyContactPhone: String @join__field(graph: USERS)
+  currentTripId: UUID @join__field(graph: USERS)
+  rating: Float @join__field(graph: USERS)
+  createdAt: String! @join__field(graph: USERS)
+  updatedAt: String! @join__field(graph: USERS)
 }
 
 input DriverDto
@@ -294,7 +294,7 @@ type Trip
   id: UUID!
   vehicleId: UUID!
   driverId: UUID
-  driver: User
+  driver: Driver
   vehicle: Vehicle
   type: TripType!
   status: TripStatus!
@@ -368,17 +368,15 @@ input UpdateTripInput
 }
 
 type User
-  @join__type(graph: TRIPS, key: "id")
   @join__type(graph: USERS, key: "id")
 {
   id: UUID!
-  firstName: String @join__field(graph: USERS)
-  lastName: String @join__field(graph: USERS)
-  email: String! @join__field(graph: USERS)
-  licenseNumber: String @join__field(graph: USERS)
-  phoneNumber: String @join__field(graph: USERS)
-  createdAt: String! @join__field(graph: USERS)
-  updatedAt: String! @join__field(graph: USERS)
+  firstName: String
+  lastName: String
+  email: String!
+  phoneNumber: String
+  createdAt: String!
+  updatedAt: String!
 }
 
 input UserDto
@@ -387,7 +385,6 @@ input UserDto
   firstName: String
   lastName: String
   email: String!
-  licenseNumber: String
   phoneNumber: String
 }
 

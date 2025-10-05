@@ -26,15 +26,12 @@ public class UserDto implements Serializable {
     
     private String phoneNumber;
 
-    private String licenseNumber;
-
 
     public User toUser() {
         return User.builder()
                 .firstName(firstName)
                 .lastName(lastName)
                 .email(email)
-                .licenseNumber(licenseNumber)
                 .phoneNumber(phoneNumber)
                 .createdAt(java.time.LocalDateTime.now())
                 .updatedAt(java.time.LocalDateTime.now())
@@ -45,8 +42,7 @@ public class UserDto implements Serializable {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getEmail(),
-                user.getPhoneNumber(),
-                user.getLicenseNumber()
+                user.getPhoneNumber()
                 );
     }
 }

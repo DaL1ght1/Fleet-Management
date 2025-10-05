@@ -1,5 +1,6 @@
 package com.pcd.userservice.Entity.DTO;
 
+import com.pcd.shared.enums.DriverStatus;
 import com.pcd.userservice.Entity.Driver;
 import lombok.*;
 
@@ -19,7 +20,7 @@ public class DriverDto {
     private String phone;
     private String licenseNumber;
     private LocalDate licenseExpiryDate;
-    private Driver.DriverStatus status;
+    private DriverStatus status;
     private LocalDate dateOfBirth;
     private LocalDate hireDate;
     private String emergencyContactName;
@@ -28,21 +29,21 @@ public class DriverDto {
     private BigDecimal rating;
 
     public Driver toDriver() {
-        return Driver.builder()
-                .firstName(this.firstName)
-                .lastName(this.lastName)
-                .email(this.email)
-                .phone(this.phone)
-                .licenseNumber(this.licenseNumber)
-                .licenseExpiryDate(this.licenseExpiryDate)
-                .status(this.status != null ? this.status : Driver.DriverStatus.ACTIVE)
-                .dateOfBirth(this.dateOfBirth)
-                .hireDate(this.hireDate)
-                .emergencyContactName(this.emergencyContactName)
-                .emergencyContactPhone(this.emergencyContactPhone)
-                .currentTripId(this.currentTripId)
-                .rating(this.rating)
-                .build();
+        return new Driver(
+                this.firstName,
+                this.lastName,
+                this.email,
+                this.phone,
+                this.licenseNumber,
+                this.licenseExpiryDate,
+                this.status != null ? this.status : DriverStatus.ACTIVE,
+                this.dateOfBirth,
+                this.hireDate,
+                this.emergencyContactName,
+                this.emergencyContactPhone,
+                this.currentTripId,
+                this.rating
+        );
     }
 
     public static DriverDto fromDriver(Driver driver) {
@@ -50,7 +51,7 @@ public class DriverDto {
                 .firstName(driver.getFirstName())
                 .lastName(driver.getLastName())
                 .email(driver.getEmail())
-                .phone(driver.getPhone())
+                .phone(driver.getPhoneNumber())
                 .licenseNumber(driver.getLicenseNumber())
                 .licenseExpiryDate(driver.getLicenseExpiryDate())
                 .status(driver.getStatus())

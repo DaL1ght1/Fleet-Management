@@ -1,6 +1,7 @@
 package com.pcd.userservice.Service;
 
-import com.pcd.userservice.events.UserEvent;
+import com.pcd.shared.events.UserEvent;
+import com.pcd.shared.config.KafkaConfig;
 import com.pcd.userservice.Entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,6 @@ import java.util.UUID;
 public class UserEventPublisher {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
-    private static final String USER_EVENTS_TOPIC = "smart-mobility.user.events";
 
     public void publishUserEvent(UserEvent event) {
         try {
@@ -29,7 +29,7 @@ public class UserEventPublisher {
 
             String key = event.getUserId().toString();
             
-            kafkaTemplate.send(USER_EVENTS_TOPIC, key, event)
+            kafkaTemplate.send(KafkaConfig.USER_EVENTS_TOPIC, key, event)
                 .whenComplete((result, ex) -> {
                     if (ex == null) {
                         log.info("Published user event: {} for user: {}", event.getEventType(), event.getUserId());
@@ -50,7 +50,6 @@ public class UserEventPublisher {
                 .lastName(user.getLastName())
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
-                .licenseNumber(user.getLicenseNumber())
                 .build();
         publishUserEvent(event);
     }
@@ -63,7 +62,6 @@ public class UserEventPublisher {
                 .lastName(user.getLastName())
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
-                .licenseNumber(user.getLicenseNumber())
                 .build();
         publishUserEvent(event);
     }

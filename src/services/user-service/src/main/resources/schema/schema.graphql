@@ -17,7 +17,6 @@ type Customer @key(fields: "id") {
     firstName: String
     lastName: String
     email: String!
-    licenseNumber: String
     phoneNumber: String
     createdAt: String!
     updatedAt: String!
@@ -29,14 +28,13 @@ type User @key(fields: "id") {
     firstName: String
     lastName: String
     email: String!
-    licenseNumber: String
     phoneNumber: String
     createdAt: String!
     updatedAt: String!
 }
 
 # -----------------------
-# Driver entity
+# Driver entity (extends User)
 # -----------------------
 enum DriverStatus {
     ACTIVE
@@ -50,7 +48,7 @@ type Driver @key(fields: "id") {
     firstName: String!
     lastName: String!
     email: String!
-    phone: String
+    phone: String!
     licenseNumber: String
     licenseExpiryDate: Date
     status: DriverStatus!
@@ -124,7 +122,6 @@ input UserDto {
     firstName: String
     lastName: String
     email: String!
-    licenseNumber: String
     phoneNumber: String
 }
 

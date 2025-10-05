@@ -1,5 +1,6 @@
 package com.pcd.userservice.Service.Interface;
 
+import com.pcd.shared.enums.DriverStatus;
 import com.pcd.userservice.Entity.Driver;
 import com.pcd.userservice.Entity.DTO.DriverDto;
 
@@ -37,7 +38,7 @@ public interface DriverServiceInt {
     /**
      * Get drivers by status
      */
-    List<Driver> getDriversByStatus(Driver.DriverStatus status);
+    List<Driver> getDriversByStatus(DriverStatus status);
 
     /**
      * Get available drivers (active and not on trip)

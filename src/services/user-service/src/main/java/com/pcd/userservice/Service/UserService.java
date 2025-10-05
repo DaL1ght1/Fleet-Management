@@ -81,9 +81,7 @@ public class UserService implements UserServiceInt {
         if (StringUtils.isNotBlank(request.getEmail())) {
             user.setEmail(request.getEmail());
         }
-        if (StringUtils.isNotBlank(request.getLicenseNumber())) {
-            user.setLicenseNumber(passwordEncoder.encode(request.getLicenseNumber()));
-        }
+        // licenseNumber removed from User entity - now only available in Driver
         if (request.getPhoneNumber() != null) {
             user.setPhoneNumber(request.getPhoneNumber());
         }
