@@ -1,19 +1,24 @@
-# ---------- Use pre-built JAR ----------
-FROM eclipse-temurin:21-jre
+FROM maven:3.9.11-eclipse-temurin-21-alpine AS builder
 
-# 1) Create a non-root user for security
-RUN useradd -r -u 1001 spring
 WORKDIR /app
 
-# 2) Copy the pre-built JAR
-COPY target/vehicle-service-0.0.1-SNAPSHOT.jar /app/app.jar
+COPY src/pom.xml ./pom.xml
 
-# 3) Expose the container port your app listens on (informational)
+WORKDIR /app/services/shared
+COPY src/services/shared/pom.xml ./pom.xml
+COPY src/services/shared/src ./src
+
+RUN mvn -q -DskipTests install
+
+WORKDIR /app/services/vehicles-service
+COPY src/services/vehicles-service/pom.xml ./pom.xml
+COPY src/services/vehicles-service/src ./src
+RUN mvn -q -DskipTests dependency:go-offline
+RUN mvn -q -DskipTests package
+
+FROM eclipse-temurin:21-jre-alpine AS runtime
+WORKDIR /app
 EXPOSE 8080
-
-# 4) Memory- & container-friendly JVM flags
 ENV JAVA_OPTS="-XX:MaxRAMPercentage=75 -XX:+UseG1GC -XX:+AlwaysActAsServerClassMachine"
-
-# 5) Drop privileges and run
-USER spring
+COPY --from=builder /app/services/vehicles-service/target/vehicle-service-1.0.jar ./app.jar
 ENTRYPOINT ["sh","-c","exec java $JAVA_OPTS -jar /app/app.jar"]

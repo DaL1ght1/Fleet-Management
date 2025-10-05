@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>com.pcd</groupId>
 		<artifactId>smart-mobility-parent</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0</version>
 		<relativePath>../../pom.xml</relativePath>
 	</parent>
 	<groupId>com.pcd</groupId>
 	<artifactId>geofence-service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>geofence-service</name>
 	<description>geofence-service</description>
 	<dependencies>
@@ -99,27 +99,8 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>io.github.deweyjose</groupId>
-				<artifactId>graphqlcodegen-maven-plugin</artifactId>
-				<version>1.61.5</version>
-				<executions>
-					<execution>
-						<id>dgs-codegen</id>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<schemaPaths>
-								<param>src/main/resources/graphql-client</param>
-							</schemaPaths>
-							<packageName>com.pcd.geofenceservice.codegen</packageName>
-							<addGeneratedAnnotation>true</addGeneratedAnnotation>
-							<disableDatesInGeneratedAnnotation>true</disableDatesInGeneratedAnnotation>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+			<!-- GraphQL code generation is optional for this service.
+			     Enable via the 'graphql-client-codegen' Maven profile when needed. -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
@@ -154,5 +135,37 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>graphql-client-codegen</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>io.github.deweyjose</groupId>
+						<artifactId>graphqlcodegen-maven-plugin</artifactId>
+						<version>1.61.5</version>
+						<executions>
+							<execution>
+								<id>dgs-codegen</id>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+								<configuration>
+									<!-- Update this path to where your client GraphQL files live -->
+									<schemaPaths>
+										<param>src/main/resources/graphql-client</param>
+									</schemaPaths>
+									<packageName>com.pcd.geofenceservice.codegen</packageName>
+									<addGeneratedAnnotation>true</addGeneratedAnnotation>
+									<disableDatesInGeneratedAnnotation>true</disableDatesInGeneratedAnnotation>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>

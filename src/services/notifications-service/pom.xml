@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>com.pcd</groupId>
 		<artifactId>smart-mobility-parent</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0</version>
 		<relativePath>../../pom.xml</relativePath>
 	</parent>
 	<groupId>com.pcd</groupId>
 	<artifactId>notifications-service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>notifications-service</name>
 	<description>notifications-service</description>
 	<dependencies>

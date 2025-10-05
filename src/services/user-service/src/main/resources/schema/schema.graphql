@@ -78,8 +78,9 @@ type Query {
     users: [User!]!
     customers: [Customer!]!
     getUserById(id: UUID!): User
+    driverByEmail(email: String!): User
     getCustomerById(id: UUID!): Customer
-    
+
     # Driver queries
     drivers: [Driver!]!
     getDriverById(id: UUID!): Driver
@@ -89,7 +90,7 @@ type Query {
     getBusyDrivers: [Driver!]!
     searchDriversByName(name: String!): [Driver!]!
     getDriverStatistics: DriverStatistics!
-    
+
     # Legacy queries for backwards compatibility
     driverByEmail(email: String!): User
 }
@@ -105,7 +106,7 @@ type Mutation {
     updateCustomer(id: UUID!, input: UserDto!): Customer!
     deleteUser(id: UUID!): Boolean!
     deleteCustomer(id: UUID!): Boolean!
-    
+
     # Driver mutations
     createDriver(input: DriverDto!): Driver!
     updateDriver(id: UUID!, input: DriverDto!): Driver!

@@ -50,6 +50,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LOG4J_LOGGERS: "kafka=WARN,org.apache.kafka=WARN"
     networks:
       - SmartS
   # ------------------------
@@ -126,8 +127,8 @@ services:
     ports:
       - "4000:4000"
     volumes:
-      - ../services/api-gateway/router.yaml:/etc/router/router.yaml:ro
-      - ../services/api-gateway/supergraph.graphql:/etc/router/supergraph.graphql:ro
+      - ../src/services/api-gateway/router.yaml:/etc/router/router.yaml:ro
+      - ../src/services/api-gateway/supergraph.graphql:/etc/router/supergraph.graphql:ro
     environment:
       APOLLO_ROUTER_LOG: debug
       APOLLO_KEY: "service:Smart-Street:kFqxBodXxTrCcHEj8CzuZA"
@@ -140,7 +141,7 @@ services:
   # Microservices
   # ------------------------
   vehicles-service:
-    build: { context: ../services/vehicles-service, dockerfile: Dockerfile }
+    build: { context: .., dockerfile: src/services/vehicles-service/Dockerfile }
     image: smartstreet/vehicles-service:dev
     container_name: vehicles-service
     expose: ["8080"]
@@ -158,7 +159,7 @@ services:
         condition: service_started
 
   user-service:
-    build: { context: ../services/user-service, dockerfile: Dockerfile }
+    build: { context: .., dockerfile: src/services/user-service/Dockerfile }
     image: smartstreet/user-service:dev
     container_name: user-service
     ports: ["8090:8080"]
@@ -176,7 +177,7 @@ services:
         condition: service_started
 
   trips-service:
-    build: { context: .., dockerfile: services/trips-service/Dockerfile }
+    build: { context: .. , dockerfile: src/services/trips-service/Dockerfile }
     image: smartstreet/trips-service:dev
     container_name: trips-service
     ports: ["8101:8080"]
@@ -200,32 +201,65 @@ services:
         condition: service_started
 
   telemetry-ingest:
-    build: { context: ../services/telemetry-ingest, dockerfile: Dockerfile }
+    build: { context: .., dockerfile: src/services/telemetry-ingest/Dockerfile }
     image: smartstreet/telemetry-ingest:dev
     container_name: telemetry-ingest
     ports: ["8110:8080"]
     networks: [SmartS]
 
   maintenance-service:
-    build: { context: ../services/maintenance-service, dockerfile: Dockerfile }
+    build: { context: .., dockerfile: src/services/maintenance-service/Dockerfile }
     image: smartstreet/maintenance-service:dev
     container_name: maintenance-service
     ports: ["8120:8080"]
     networks: [SmartS]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql:5432/maintenance
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_APPLICATION_NAME: maintenance-service
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      kafka:
+        condition: service_started
 
   geofence-service:
-    build: { context: ../services/geofence-service, dockerfile: Dockerfile }
+    build: { context: .., dockerfile: src/services/geofence-service/Dockerfile }
     image: smartstreet/geofence-service:dev
     container_name: geofence-service
     ports: ["8130:8080"]
     networks: [SmartS]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql:5432/geofence
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_APPLICATION_NAME: geofence-service
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      kafka:
+        condition: service_started
 
   billing-service:
-    build: { context: ../services/billing-service, dockerfile: Dockerfile }
+    build: { context: .., dockerfile: src/services/billing-service/Dockerfile }
     image: smartstreet/billing-service:dev
     container_name: billing-service
     ports: ["8140:8080"]
     networks: [SmartS]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql:5432/billing
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_APPLICATION_NAME: billing-service
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      kafka:
+        condition: service_started
 
 # ------------------------
 # Networks & Volumes
@@ -236,4 +270,3 @@ networks:
 
 volumes:
   postgres:
-
