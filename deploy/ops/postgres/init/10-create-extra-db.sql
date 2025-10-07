@@ -1,0 +1,2 @@
+CREATE DATABASE vehicle OWNER admin;
+CREATE DATABASE trips OWNER admin;

@@ -157,6 +157,7 @@ services:
         condition: service_healthy
       kafka:
         condition: service_started
+
   user-service:
     build: { context: .., dockerfile: src/services/user-service/Dockerfile }
     image: smartstreet/user-service:dev
