@@ -90,9 +90,6 @@ type Query {
     getBusyDrivers: [Driver!]!
     searchDriversByName(name: String!): [Driver!]!
     getDriverStatistics: DriverStatistics!
-
-    # Legacy queries for backwards compatibility
-    driverByEmail(email: String!): User
 }
 
 # -----------------------
