@@ -1,0 +1,104 @@
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+extend schema
+@link(url: "https://specs.apollo.dev/federation/v2.6", import: ["@key"])
+
+scalar UUID
+scalar Date
+scalar Long
+
+# Enums
+enum Status {
+    ACTIVE
+    INACTIVE
+    MAINTENANCE
+}
+
+enum FuelType {
+    GASOLINE
+    DIESEL
+    ELECTRIC
+    HYBRID
+}
+
+# Entity
+type Vehicle @key(fields: "id") {
+    id: UUID!
+    make: String!
+    model: String!
+    year: Int!
+    licensePlate: String!
+    status: Status!
+    vin: String!
+    color: String!
+    mileage: Long!
+    fuelType: FuelType!
+    seatingCapacity: Int!
+    rentalPricePerDay: Long!
+    gpsEnabled: Boolean!
+    lastMaintenanceDate: Date!
+    maintenanceIntervalDays: Int!
+    nextMaintenanceDate: Date!
+}
+
+# Payloads
+type ApiResponseVehicleList {
+    success: Boolean!
+    message: String
+    data: [Vehicle!]!
+}
+
+type ApiResponseVehicle {
+    success: Boolean!
+    message: String
+    data: Vehicle
+}
+
+type ApiResponseLong {
+    success: Boolean!
+    message: String
+    data: Long
+}
+
+type ApiResponseVoid {
+    success: Boolean!
+    message: String
+}
+
+# Inputs
+input VehicleInput {
+    make: String!
+    model: String!
+    year: Int!
+    licensePlate: String!
+    status: Status!
+    vin: String!
+    color: String!
+    mileage: Long!
+    fuelType: FuelType!
+    seatingCapacity: Int!
+    rentalPricePerDay: Long!
+    gpsEnabled: Boolean!
+    lastMaintenanceDate: Date!
+    maintenanceIntervalDays: Int!
+}
+
+# Base operation roots
+type Query {
+    getAllVehicle: ApiResponseVehicleList!
+    getVehicleById(id: UUID!): ApiResponseVehicle!
+    getVehicleByLicensePlate(licensePlate: String!): ApiResponseVehicleList!
+    getVehicleByVin(vin: String!): ApiResponseVehicle!
+    getVehicleByMakeAndModel(make: String!, model: String!): ApiResponseVehicleList!
+}
+
+type Mutation {
+    registerVehicle(vehicle: VehicleInput!): ApiResponseVehicle!
+    updateVehicle(id: UUID!, vehicle: VehicleInput!): ApiResponseVehicle!
+    updateVehicleStatus(id: UUID!, status: Status!): ApiResponseVoid!
+    changeVehicleMileage(id: UUID!, mileage: Long!): ApiResponseLong!
+    deleteVehicle(id: UUID!): ApiResponseVoid!
+}

@@ -1,0 +1,174 @@
+extend schema
+@link(url: "https://specs.apollo.dev/federation/v2.6", import: ["@key", "@external", "@requires", "@provides"])
+
+scalar UUID
+scalar BigDecimal
+scalar Date
+
+# External entity references - stub types for federation
+type Vehicle @key(fields: "id") {
+    id: UUID!
+}
+
+type Driver @key(fields: "id") {
+    id: UUID!
+}
+
+"Embedded location used in Trip."
+type Location {
+    latitude: Float!
+    longitude: Float!
+    address: String!
+    city: String
+    state: String
+    zipCode: String
+}
+
+"Trip type enum (from TripType.java)."
+enum TripType {
+    RENTAL
+    MAINTENANCE
+    RELOCATION
+    EMERGENCY
+}
+
+"Trip status enum (from TripStatus.java)."
+enum TripStatus {
+    SCHEDULED
+    IN_PROGRESS
+    COMPLETED
+    CANCELLED
+}
+
+"Trip entity representing a trip taken by a vehicle."
+type Trip {
+    id: UUID!
+    vehicleId: UUID!
+    driverId: UUID
+    driver: Driver
+    vehicle: Vehicle
+    type: TripType!
+    status: TripStatus!
+
+    startLocation: Location
+    endLocation: Location
+    waypoints: [Location!]!
+
+    startTime: Date
+    endTime: Date
+    scheduledStartTime: Date!
+    scheduledEndTime: Date
+
+    distance: BigDecimal
+    duration: Int
+    estimatedDuration: Int
+
+    baseRate: BigDecimal
+    totalCost: BigDecimal
+    fuelCost: BigDecimal
+    additionalFees: BigDecimal
+
+    notes: String
+    customerNotes: String
+    internalNotes: String
+
+    createdAt: Date!
+    updatedAt: Date!
+}
+
+"Input for embedded Location."
+input LocationInput {
+    latitude: Float!
+    longitude: Float!
+    address: String!
+    city: String
+    state: String
+    zipCode: String
+}
+
+"Fields required to create a Trip."
+input CreateTripInput {
+    vehicleId: UUID!
+    driverId: UUID
+    type: TripType!
+    status: TripStatus = SCHEDULED
+
+    startLocation: LocationInput
+    endLocation: LocationInput
+    waypoints: [LocationInput!]
+
+    startTime: Date
+    endTime: Date
+    scheduledStartTime: Date!
+    scheduledEndTime: Date
+
+    distance: BigDecimal
+    duration: Int
+    estimatedDuration: Int
+
+    baseRate: BigDecimal
+    totalCost: BigDecimal
+    fuelCost: BigDecimal
+    additionalFees: BigDecimal
+
+    notes: String
+    customerNotes: String
+    internalNotes: String
+}
+
+"PATCH-style update: only non-null fields are applied."
+input UpdateTripInput {
+    id: UUID!
+
+    vehicleId: UUID
+    driverId: UUID
+    type: TripType
+    status: TripStatus
+
+    startLocation: LocationInput
+    endLocation: LocationInput
+    waypoints: [LocationInput!]
+
+    startTime: Date
+    endTime: Date
+    scheduledStartTime: Date
+    scheduledEndTime: Date
+
+    distance: BigDecimal
+    duration: Int
+    estimatedDuration: Int
+
+    baseRate: BigDecimal
+    totalCost: BigDecimal
+    fuelCost: BigDecimal
+    additionalFees: BigDecimal
+
+    notes: String
+    customerNotes: String
+    internalNotes: String
+}
+
+type Query {
+    "Get a single trip by its ID."
+    getTripById(id: UUID!): Trip
+
+    "List all trips."
+    getAllTrips: [Trip!]!
+
+}
+
+type Mutation {
+    "Create a new Trip."
+    createTrip(input: CreateTripInput!): Trip!
+
+    "Update an existing Trip by id. Applies only non-null fields from input."
+    updateTrip(input: UpdateTripInput!): Trip!
+
+    "Delete a Trip by id. Returns true if the trip was deleted."
+    deleteTrip(id: UUID!): Boolean!
+}
+
+schema {
+    query: Query
+    mutation: Mutation
+}

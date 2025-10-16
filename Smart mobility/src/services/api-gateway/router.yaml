@@ -1,0 +1,57 @@
+homepage:
+  enabled: true
+
+
+cors:
+  allow_any_origin: true
+
+authentication:
+  router:
+    jwt:
+      jwks:
+        - url: http://keycloak:8080/realms/Smart-Street/protocol/openid-connect/certs
+
+      header_name: Authorization
+      header_value_prefix: Bearer
+      on_error: Continue
+
+
+headers:
+  all:
+    request:
+      - propagate:
+          named: Authorization
+      - insert:
+          name: x-user-id
+          from_context: apollo::authentication::jwt_claims.sub
+      - insert:
+          name: x-user-roles
+          from_context: apollo::authentication::jwt_claims.realm_access.roles
+      - insert:
+          name: x-router-secret
+          value: "03ae177f69e12f507492b6bbe87b083a4c98eeba1bc7f3ba10039891ab1c7472"
+
+
+include_subgraph_errors:
+  all: true
+
+health_check:
+  enabled: true
+  listen: 127.0.0.1:8088
+  path: /health
+
+supergraph:
+  listen: 0.0.0.0:4000
+  path: /graphql
+  introspection: true
+
+telemetry:
+  exporters:
+    metrics:
+      prometheus:
+        enabled: true
+        listen: 0.0.0.0:9090
+        path: /metrics
+    tracing:
+      otlp:
+        enabled: false

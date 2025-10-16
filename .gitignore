@@ -1,5 +1,4 @@
-# Exclude embedded git repositories
-Smart mobility/
+# Exclude embedded git repositories  
 SmartSFront/smart-street-app/.git/
 
 # Node modules
@@ -30,3 +29,24 @@ Thumbs.db
 # Logs
 *.log
 logs/
+
+# Java/Maven specific
+target/
+*.jar
+*.war
+*.class
+*.iml
+.classpath
+.project
+.settings/
+
+# Spring Boot specific
+spring.log
+application-*.properties
+!application.properties
+!application-*.yml
+!application.yml
+
+# Database
+*.db
+*.sqlite

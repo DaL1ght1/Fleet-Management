@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: user-service
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://postgres:5432/SmartS
+    username: admin
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: "http://keycloak:8080/realms/Smart-Street/protocol/openid-connect/certs"
+  kafka:
+    bootstrap-servers: kafka:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+server:
+  port: 8080
+
+dgs:
+  graphql:
+    virtualthreads:
+      enabled: true
+    graphiql:
+      enabled: true
+      path: /graphiql

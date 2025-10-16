@@ -1,0 +1,142 @@
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+extend schema
+@link(url: "https://specs.apollo.dev/federation/v2.6", import: ["@key"])
+
+scalar UUID
+scalar Date
+
+# -----------------------
+# Customer entity (renamed from User)
+# -----------------------
+type Customer @key(fields: "id") {
+    id: UUID!
+    firstName: String
+    lastName: String
+    email: String!
+    phoneNumber: String
+    createdAt: String!
+    updatedAt: String!
+}
+
+# User entity for backwards compatibility (Federation)
+type User @key(fields: "id") {
+    id: UUID!
+    firstName: String
+    lastName: String
+    email: String!
+    phoneNumber: String
+    createdAt: String!
+    updatedAt: String!
+}
+
+# -----------------------
+# Driver entity (extends User)
+# -----------------------
+enum DriverStatus {
+    ACTIVE
+    INACTIVE
+    SUSPENDED
+    ON_LEAVE
+}
+
+type Driver @key(fields: "id") {
+    id: UUID!
+    firstName: String!
+    lastName: String!
+    email: String!
+    phone: String!
+    licenseNumber: String
+    licenseExpiryDate: Date
+    status: DriverStatus!
+    dateOfBirth: Date
+    hireDate: Date
+    emergencyContactName: String
+    emergencyContactPhone: String
+    currentTripId: UUID
+    rating: Float
+    createdAt: String!
+    updatedAt: String!
+}
+
+type DriverStatistics {
+    totalDrivers: Int!
+    activeDrivers: Int!
+    inactiveDrivers: Int!
+    availableDrivers: Int!
+    busyDrivers: Int!
+}
+
+# -----------------------
+# Queries
+# -----------------------
+type Query {
+    # Customer/User queries
+    users: [User!]!
+    customers: [Customer!]!
+    getUserById(id: UUID!): User
+    driverByEmail(email: String!): User
+    getCustomerById(id: UUID!): Customer
+
+    # Driver queries
+    drivers: [Driver!]!
+    getDriverById(id: UUID!): Driver
+    getDriverByEmail(email: String!): Driver
+    getDriversByStatus(status: String!): [Driver!]!
+    getAvailableDrivers: [Driver!]!
+    getBusyDrivers: [Driver!]!
+    searchDriversByName(name: String!): [Driver!]!
+    getDriverStatistics: DriverStatistics!
+}
+
+# -----------------------
+# Mutations
+# -----------------------
+type Mutation {
+    # Customer/User mutations
+    CreateUser(userDto: UserDto!): User!
+    createCustomer(input: UserDto!): Customer!
+    updateUser(id: UUID!, input: UserDto!): User!
+    updateCustomer(id: UUID!, input: UserDto!): Customer!
+    deleteUser(id: UUID!): Boolean!
+    deleteCustomer(id: UUID!): Boolean!
+
+    # Driver mutations
+    createDriver(input: DriverDto!): Driver!
+    updateDriver(id: UUID!, input: DriverDto!): Driver!
+    deleteDriver(id: UUID!): Boolean!
+    assignDriverToTrip(driverId: UUID!, tripId: UUID!): Driver!
+    unassignDriverFromTrip(driverId: UUID!): Driver!
+    updateDriverRating(driverId: UUID!, rating: Float!): Driver!
+}
+
+# -----------------------
+# Inputs
+# -----------------------
+input UserDto {
+    firstName: String
+    lastName: String
+    email: String!
+    phoneNumber: String
+}
+
+input DriverDto {
+    firstName: String!
+    lastName: String!
+    email: String!
+    phone: String
+    licenseNumber: String
+    licenseExpiryDate: Date
+    status: DriverStatus
+    dateOfBirth: Date
+    hireDate: Date
+    emergencyContactName: String
+    emergencyContactPhone: String
+    currentTripId: UUID
+    rating: Float
+}
+
+

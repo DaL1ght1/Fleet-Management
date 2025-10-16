@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: vehicles-service
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://postgresql:5432/vehicle
+    username: admin
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  kafka:
+    bootstrap-servers: kafka:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+server:
+  port: 8080
+
+dgs:
+  graphql:
+    virtualthreads:
+      enabled: true
+    graphiql:
+      enabled: true
+      path: /graphiql
+
+router:
+  secret: "03ae177f69e12f507492b6bbe87b083a4c98eeba1bc7f3ba10039891ab1c7472"
