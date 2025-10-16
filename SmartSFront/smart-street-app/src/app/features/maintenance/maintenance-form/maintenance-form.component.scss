@@ -1,0 +1,151 @@
+:host {
+  display: block;
+}
+
+.maintenance-form-container {
+  padding: 24px;
+}
+
+.header-section {
+  margin-bottom: 32px;
+
+  button {
+    border-radius: 8px !important;
+    margin-bottom: 24px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+  }
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+
+  mat-spinner {
+    margin-bottom: 16px;
+  }
+
+  p {
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+}
+
+.maintenance-form {
+  .form-section {
+    margin-bottom: 32px;
+
+    mat-card-header {
+      margin-bottom: 24px;
+
+      mat-card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--color-text-primary);
+      }
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      align-items: start;
+
+      .full-width {
+        grid-column: 1 / -1;
+      }
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--color-border);
+
+    button {
+      min-width: 120px;
+      border-radius: 8px !important;
+      padding: 12px 24px !important;
+      font-weight: 600 !important;
+    }
+  }
+}
+
+// Form field appearance
+::ng-deep {
+  .mat-mdc-form-field {
+    width: 100%;
+    
+    &.mat-form-field-appearance-outline {
+      .mat-mdc-form-field-outline {
+        border-radius: 8px;
+      }
+    }
+  }
+
+  .mat-mdc-text-field-wrapper {
+    border-radius: 8px;
+  }
+
+  .mat-mdc-select-panel {
+    border-radius: 8px;
+    max-height: 300px;
+  }
+
+  .mat-datepicker-popup {
+    border-radius: 12px;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .maintenance-form-container {
+    padding: 16px;
+  }
+
+  .maintenance-form {
+    .form-section {
+      margin-bottom: 24px;
+
+      .form-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+    }
+
+    .form-actions {
+      flex-direction: column-reverse;
+      gap: 12px;
+      
+      button {
+        width: 100%;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .header-section {
+    h1 {
+      font-size: 1.5rem;
+    }
+  }
+
+  .maintenance-form {
+    .form-grid {
+      gap: 12px;
+    }
+  }
+}

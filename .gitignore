@@ -1,0 +1,32 @@
+# Exclude embedded git repositories
+Smart mobility/
+SmartSFront/smart-street-app/.git/
+
+# Node modules
+node_modules/
+*/node_modules/
+
+# Build outputs
+dist/
+*/dist/
+build/
+*/build/
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/

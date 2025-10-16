@@ -1,0 +1,351 @@
+<div class="trip-create-view">
+  <header class="hero-header">
+    <div class="hero-content">
+      <div class="hero-icon">
+        <mat-icon>add_road</mat-icon>
+      </div>
+      <div class="hero-text">
+        <h1>Create New Trip</h1>
+        <p>Plan your route, assign resources, and schedule your journey</p>
+      </div>
+    </div>
+    <button 
+      mat-stroked-button 
+      type="button"
+      (click)="onCancel()"
+      class="back-btn"
+      [style.pointer-events]="'auto'"
+      [style.z-index]="'1000'">
+      <mat-icon>arrow_back</mat-icon>
+      Back to trips
+    </button>
+  </header>
+
+  <div class="form-container">
+    <form [formGroup]="tripForm" (ngSubmit)="onSubmit()" class="trip-form">
+      
+      <mat-card class="section-card resources">
+        <div class="card-header">
+          <div class="header-icon">
+            <mat-icon>assignment_ind</mat-icon>
+          </div>
+          <div class="header-text">
+            <h3>Resources</h3>
+            <p>Assign vehicle and driver</p>
+          </div>
+        </div>
+        <mat-card-content>
+          <div class="grid-2">
+            <div class="selection-field" (click)="openVehicleDialog()">
+              <div class="field-label">
+                <mat-icon>directions_car</mat-icon>
+                <span>Vehicle</span>
+              </div>
+              <div class="field-value" [class.empty]="!getSelectedVehicle()">
+                {{ getSelectedVehicle()?.make }} {{ getSelectedVehicle()?.model || 'Select vehicle' }}
+              </div>
+              <mat-icon class="field-arrow">arrow_drop_down</mat-icon>
+              <span class="field-error" *ngIf="isFieldRequired('vehicleId')">Required</span>
+            </div>
+
+            <div class="selection-field" (click)="openDriverDialog()">
+              <div class="field-label">
+                <mat-icon>person</mat-icon>
+                <span>Driver</span>
+              </div>
+              <div class="field-value" [class.empty]="!getSelectedDriver()">
+                {{ getSelectedDriver()?.firstName }} {{ getSelectedDriver()?.lastName || 'Select driver' }}
+              </div>
+              <mat-icon class="field-arrow">arrow_drop_down</mat-icon>
+              <span class="field-error" *ngIf="isFieldRequired('driverId')">Required</span>
+            </div>
+          </div>
+          
+          <div class="grid-2">
+            <div class="selection-field" (click)="openTripTypeDialog()">
+              <div class="field-label">
+                <mat-icon>category</mat-icon>
+                <span>Trip type</span>
+              </div>
+              <div class="field-value" [class.empty]="!tripForm.get('type')?.value">
+                {{ formatTripType(tripForm.get('type')?.value) || 'Select trip type' }}
+              </div>
+              <mat-icon class="field-arrow">arrow_drop_down</mat-icon>
+            </div>
+            
+            <div class="selection-field" (click)="openStatusDialog()">
+              <div class="field-label">
+                <mat-icon>info</mat-icon>
+                <span>Status</span>
+              </div>
+              <div class="field-value" [class.empty]="!tripForm.get('status')?.value">
+                {{ formatTripStatus(tripForm.get('status')?.value) || 'Select status' }}
+              </div>
+              <mat-icon class="field-arrow">arrow_drop_down</mat-icon>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="section-card schedule">
+        <div class="card-header">
+          <div class="header-icon">
+            <mat-icon>schedule</mat-icon>
+          </div>
+          <div class="header-text">
+            <h3>Schedule</h3>
+            <p>Set departure and arrival times</p>
+          </div>
+        </div>
+        <mat-card-content>
+          <div class="grid-2">
+            <div class="datetime-field">
+              <div class="field-label">
+                <mat-icon>event</mat-icon>
+                <span>Departure Date & Time</span>
+              </div>
+              <div class="datetime-input-wrapper">
+                <input 
+                  type="datetime-local" 
+                  formControlName="scheduledStartTime" 
+                  class="custom-datetime-input"
+                  (change)="onStartTimeChange()"
+                  placeholder="Select departure time">
+                <div class="datetime-icon">
+                  <mat-icon>schedule</mat-icon>
+                </div>
+              </div>
+              <div class="field-hint">Select your departure date and time</div>
+            </div>
+
+            <div class="datetime-field computed-field">
+              <div class="field-label">
+                <mat-icon>event_available</mat-icon>
+                <span>Estimated Arrival</span>
+              </div>
+              <div class="datetime-display-wrapper">
+                <div class="computed-datetime">
+                  {{ getFormattedEndTime() || 'Will calculate automatically' }}
+                </div>
+                <div class="duration-badge" *ngIf="tripForm.get('estimatedDuration')?.value">
+                  +{{ tripForm.get('estimatedDuration')?.value }}min
+                </div>
+              </div>
+              <div class="field-hint">Auto-computed from route duration</div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="section-card route">
+        <div class="card-header">
+          <div class="header-icon">
+            <mat-icon>map</mat-icon>
+          </div>
+          <div class="header-text">
+            <h3>Route Planning</h3>
+            <p>Select pickup and dropoff locations</p>
+          </div>
+          <button mat-flat-button color="accent" type="button" (click)="useCurrentLocation()" class="location-btn">
+            <mat-icon>my_location</mat-icon>
+            Use my location
+          </button>
+        </div>
+        <mat-card-content>
+          <div class="map-wrapper">
+            <app-interactive-map
+              (locationSelected)="onMapLocationSelected($event)"
+              (locationRemoved)="onMapLocationRemoved($event)"
+            ></app-interactive-map>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <div class="route-summary" *ngIf="currentRoute() as r">
+        <div class="summary-stat success">
+          <mat-icon>straighten</mat-icon>
+          <div>
+            <div class="stat-label">Distance</div>
+            <div class="stat-value">{{ r.distance }}</div>
+          </div>
+        </div>
+        <div class="summary-stat primary">
+          <mat-icon>schedule</mat-icon>
+          <div>
+            <div class="stat-label">Duration</div>
+            <div class="stat-value">{{ r.duration }}</div>
+          </div>
+        </div>
+        <div class="summary-spacer"></div>
+        <div class="summary-actions">
+          <button mat-flat-button color="primary" type="button" (click)="calculateRouteIfPossible()">
+            <mat-icon>refresh</mat-icon>
+            Recalculate
+          </button>
+          <button mat-stroked-button type="button" (click)="optimizeWaypoints()">
+            <mat-icon>route</mat-icon>
+            Optimize
+          </button>
+        </div>
+      </div>
+
+        <div class="grid-2">
+          <mat-card appearance="outlined">
+            <mat-card-header>
+              <mat-card-title>Pickup</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="grid-2" formGroupName="startLocation">
+                <mat-form-field appearance="outline">
+                  <mat-label>Address</mat-label>
+                  <input matInput formControlName="address" (blur)="onAddressBlur('start')" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>City</mat-label>
+                  <input matInput formControlName="city" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Latitude</mat-label>
+                  <input matInput type="number" formControlName="latitude" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Longitude</mat-label>
+                  <input matInput type="number" formControlName="longitude" />
+                </mat-form-field>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card appearance="outlined">
+            <mat-card-header>
+              <mat-card-title>Dropoff</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="grid-2" formGroupName="endLocation">
+                <mat-form-field appearance="outline">
+                  <mat-label>Address</mat-label>
+                  <input matInput formControlName="address" (blur)="onAddressBlur('end')" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>City</mat-label>
+                  <input matInput formControlName="city" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Latitude</mat-label>
+                  <input matInput type="number" formControlName="latitude" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Longitude</mat-label>
+                  <input matInput type="number" formControlName="longitude" />
+                </mat-form-field>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <mat-card appearance="outlined">
+          <mat-card-header>
+            <mat-card-title>Waypoints</mat-card-title>
+            <mat-card-subtitle>Optional intermediate stops</mat-card-subtitle>
+            <div class="header-actions">
+              <button mat-stroked-button type="button" (click)="addWaypoint()">
+                <mat-icon>add</mat-icon>
+                Add waypoint
+              </button>
+            </div>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="chips" *ngIf="waypointsArray.length > 0; else noWp">
+              <mat-chip-set>
+                <mat-chip *ngFor="let w of waypointsArray.controls; let i = index" (removed)="removeWaypoint(i)" removable>
+                  WP {{ i + 1 }}
+                  <button matChipRemove aria-label="Remove">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </mat-chip>
+              </mat-chip-set>
+            </div>
+            <ng-template #noWp>
+              <p class="muted">No waypoints added.</p>
+            </ng-template>
+          </mat-card-content>
+        </mat-card>
+
+      <mat-card class="section-card pricing">
+        <div class="card-header">
+          <div class="header-icon">
+            <mat-icon>payments</mat-icon>
+          </div>
+          <div class="header-text">
+            <h3>Pricing</h3>
+            <p>Set costs and fees</p>
+          </div>
+        </div>
+        <mat-card-content>
+          <div class="grid-2">
+            <mat-form-field appearance="outline" class="modern-field">
+              <mat-label>Base rate</mat-label>
+              <mat-icon matPrefix>attach_money</mat-icon>
+              <input matInput type="number" formControlName="baseRate" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="modern-field">
+              <mat-label>Additional fees</mat-label>
+              <mat-icon matPrefix>receipt</mat-icon>
+              <input matInput type="number" formControlName="additionalFees" />
+            </mat-form-field>
+          </div>
+          <div class="pricing-summary">
+            <div class="price-item">
+              <mat-icon>local_gas_station</mat-icon>
+              <span class="label">Fuel cost</span>
+              <span class="value">{{ tripForm.get('fuelCost')?.value || 0 | number:'1.0-2' }} TND</span>
+            </div>
+            <div class="price-item total">
+              <mat-icon>calculate</mat-icon>
+              <span class="label">Total cost</span>
+              <span class="value">{{ tripForm.get('totalCost')?.value || 0 | number:'1.0-2' }} TND</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+        <div class="grid-3">
+          <mat-form-field appearance="outline" class="col-span-3">
+            <mat-label>Notes</mat-label>
+            <textarea matInput formControlName="notes" rows="3"></textarea>
+          </mat-form-field>
+        </div>
+
+      <div class="form-actions">
+        <button 
+          mat-stroked-button 
+          type="button" 
+          (click)="onCancel()" 
+          class="cancel-btn"
+          [style.pointer-events]="'auto'"
+          [style.z-index]="'1000'">
+          <mat-icon>close</mat-icon>
+          Cancel
+        </button>
+        <button 
+          mat-flat-button 
+          color="primary" 
+          type="submit" 
+          (click)="onSubmit()" 
+          [disabled]="tripForm.invalid || loading()" 
+          class="submit-btn"
+          [style.pointer-events]="'auto'"
+          [style.z-index]="'1000'">
+          <mat-icon>check_circle</mat-icon>
+          Create trip
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

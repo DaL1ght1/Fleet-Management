@@ -1,0 +1,233 @@
+<!-- Modern Material Design Layout -->
+@if (isLoading()) {
+  <div class="loading-container">
+    <div class="loading-card">
+      <mat-spinner diameter="60" color="primary"></mat-spinner>
+      <p class="loading-text">{{ 'app.loading' | translate }}</p>
+      <p class="loading-subtext">Initializing Smart Street App...</p>
+    </div>
+  </div>
+} @else {
+  @if (!isAuthenticated()) {
+    <div class="login-container">
+      <mat-card class="login-card">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>local_shipping</mat-icon>
+          <mat-card-title>Smart Street</mat-card-title>
+          <mat-card-subtitle>Fleet Management System</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="auth-message">
+            <mat-spinner diameter="32"></mat-spinner>
+            <p>Redirecting to secure login...</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  } @else {
+    <!-- Modern Sidenav Layout -->
+    <mat-sidenav-container class="app-container">
+      <!-- Navigation Sidebar -->
+      <mat-sidenav #sidenav class="app-sidenav" mode="side" opened="true" fixedInViewport="true" autoFocus="false">
+        <!-- Sidenav Header -->
+        <div class="sidenav-header">
+          <div class="app-logo">
+            <mat-icon class="logo-icon">local_shipping</mat-icon>
+            <div class="logo-text">
+              <h2>Smart Street</h2>
+              <span>Fleet Management</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="header-divider"></div>
+        
+        <!-- Navigation Menu -->
+        <mat-nav-list class="nav-list">
+          @for (item of visibleNavItems(); track item.key; let i = $index) {
+            <mat-list-item 
+              class="nav-item"
+              [routerLink]="item.route" 
+              routerLinkActive="active-nav"
+              matRipple
+              [matTooltip]="'navigation.' + item.key | translate"
+              matTooltipPosition="right"
+              [style.animation-delay]="(i * 0.1) + 's'">
+              <mat-icon matListItemIcon class="nav-icon">{{ item.icon }}</mat-icon>
+              <span matListItemTitle class="nav-text">{{ 'navigation.' + item.key | translate }}</span>
+            </mat-list-item>
+          }
+        </mat-nav-list>
+        
+        <div class="sidenav-spacer"></div>
+        
+        <!-- User Profile Section -->
+        <div class="user-section">
+          <mat-divider></mat-divider>
+          <div class="user-profile">
+            <div class="user-avatar">
+              <mat-icon>account_circle</mat-icon>
+            </div>
+            <div class="user-details">
+              <p class="user-name">{{ userDisplayName() }}</p>
+              <p class="user-email">{{ userProfile()?.email }}</p>
+            </div>
+          </div>
+          
+          <div class="user-actions">
+            <button 
+              mat-icon-button 
+              class="user-action-btn"
+              (click)="accountManagement()"
+              matTooltip="Account Settings"
+              matTooltipPosition="above">
+              <mat-icon>settings</mat-icon>
+            </button>
+            <button 
+              mat-icon-button 
+              class="user-action-btn logout-btn"
+              (click)="logout()"
+              matTooltip="Logout"
+              matTooltipPosition="above">
+              <mat-icon>logout</mat-icon>
+            </button>
+          </div>
+        </div>
+      </mat-sidenav>
+      
+      <!-- Main Content Area -->
+      <mat-sidenav-content class="main-content">
+        <!-- Top Toolbar -->
+        <mat-toolbar class="app-toolbar" color="primary">
+          <button 
+            mat-icon-button 
+            class="menu-toggle"
+            (click)="sidenav.toggle()"
+            matTooltip="Toggle Navigation">
+            <mat-icon>menu</mat-icon>
+          </button>
+          
+          <span class="toolbar-title">{{ title }}</span>
+          
+          <!-- Spacer to push actions to the right -->
+          <span class="toolbar-spacer"></span>
+          
+          <!-- Toolbar Actions - Right aligned -->
+          <div class="toolbar-actions">
+            <button 
+              mat-icon-button 
+              class="toolbar-action"
+              matTooltip="Toggle theme"
+              (click)="toggleTheme()">
+              <mat-icon>dark_mode</mat-icon>
+            </button>
+
+            <button 
+              mat-icon-button 
+              class="toolbar-action"
+              matTooltip="Notifications"
+              matBadge="3"
+              matBadgeColor="warn"
+              [matMenuTriggerFor]="notificationMenu">
+              <mat-icon>notifications</mat-icon>
+            </button>
+            
+            <button 
+              mat-icon-button 
+              class="toolbar-action"
+              matTooltip="Language"
+              [matMenuTriggerFor]="languageMenu">
+              <mat-icon>language</mat-icon>
+            </button>
+          </div>
+          
+          <!-- Enhanced Language Menu -->
+          <mat-menu #languageMenu="matMenu" class="language-menu">
+            <div class="menu-header">
+              <mat-icon>language</mat-icon>
+              <span>Choose Language</span>
+            </div>
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="changeLanguage('en')" class="language-option">
+              <div class="flag-icon">🇺🇸</div>
+              <div class="language-info">
+                <span class="language-name">English</span>
+                <small class="language-code">EN</small>
+              </div>
+              <mat-icon class="check-icon" *ngIf="translateService.currentLang === 'en'">check</mat-icon>
+            </button>
+            <button mat-menu-item (click)="changeLanguage('es')" class="language-option">
+              <div class="flag-icon">🇪🇸</div>
+              <div class="language-info">
+                <span class="language-name">Español</span>
+                <small class="language-code">ES</small>
+              </div>
+              <mat-icon class="check-icon" *ngIf="translateService.currentLang === 'es'">check</mat-icon>
+            </button>
+          </mat-menu>
+          
+          <!-- Enhanced Notification Menu -->
+          <mat-menu #notificationMenu="matMenu" class="notification-menu">
+            <div class="menu-header">
+              <mat-icon>notifications</mat-icon>
+              <span>Notifications</span>
+              <div class="notification-count">3</div>
+            </div>
+            <mat-divider></mat-divider>
+            
+            <div class="notification-item">
+              <div class="notification-icon trip-icon">
+                <mat-icon>map</mat-icon>
+              </div>
+              <div class="notification-content">
+                <div class="notification-title">Trip Completed</div>
+                <div class="notification-message">Vehicle ABC-123 completed trip to downtown</div>
+                <div class="notification-time">5 minutes ago</div>
+              </div>
+            </div>
+            
+            <div class="notification-item">
+              <div class="notification-icon maintenance-icon">
+                <mat-icon>build</mat-icon>
+              </div>
+              <div class="notification-content">
+                <div class="notification-title">Maintenance Required</div>
+                <div class="notification-message">Vehicle XYZ-789 needs scheduled maintenance</div>
+                <div class="notification-time">1 hour ago</div>
+              </div>
+            </div>
+            
+            <div class="notification-item">
+              <div class="notification-icon alert-icon">
+                <mat-icon>warning</mat-icon>
+              </div>
+              <div class="notification-content">
+                <div class="notification-title">Low Fuel Alert</div>
+                <div class="notification-message">Vehicle DEF-456 fuel level below 20%</div>
+                <div class="notification-time">2 hours ago</div>
+              </div>
+            </div>
+            
+            <mat-divider></mat-divider>
+            
+            <div class="notification-actions">
+              <button mat-button class="view-all-btn">
+                <mat-icon>visibility</mat-icon>
+                View All Notifications
+              </button>
+              <button mat-button class="mark-read-btn">
+                <mat-icon>done_all</mat-icon>
+                Mark All as Read
+              </button>
+            </div>
+          </mat-menu>
+        </mat-toolbar>
+        
+        <!-- Page Content -->
+        <div class="page-content">
+          <router-outlet></router-outlet>
+        </div>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  }
+}

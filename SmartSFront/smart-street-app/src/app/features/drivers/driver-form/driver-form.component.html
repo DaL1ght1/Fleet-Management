@@ -1,0 +1,187 @@
+<div class="driver-form-container">
+  <header class="hero-header">
+    <div class="hero-content">
+      <div class="hero-icon">
+        <mat-icon>{{ isEditMode ? 'edit' : 'person_add' }}</mat-icon>
+      </div>
+      <div class="hero-text">
+        <h1>{{ isEditMode ? 'Edit Driver' : 'Add New Driver' }}</h1>
+        <p>{{ isEditMode ? 'Update driver information' : 'Enter driver details to add to your team' }}</p>
+      </div>
+    </div>
+    <button 
+      mat-stroked-button 
+      (click)="onCancel()"
+      class="back-btn">
+      <mat-icon>arrow_back</mat-icon>
+      Back to drivers
+    </button>
+  </header>
+
+  <form [formGroup]="driverForm" (ngSubmit)="onSubmit()" class="form-container">
+    <mat-card class="section-card personal-info">
+      <div class="card-header">
+        <div class="header-icon">
+          <mat-icon>person</mat-icon>
+        </div>
+        <div class="header-text">
+          <h3>Personal Information</h3>
+          <p>Basic driver details</p>
+        </div>
+      </div>
+      <mat-card-content>
+        <div class="form-grid">
+          <div class="grid-2">
+            <mat-form-field appearance="outline" class="modern-field">
+              <mat-label>First name</mat-label>
+              <mat-icon matPrefix>person</mat-icon>
+              <input matInput formControlName="firstName" required />
+              <mat-error *ngIf="driverForm.get('firstName')?.hasError('required')">Required</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="modern-field">
+              <mat-label>Last name</mat-label>
+              <mat-icon matPrefix>person_outline</mat-icon>
+              <input matInput formControlName="lastName" required />
+              <mat-error *ngIf="driverForm.get('lastName')?.hasError('required')">Required</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="grid-2">
+            <mat-form-field appearance="outline" class="modern-field">
+              <mat-label>Email</mat-label>
+              <mat-icon matPrefix>email</mat-icon>
+              <input matInput formControlName="email" type="email" required />
+              <mat-error *ngIf="driverForm.get('email')?.hasError('required')">Required</mat-error>
+              <mat-error *ngIf="driverForm.get('email')?.hasError('email')">Invalid email</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="modern-field">
+              <mat-label>Phone</mat-label>
+              <mat-icon matPrefix>phone</mat-icon>
+              <input matInput formControlName="phone" />
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="section-card license-info">
+      <div class="card-header">
+        <div class="header-icon">
+          <mat-icon>card_membership</mat-icon>
+        </div>
+        <div class="header-text">
+          <h3>License Information</h3>
+          <p>Driving license details</p>
+        </div>
+      </div>
+      <mat-card-content>
+        <div class="form-grid">
+
+          <div class="grid-3">
+            <mat-form-field appearance="outline" class="modern-field">
+              <mat-label>License number</mat-label>
+              <mat-icon matPrefix>badge</mat-icon>
+              <input matInput formControlName="licenseNumber" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="modern-field">
+              <mat-label>License expiry</mat-label>
+              <mat-icon matPrefix>event</mat-icon>
+              <input matInput [matDatepicker]="dpExpiry" formControlName="licenseExpiryDate" />
+              <mat-datepicker-toggle matSuffix [for]="dpExpiry"></mat-datepicker-toggle>
+              <mat-datepicker #dpExpiry></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="modern-field">
+              <mat-label>Status</mat-label>
+              <mat-icon matPrefix>info</mat-icon>
+              <mat-select formControlName="status">
+                <mat-option value="ACTIVE">Active</mat-option>
+                <mat-option value="INACTIVE">Inactive</mat-option>
+                <mat-option value="SUSPENDED">Suspended</mat-option>
+                <mat-option value="ON_LEAVE">On Leave</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="section-card employment-info">
+      <div class="card-header">
+        <div class="header-icon">
+          <mat-icon>work</mat-icon>
+        </div>
+        <div class="header-text">
+          <h3>Employment Information</h3>
+          <p>Work-related details</p>
+        </div>
+      </div>
+      <mat-card-content>
+        <div class="form-grid">
+
+          <div class="grid-2">
+            <mat-form-field appearance="outline" class="modern-field">
+              <mat-label>Date of birth</mat-label>
+              <mat-icon matPrefix>cake</mat-icon>
+              <input matInput [matDatepicker]="dpBirth" formControlName="dateOfBirth" />
+              <mat-datepicker-toggle matSuffix [for]="dpBirth"></mat-datepicker-toggle>
+              <mat-datepicker #dpBirth></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="modern-field">
+              <mat-label>Hire date</mat-label>
+              <mat-icon matPrefix>today</mat-icon>
+              <input matInput [matDatepicker]="dpHire" formControlName="hireDate" />
+              <mat-datepicker-toggle matSuffix [for]="dpHire"></mat-datepicker-toggle>
+              <mat-datepicker #dpHire></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="section-card emergency-info">
+      <div class="card-header">
+        <div class="header-icon">
+          <mat-icon>contact_emergency</mat-icon>
+        </div>
+        <div class="header-text">
+          <h3>Emergency Contact</h3>
+          <p>Emergency contact information</p>
+        </div>
+      </div>
+      <mat-card-content>
+        <div class="form-grid">
+
+          <div class="grid-2">
+            <mat-form-field appearance="outline" class="modern-field">
+              <mat-label>Emergency contact name</mat-label>
+              <mat-icon matPrefix>person</mat-icon>
+              <input matInput formControlName="emergencyContactName" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="modern-field">
+              <mat-label>Emergency contact phone</mat-label>
+              <mat-icon matPrefix>phone</mat-icon>
+              <input matInput formControlName="emergencyContactPhone" />
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="form-actions">
+      <button mat-stroked-button type="button" (click)="onCancel()" class="cancel-btn">
+        <mat-icon>close</mat-icon>
+        Cancel
+      </button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="driverForm.invalid || isLoading" class="submit-btn">
+        <mat-icon>{{ isLoading ? 'hourglass_empty' : 'check_circle' }}</mat-icon>
+        {{ isLoading ? 'Saving...' : (isEditMode ? 'Update Driver' : 'Add Driver') }}
+      </button>
+    </div>
+  </form>
+</div>

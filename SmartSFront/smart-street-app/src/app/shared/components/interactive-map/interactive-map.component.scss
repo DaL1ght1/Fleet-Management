@@ -1,0 +1,381 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: var(--color-background-secondary);
+}
+
+.interactive-map-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  height: 100%;
+  padding: var(--space-4);
+}
+
+.map-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xs);
+  z-index: 10;
+  gap: var(--space-3);
+}
+
+.selection-mode {
+  flex: 1;
+}
+
+.selection-mode mat-chip-set {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.selection-mode mat-chip-option {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.selection-mode .start-chip {
+  border: 2px solid #22c55e;
+  transition: all 0.3s ease;
+}
+
+.selection-mode .start-chip[aria-pressed="true"] {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+  transform: scale(1.05);
+}
+
+.selection-mode .start-chip mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.selection-mode .end-chip {
+  border: 2px solid #ef4444;
+  transition: all 0.3s ease;
+}
+
+.selection-mode .end-chip[aria-pressed="true"] {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+  transform: scale(1.05);
+}
+
+.selection-mode .end-chip mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.selection-mode .waypoint-chip {
+  border: 2px solid #f59e0b;
+  transition: all 0.3s ease;
+}
+
+.selection-mode .waypoint-chip[aria-pressed="true"] {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+  transform: scale(1.05);
+}
+
+.selection-mode .waypoint-chip mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.map-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.map-actions button {
+  background: var(--color-background-secondary);
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+}
+
+.map-actions button:hover:not([disabled]) {
+  background: var(--color-primary-100);
+  color: var(--color-primary-700);
+  transform: translateY(-2px);
+}
+
+.map-wrapper {
+  position: relative;
+  flex: 1;
+  min-height: 500px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  border: 3px solid var(--color-border);
+  margin-top: var(--space-4);
+}
+
+.map-container {
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+  position: relative;
+  background: linear-gradient(135deg, #e0f2fe, #f0f9ff);
+}
+
+.map-loading,
+.map-debug {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-background-secondary);
+  z-index: 5;
+}
+
+.loading-content,
+.debug-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--color-text-secondary);
+}
+
+.loading-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  animation: spin 2s linear infinite;
+  color: var(--color-primary-500);
+}
+
+.map-instructions {
+  position: absolute;
+  bottom: var(--space-4);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.instruction-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.instruction-card mat-icon {
+  color: var(--color-primary-600);
+}
+
+.locations-summary {
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xs);
+}
+
+.locations-summary h4 {
+  margin: 0 0 var(--space-3) 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.location-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.location-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background: var(--color-background-secondary);
+  border-radius: var(--radius-md);
+  border-left: 4px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.location-item:hover {
+  background: var(--color-background);
+  transform: translateX(4px);
+}
+
+.location-item.location-start {
+  border-left-color: #22c55e;
+}
+
+.location-item.location-end {
+  border-left-color: #ef4444;
+}
+
+.location-item.location-waypoint {
+  border-left-color: #f59e0b;
+}
+
+.location-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+
+.location-icon.start-icon {
+  color: #22c55e;
+}
+
+.location-icon.end-icon {
+  color: #ef4444;
+}
+
+.location-icon.waypoint-icon {
+  color: #f59e0b;
+}
+
+.location-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.location-type {
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+}
+
+.location-address {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.location-coords {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+  font-family: monospace;
+}
+
+.remove-location {
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.remove-location:hover {
+  opacity: 1;
+  color: var(--color-error);
+}
+
+/* Custom marker styles */
+:host ::ng-deep .custom-marker {
+  background: transparent;
+  border: none;
+}
+
+:host ::ng-deep .marker-content {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50% 50% 50% 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  font-size: 24px;
+  transition: all 0.3s ease;
+  transform: rotate(-45deg);
+  border: 3px solid white;
+}
+
+:host ::ng-deep .marker-icon {
+  transform: rotate(45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+:host ::ng-deep .marker-icon .material-icons {
+  font-size: 20px;
+  line-height: 20px;
+}
+
+:host ::ng-deep .marker-content:hover {
+  transform: rotate(-45deg) scale(1.15);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+:host ::ng-deep .start-marker .marker-content {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+:host ::ng-deep .end-marker .marker-content {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+:host ::ng-deep .waypoint-marker .marker-content {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+:host ::ng-deep .marker-popup {
+  font-size: var(--font-size-sm);
+}
+
+:host ::ng-deep .marker-popup strong {
+  color: var(--color-primary-700);
+  font-weight: var(--font-weight-semibold);
+}
+
+:host ::ng-deep .marker-popup small {
+  color: var(--color-text-secondary);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media(max-width: 768px) {
+  .map-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .selection-mode mat-chip-set {
+    flex-wrap: wrap;
+  }
+  
+  .map-wrapper {
+    min-height: 400px;
+  }
+  
+  .map-container {
+    min-height: 400px;
+  }
+}

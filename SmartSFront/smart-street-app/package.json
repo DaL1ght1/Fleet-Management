@@ -1,0 +1,79 @@
+{
+  "name": "smart-street-app",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "build:prod": "ng build --configuration production",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "lint": "ng lint",
+    "lint:fix": "ng lint --fix",
+    "format": "prettier --write \"src/**/*.{ts,html,scss}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,html,scss}\"",
+    "codegen": "graphql-codegen --config codegen.yml",
+    "codegen:watch": "graphql-codegen --config codegen.yml --watch",
+    "serve:prod": "ng serve --configuration production",
+    "analyze": "ng build --configuration production --stats-json && npx webpack-bundle-analyzer dist/smart-street-app/stats.json"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^20.2.4",
+    "@angular/cdk": "^20.2.2",
+    "@angular/common": "^20.2.0",
+    "@angular/compiler": "^20.2.0",
+    "@angular/core": "^20.2.0",
+    "@angular/forms": "^20.2.0",
+    "@angular/material": "^20.2.2",
+    "@angular/platform-browser": "^20.2.0",
+    "@angular/router": "^20.2.0",
+    "@apollo/client": "^3.14.0",
+    "@ngrx/effects": "^20.0.1",
+    "@ngrx/signals": "^20.0.1",
+    "@ngrx/store": "^20.0.1",
+    "@ngx-translate/core": "^17.0.0",
+    "@ngx-translate/http-loader": "^8.0.0",
+    "apollo-angular": "^11.0.0",
+    "graphql": "^16.11.0",
+    "keycloak-js": "^24.0.2",
+    "material-icons": "^1.13.14",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.15.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^20.2.2",
+    "@angular/cli": "^20.2.2",
+    "@angular/compiler-cli": "^20.2.0",
+    "@graphql-codegen/cli": "^6.0.0",
+    "@graphql-codegen/typescript": "^5.0.0",
+    "@graphql-codegen/typescript-apollo-angular": "^4.0.1",
+    "@graphql-codegen/typescript-operations": "^5.0.0",
+    "@types/jasmine": "~5.1.0",
+    "@typescript-eslint/eslint-plugin": "^8.42.0",
+    "@typescript-eslint/parser": "^8.42.0",
+    "eslint": "^9.35.0",
+    "eslint-config-prettier": "^10.1.8",
+    "jasmine-core": "~5.9.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "prettier": "^3.6.2",
+    "typescript": "~5.9.2"
+  }
+}
