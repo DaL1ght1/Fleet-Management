@@ -131,6 +131,11 @@ services:
       IDENTITY_CLIENT_SECRET: ${IDENTITY_CLIENT_SECRET:?IDENTITY_CLIENT_SECRET is required}
       FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:4200}
       SECURE_COOKIES: ${SECURE_COOKIES:-false}
+      MAIL_HOST: ${MAIL_HOST:-mailpit}
+      MAIL_PORT: ${MAIL_PORT:-1025}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      MAIL_FROM: ${MAIL_FROM:-SmartStreet <no-reply@smartstreet.local>}
     ports:
       - "127.0.0.1:8086:8080"
     depends_on:

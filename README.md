@@ -2,25 +2,9 @@
 
 SmartStreet manages a rental and service fleet: vehicles, drivers, customers, the trips that connect them, the workshop that keeps them running and the invoices that pay for them. It is a set of Spring Boot GraphQL subgraphs federated by Apollo Router, an identity service in front of Keycloak, and an Angular front end with its own sign-in, sign-up and account pages.
 
-```mermaid
-graph LR
-    UI[Angular app] -->|GraphQL + JWT| Router[Apollo Router]
-    UI -->|/auth REST + session cookie| Identity[identity-service]
-    Identity -->|password grant, admin API| Keycloak
-    Identity -->|reset and invitation emails| Mailpit
-    Router -->|x-router-secret + JWT| Users[user-service]
-    Router --> Vehicles[vehicles-service]
-    Router --> Trips[trips-service]
-    Router --> Telemetry[telemetry-service]
-    Router --> Geofence[geofence-service]
-    Router --> Maintenance[maintenance-service]
-    Router --> Billing[billing-service]
-    Router --> Notifications[notification-service]
-    Devices[GPS trackers] -->|X-Device-Key| Telemetry
-    Keycloak --> Postgres[(PostgreSQL)]
-    Identity & Users & Vehicles & Trips & Telemetry & Geofence & Maintenance & Billing & Notifications --> Postgres
-    Identity & Users & Vehicles & Trips & Telemetry & Geofence & Maintenance & Billing & Notifications <-->|domain events via outbox| Kafka[(Kafka)]
-```
+![SmartStreet architecture](docs/architecture.png)
+
+The editable source is on [Eraser](https://app.eraser.io/workspace/C44BQQEuJYxMpn1ArbPa).
 
 ## Services
 
@@ -80,7 +64,7 @@ Keycloak stores its data in the `keycloak` PostgreSQL database and imports the `
 | fleet-driver@smartstreet.local | driver12345 | Driver |
 | customer@smartstreet.local | customer12345 | Customer |
 
-Users never see Keycloak pages: sign-in, sign-up, password reset, account activation and profile editing all happen in the Angular app through `identity-service`. The access token stays in memory and the refresh token in an `HttpOnly`, `SameSite=Strict` cookie scoped to `/auth`. Emails (password reset, invitations) are caught by Mailpit.
+Users never see Keycloak pages: sign-in, sign-up, password reset, account activation and profile editing all happen in the Angular app through `identity-service`. The access token stays in memory and the refresh token in an `HttpOnly`, `SameSite=Strict` cookie scoped to `/auth`. Emails (password reset, invitations) go to the SMTP server set by `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD` and `MAIL_FROM` in `.env`, using STARTTLS when the server offers it. With a Gmail account, use an app password. Leave `MAIL_HOST` empty to catch every email in Mailpit instead.
 
 ```bash
 cd frontend
@@ -93,7 +77,7 @@ npm start
 | http://localhost:4200 | Web application (the dev server proxies `/graphql` and `/auth`, see `frontend/proxy.conf.json`) |
 | http://localhost:4000/graphql | Federated GraphQL API (bearer token required) |
 | http://localhost:8086/auth | Identity API |
-| http://localhost:8025 | Mailpit inbox for password reset and invitation emails |
+| http://localhost:8025 | Mailpit inbox, used when `MAIL_HOST` is empty |
 | http://localhost:8085/ingest/v1/positions | Device position ingestion (`X-Device-Key` header) |
 | http://localhost:8083 | Keycloak admin console (credentials from `.env`) |
 

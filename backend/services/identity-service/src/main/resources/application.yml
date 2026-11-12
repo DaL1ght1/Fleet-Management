@@ -10,6 +10,14 @@ spring:
   mail:
     host: ${MAIL_HOST:mailpit}
     port: ${MAIL_PORT:1025}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.connectiontimeout: 5000
+      mail.smtp.timeout: 10000
+      mail.smtp.writetimeout: 10000
   security:
     oauth2:
       resourceserver:
@@ -40,3 +48,4 @@ smartstreet:
     client-secret: ${IDENTITY_CLIENT_SECRET}
     frontend-url: ${FRONTEND_ORIGIN:http://localhost:4200}
     secure-cookies: ${SECURE_COOKIES:true}
+    mail-from: ${MAIL_FROM:SmartStreet <no-reply@smartstreet.local>}
