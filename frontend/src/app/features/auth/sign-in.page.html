@@ -1,0 +1,53 @@
+<header class="intro">
+  <h1>{{ 'auth.signIn.title' | translate }}</h1>
+  <p>{{ 'auth.signIn.subtitle' | translate }}</p>
+</header>
+
+@if (error(); as failure) {
+  <p class="notice error" role="alert">
+    <mat-icon>error</mat-icon>
+    <span>{{ failure.key | translate: { detail: failure.detail } }}</span>
+  </p>
+} @else if (passwordSet()) {
+  <p class="notice success" role="status">
+    <mat-icon>check_circle</mat-icon>
+    <span>{{ 'auth.signIn.passwordSet' | translate }}</span>
+  </p>
+} @else if (expired()) {
+  <p class="notice info" role="status">
+    <mat-icon>schedule</mat-icon>
+    <span>{{ 'auth.signIn.expired' | translate }}</span>
+  </p>
+}
+
+<form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <mat-form-field appearance="outline">
+    <mat-label>{{ 'auth.fields.email' | translate }}</mat-label>
+    <input matInput type="email" formControlName="email" autocomplete="username" inputmode="email" />
+    <mat-icon matPrefix>mail</mat-icon>
+    @if (form.controls.email.hasError('email')) {
+      <mat-error>{{ 'validation.email' | translate }}</mat-error>
+    } @else {
+      <mat-error>{{ 'validation.required' | translate }}</mat-error>
+    }
+  </mat-form-field>
+
+  <app-password-field [control]="form.controls.password" [label]="'auth.fields.password' | translate" />
+
+  <div class="row-end">
+    <a routerLink="/forgot-password">{{ 'auth.signIn.forgot' | translate }}</a>
+  </div>
+
+  <button mat-flat-button class="submit" type="submit" [disabled]="busy()">
+    @if (busy()) {
+      <mat-spinner diameter="20" />
+    } @else {
+      {{ 'auth.signIn.submit' | translate }}
+    }
+  </button>
+</form>
+
+<p class="switch">
+  {{ 'auth.signIn.newHere' | translate }}
+  <a routerLink="/sign-up">{{ 'auth.signIn.createAccount' | translate }}</a>
+</p>

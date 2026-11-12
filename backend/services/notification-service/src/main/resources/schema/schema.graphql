@@ -1,0 +1,63 @@
+extend schema
+@link(url: "https://specs.apollo.dev/federation/v2.6", import: ["@key"])
+
+scalar UUID
+scalar DateTime
+
+enum NotificationKind {
+    GEOFENCE_ENTERED
+    GEOFENCE_EXITED
+    SPEED_LIMIT_EXCEEDED
+    MAINTENANCE_SCHEDULED
+    MAINTENANCE_STARTED
+    MAINTENANCE_COMPLETED
+    MAINTENANCE_OVERDUE
+    TRIP_ASSIGNED
+    TRIP_RESCHEDULED
+    TRIP_STARTED
+    TRIP_COMPLETED
+    TRIP_CANCELLED
+    INVOICE_ISSUED
+    INVOICE_PAID
+    INVOICE_OVERDUE
+    LICENSE_EXPIRING
+}
+
+enum NotificationSeverity {
+    INFO
+    WARNING
+    CRITICAL
+}
+
+type NotificationParam {
+    key: String!
+    value: String!
+}
+
+type Notification @key(fields: "id") {
+    id: UUID!
+    kind: NotificationKind!
+    severity: NotificationSeverity!
+    params: [NotificationParam!]!
+    link: String
+    read: Boolean!
+    createdAt: DateTime!
+}
+
+type NotificationPage {
+    items: [Notification!]!
+    totalCount: Int!
+    page: Int!
+    size: Int!
+    hasNext: Boolean!
+}
+
+type Query {
+    myNotifications(unreadOnly: Boolean = false, page: Int = 0, size: Int = 20): NotificationPage!
+    unreadNotificationCount: Int!
+}
+
+type Mutation {
+    markNotificationRead(id: UUID!): Notification!
+    markAllNotificationsRead: Int!
+}

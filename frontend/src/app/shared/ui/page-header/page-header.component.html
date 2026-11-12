@@ -1,0 +1,18 @@
+<header class="page-header">
+  <div class="heading">
+    @if (backLink(); as link) {
+      <a mat-icon-button [routerLink]="link" class="back" [attr.aria-label]="title()">
+        <mat-icon class="direction-aware">arrow_back</mat-icon>
+      </a>
+    }
+    <div>
+      <h1>{{ title() }}</h1>
+      @if (subtitle(); as text) {
+        <p class="subtitle">{{ text }}</p>
+      }
+    </div>
+  </div>
+  <div class="actions">
+    <ng-content />
+  </div>
+</header>

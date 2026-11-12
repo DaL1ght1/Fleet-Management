@@ -1,0 +1,846 @@
+{
+  "navigation": {
+    "geofences": "المناطق الجغرافية",
+    "fleetMap": "الخريطة المباشرة",
+    "dashboard": "لوحة القيادة",
+    "trips": "الرحلات",
+    "vehicles": "المركبات",
+    "drivers": "السائقون",
+    "customers": "العملاء",
+    "groups": {
+      "operations": "العمليات",
+      "fleet": "الأسطول",
+      "business": "الأعمال",
+      "mine": "مساحتي"
+    },
+    "maintenance": "الصيانة",
+    "billing": "الفوترة",
+    "myTrips": "رحلاتي",
+    "myInvoices": "فواتيري",
+    "notifications": "الإشعارات",
+    "bookTrip": "احجز رحلة"
+  },
+  "dashboard": {
+    "welcome": "سعداء برؤيتك، {{name}}",
+    "utilization": "{{value}}٪ من المركبات النشطة في رحلة",
+    "scheduledTrips": "{{count}} مجدولة",
+    "activeTrips": "رحلات جارية",
+    "revenue": "الإيرادات",
+    "distance": "{{value}} كم مقطوعة",
+    "availableDrivers": "السائقون المتاحون",
+    "upcomingTrips": "الرحلات القادمة",
+    "viewAll": "عرض الكل",
+    "noUpcomingTrips": "لا توجد رحلات مجدولة.",
+    "openMap": "فتح الخريطة المباشرة",
+    "scheduleTrip": "جدولة رحلة",
+    "onTheRoad": "{{inUse}} من أصل {{total}} مركبة على الطريق",
+    "segments": {
+      "inUse": "في رحلة",
+      "available": "متاحة",
+      "maintenance": "في الصيانة",
+      "inactive": "غير نشطة"
+    },
+    "attention": {
+      "title": "يحتاج إلى متابعة",
+      "clear": "لا شيء يحتاجك الآن.",
+      "alerts": "تنبيهات مناطق مفتوحة",
+      "overdueMaintenance": "أوامر عمل متأخرة",
+      "maintenanceDue": "مركبات مستحقة للصيانة",
+      "overdueInvoices": "فواتير متأخرة",
+      "draftInvoices": "فواتير بانتظار الإصدار",
+      "licenses": "رخص تنتهي خلال 30 يومًا"
+    },
+    "driversOnTrip": "{{count}} في رحلة"
+  },
+  "geofenceKind": {
+    "DEPOT": "مستودع",
+    "SERVICE_AREA": "منطقة الخدمة",
+    "RESTRICTED": "منطقة محظورة"
+  },
+  "geofenceKindHint": {
+    "DEPOT": "تُسجَّل حالات الدخول والخروج للعلم.",
+    "SERVICE_AREA": "مغادرة هذه المنطقة تطلق تنبيهًا حرجًا.",
+    "RESTRICTED": "دخول هذه المنطقة يطلق تنبيهًا حرجًا."
+  },
+  "severity": {
+    "INFO": "معلومة",
+    "WARNING": "تحذير",
+    "CRITICAL": "حرج"
+  },
+  "alertType": {
+    "VEHICLE_ENTERED": "دخول المنطقة",
+    "VEHICLE_EXITED": "مغادرة المنطقة",
+    "SPEED_LIMIT_EXCEEDED": "تجاوز حد السرعة"
+  },
+  "geofences": {
+    "title": "المناطق الجغرافية",
+    "subtitle": "المستودعات ومناطق الخدمة والمناطق المحظورة",
+    "create": "منطقة جديدة",
+    "createTitle": "إنشاء منطقة",
+    "editTitle": "تعديل المنطقة",
+    "alerts": "التنبيهات",
+    "alertsTitle": "تنبيهات المناطق",
+    "alertsSubtitle": "الدخول والخروج وتجاوز السرعة المكتشفة من المواقع المباشرة",
+    "empty": "لم تُحدَّد أي منطقة بعد.",
+    "active": "نشطة",
+    "vehiclesInside": "{{count}} مركبات بالداخل",
+    "polygon": "مضلع",
+    "circle": "دائرة",
+    "polygonHint": "انقر على الخريطة لإضافة الرؤوس ({{count}} حتى الآن، 3 على الأقل).",
+    "circleHint": "انقر على الخريطة لوضع المركز.",
+    "undo": "تراجع",
+    "clear": "مسح",
+    "shapeMissing": "ارسم المنطقة على الخريطة قبل الحفظ.",
+    "created": "تم إنشاء المنطقة",
+    "updated": "تم تحديث المنطقة",
+    "deleted": "تم حذف المنطقة",
+    "deleteTitle": "حذف هذه المنطقة؟",
+    "deleteMessage": "تتوقف المراقبة فورًا مع الاحتفاظ بالتنبيهات السابقة.",
+    "acknowledge": "إقرار",
+    "acknowledgeAll": "إقرار الكل",
+    "acknowledged": "تم إقرار التنبيهات",
+    "openOnly": "التنبيهات المفتوحة فقط",
+    "noAlerts": "لا توجد تنبيهات.",
+    "fields": {
+      "name": "الاسم",
+      "kind": "النوع",
+      "speedLimit": "حد السرعة",
+      "radius": "نصف القطر",
+      "severity": "الخطورة",
+      "occurredAt": "الوقت",
+      "event": "الحدث",
+      "zone": "المنطقة"
+    }
+  },
+  "common": {
+    "done": "تم",
+    "all": "الكل",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "dismiss": "إغلاق",
+    "edit": "تعديل",
+    "loadFailed": "تعذّر تحميل البيانات.",
+    "no": "لا",
+    "yes": "نعم",
+    "remove": "إزالة",
+    "retry": "إعادة المحاولة",
+    "save": "حفظ",
+    "saveChanges": "حفظ التغييرات",
+    "showMore": "عرض المزيد",
+    "date": "التاريخ",
+    "time": "الوقت",
+    "clear": "مسح"
+  },
+  "fleetMap": {
+    "title": "خريطة الأسطول المباشرة",
+    "subtitle": "تُحدَّث المواقع كل 10 ثوانٍ",
+    "refresh": "تحديث",
+    "moving": "{{count}} متحركة",
+    "idle": "{{count}} متوقفة",
+    "stale": "{{count}} بلا إشارة",
+    "speed": "السرعة",
+    "fuel": "مستوى الوقود",
+    "odometer": "العداد",
+    "lastUpdate": "آخر تحديث",
+    "openVehicle": "فتح المركبة",
+    "selectVehicle": "اختر مركبة على الخريطة.",
+    "noPositions": "لم ترسل أي مركبة موقعها بعد."
+  },
+  "telemetry": {
+    "title": "التتبع المباشر",
+    "noData": "لم يُستلم أي موقع لهذه المركبة بعد.",
+    "pointsToday": "المواقع خلال آخر 24 ساعة",
+    "devices": "أجهزة التتبع",
+    "register": "إضافة جهاز",
+    "registerTitle": "إضافة جهاز تتبع",
+    "deviceLabel": "اسم الجهاز",
+    "registered": "تمت إضافة الجهاز",
+    "keyTitle": "مفتاح الجهاز",
+    "keyWarning": "اضبط الجهاز بهذا المفتاح الآن، فهو لا يُعرض إلا مرة واحدة.",
+    "copy": "نسخ",
+    "copied": "تم النسخ",
+    "revoke": "إلغاء التفويض",
+    "revokeTitle": "إلغاء تفويض هذا الجهاز؟",
+    "revokeMessage": "لن يتمكن الجهاز من إرسال المواقع بعد الآن.",
+    "revoked": "تم إلغاء تفويض الجهاز",
+    "revokedState": "ملغى",
+    "lastSeen": "آخر ظهور",
+    "neverSeen": "لم يتصل قط",
+    "noDevices": "لا يوجد جهاز مثبّت."
+  },
+  "app": {
+    "menu": "القائمة",
+    "toggleTheme": "تبديل المظهر",
+    "language": "اللغة"
+  },
+  "status": {
+    "ACTIVE": "نشط",
+    "INACTIVE": "غير نشط",
+    "MAINTENANCE": "صيانة",
+    "SUSPENDED": "موقوف",
+    "ON_LEAVE": "في إجازة",
+    "SCHEDULED": "مجدولة",
+    "IN_PROGRESS": "قيد التنفيذ",
+    "COMPLETED": "مكتملة",
+    "CANCELLED": "ملغاة",
+    "OVERDUE": "متأخر"
+  },
+  "fuel": {
+    "GASOLINE": "بنزين",
+    "DIESEL": "ديزل",
+    "ELECTRIC": "كهربائي",
+    "HYBRID": "هجين"
+  },
+  "tripType": {
+    "RENTAL": "تأجير",
+    "MAINTENANCE": "صيانة",
+    "RELOCATION": "نقل",
+    "EMERGENCY": "طوارئ"
+  },
+  "roles": {
+    "ADMIN": "مسؤول",
+    "MANAGER": "مدير الأسطول",
+    "DRIVER": "سائق",
+    "USER": "عميل"
+  },
+  "errors": {
+    "network": "خطأ في الشبكة. تحقّق من اتصالك وحاول مجددًا.",
+    "sessionExpired": "انتهت صلاحية الجلسة. يرجى تسجيل الدخول مجددًا.",
+    "forbidden": "غير مسموح لك بتنفيذ هذا الإجراء.",
+    "rateLimited": "طلبات كثيرة جدًا. يرجى الانتظار قليلًا.",
+    "unavailable": "الخدمة غير متاحة مؤقتًا.",
+    "unexpected": "حدث خطأ غير متوقع."
+  },
+  "validation": {
+    "required": "هذا الحقل مطلوب",
+    "email": "أدخل بريدًا إلكترونيًا صالحًا",
+    "phone": "أدخل رقم هاتف صالحًا",
+    "uuid": "أدخل معرّف حساب صالحًا",
+    "vin": "يتكوّن رقم الهيكل من 17 حرفًا دون I أو O أو Q",
+    "nonNegative": "يجب أن تكون القيمة صفرًا أو أكثر",
+    "positive": "يجب أن تكون القيمة أكبر من صفر",
+    "range": "يجب أن تكون بين {{min}} و{{max}}",
+    "yearRange": "يجب أن تكون بين 1950 و{{max}}",
+    "scheduleOrder": "يجب أن تكون النهاية بعد البداية",
+    "locations": "اختر نقطة الانطلاق والوصول",
+    "passwordLength": "استخدم ما بين 8 و128 حرفًا",
+    "passwordMix": "أدرج حرفًا واحدًا ورقمًا واحدًا على الأقل",
+    "passwordMismatch": "كلمتا المرور غير متطابقتين"
+  },
+  "map": {
+    "search": "ابحث عن عنوان",
+    "find": "بحث",
+    "clickToPick": "ابحث أو انقر على الخريطة لاختيار موقع"
+  },
+  "vehicles": {
+    "title": "المركبات",
+    "subtitle": "تسجيل الأسطول وحالته وصيانته",
+    "register": "تسجيل مركبة",
+    "registerTitle": "تسجيل مركبة",
+    "editTitle": "تعديل المركبة",
+    "searchPlaceholder": "اللوحة أو رقم الهيكل أو الطراز",
+    "maintenanceDueOnly": "الصيانة المستحقة فقط",
+    "empty": "لا توجد مركبات تطابق هذه المرشحات.",
+    "notFound": "هذه المركبة غير موجودة.",
+    "onTrip": "في رحلة",
+    "available": "متاحة",
+    "viewTrip": "عرض الرحلة الحالية",
+    "changeStatus": "تغيير الحالة",
+    "newOdometerReading": "قراءة العداد الجديدة",
+    "record": "تسجيل",
+    "vinHint": "17 حرفًا، مدوّنة في وثيقة التسجيل",
+    "days": "{{count}} يومًا",
+    "daysSuffix": "أيام",
+    "registered": "تم تسجيل المركبة",
+    "updated": "تم تحديث المركبة",
+    "statusChanged": "تم تغيير الحالة",
+    "odometerRecorded": "تم تسجيل قراءة العداد",
+    "deleted": "تم حذف المركبة",
+    "deleteTitle": "حذف هذه المركبة؟",
+    "deleteMessage": "ستُزال المركبة من الأسطول. لا يمكن التراجع عن ذلك.",
+    "sections": {
+      "identity": "الهوية",
+      "usage": "الاستخدام",
+      "maintenance": "الصيانة"
+    },
+    "fields": {
+      "vehicle": "المركبة",
+      "make": "الصانع",
+      "model": "الطراز",
+      "year": "السنة",
+      "licensePlate": "رقم اللوحة",
+      "vin": "رقم الهيكل",
+      "color": "اللون",
+      "status": "الحالة",
+      "fuelType": "الوقود",
+      "mileage": "المسافة المقطوعة",
+      "dailyRate": "السعر اليومي",
+      "seatingCapacity": "المقاعد",
+      "gpsEnabled": "جهاز تتبع GPS مثبّت",
+      "currentTrip": "الرحلة الحالية",
+      "lastMaintenance": "آخر صيانة",
+      "maintenanceInterval": "فترة الصيانة",
+      "nextMaintenance": "الصيانة القادمة"
+    }
+  },
+  "drivers": {
+    "title": "السائقون",
+    "subtitle": "الرخص والتوفر والأداء",
+    "register": "إضافة سائق",
+    "registerTitle": "إضافة سائق",
+    "editTitle": "تعديل السائق",
+    "searchPlaceholder": "الاسم أو البريد أو الرخصة",
+    "availableOnly": "المتاحون فقط",
+    "empty": "لا يوجد سائقون يطابقون هذه المرشحات.",
+    "notFound": "هذا السائق غير موجود.",
+    "expires": "تنتهي في",
+    "licenseExpired": "منتهية",
+    "notRated": "لم يُقيَّم بعد",
+    "available": "متاح",
+    "unavailable": "غير متاح",
+    "viewTrip": "عرض الرحلة الحالية",
+    "changeStatus": "تغيير الحالة",
+    "rate": "قيّم الرحلة الأخيرة",
+    "accountHint": "معرّف مستخدم Keycloak لربط تسجيل الدخول بهذا الملف",
+    "registered": "تمت إضافة السائق",
+    "updated": "تم تحديث السائق",
+    "statusChanged": "تم تغيير الحالة",
+    "rated": "تم حفظ التقييم",
+    "deleted": "تم حذف السائق",
+    "deleteTitle": "حذف هذا السائق؟",
+    "deleteMessage": "سيُحذف ملف السائق. لا يمكن التراجع عن ذلك.",
+    "sections": {
+      "contact": "الاتصال",
+      "license": "الرخصة",
+      "performance": "الأداء"
+    },
+    "fields": {
+      "name": "الاسم",
+      "firstName": "الاسم الأول",
+      "lastName": "اسم العائلة",
+      "email": "البريد الإلكتروني",
+      "phoneNumber": "الهاتف",
+      "contact": "الاتصال",
+      "license": "الرخصة",
+      "licenseNumber": "رقم الرخصة",
+      "licenseExpiry": "انتهاء الرخصة",
+      "dateOfBirth": "تاريخ الميلاد",
+      "hireDate": "تاريخ التوظيف",
+      "emergencyContact": "جهة اتصال الطوارئ",
+      "emergencyContactName": "اسم جهة اتصال الطوارئ",
+      "emergencyContactPhone": "هاتف جهة اتصال الطوارئ",
+      "accountId": "حساب الدخول",
+      "status": "الحالة",
+      "availability": "متاح",
+      "rating": "التقييم",
+      "completedTrips": "الرحلات المكتملة",
+      "currentTrip": "الرحلة الحالية",
+      "monthlySalary": "الراتب الشهري",
+      "nextPayday": "موعد الراتب القادم"
+    },
+    "salaryHint": "يُصرف كل 30 يومًا من تاريخ التوظيف"
+  },
+  "customers": {
+    "title": "العملاء",
+    "subtitle": "الأفراد والشركات الذين يستأجرون مركباتك",
+    "register": "إضافة عميل",
+    "registerTitle": "إضافة عميل",
+    "editTitle": "تعديل العميل",
+    "searchPlaceholder": "الاسم أو البريد",
+    "empty": "لم يُعثر على عملاء.",
+    "registered": "تمت إضافة العميل",
+    "updated": "تم تحديث العميل",
+    "deleted": "تم حذف العميل",
+    "deleteTitle": "حذف هذا العميل؟",
+    "deleteMessage": "سيُحذف العميل. لا يمكن التراجع عن ذلك.",
+    "fields": {
+      "name": "الاسم",
+      "firstName": "الاسم الأول",
+      "lastName": "اسم العائلة",
+      "email": "البريد الإلكتروني",
+      "phoneNumber": "الهاتف",
+      "since": "عميل منذ"
+    }
+  },
+  "trips": {
+    "title": "الرحلات",
+    "subtitle": "التخطيط والتنفيذ والتكاليف",
+    "schedule": "جدولة رحلة",
+    "scheduleTitle": "جدولة رحلة",
+    "rescheduleTitle": "إعادة جدولة الرحلة",
+    "reschedule": "إعادة الجدولة",
+    "from": "من",
+    "to": "إلى",
+    "empty": "لا توجد رحلات تطابق هذه المرشحات.",
+    "notFound": "هذه الرحلة غير موجودة.",
+    "unassigned": "بدون سائق",
+    "onTrip": "في رحلة",
+    "busy": "مشغول",
+    "minutes": "دقيقة",
+    "addStop": "إضافة توقف",
+    "start": "بدء الرحلة",
+    "complete": "إنهاء الرحلة",
+    "completeTitle": "إنهاء هذه الرحلة",
+    "cancelTrip": "إلغاء الرحلة",
+    "cancelTitle": "إلغاء هذه الرحلة؟",
+    "cancellationReason": "سبب الإلغاء",
+    "scheduled": "تمت جدولة الرحلة",
+    "rescheduled": "تمت إعادة جدولة الرحلة",
+    "started": "بدأت الرحلة",
+    "completed": "اكتملت الرحلة",
+    "cancelled": "أُلغيت الرحلة",
+    "deleted": "حُذفت الرحلة",
+    "deleteTitle": "حذف هذه الرحلة؟",
+    "deleteMessage": "ستُحذف الرحلة من السجل. لا يمكن التراجع عن ذلك.",
+    "sections": {
+      "route": "المسار",
+      "assignment": "التكليف",
+      "timing": "المواعيد",
+      "costs": "التكاليف",
+      "notes": "ملاحظات"
+    },
+    "fields": {
+      "type": "النوع",
+      "status": "الحالة",
+      "schedule": "الموعد",
+      "route": "المسار",
+      "vehicle": "المركبة",
+      "driver": "السائق",
+      "start": "الانطلاق",
+      "end": "الوجهة",
+      "stop": "التوقف {{index}}",
+      "scheduledStart": "الانطلاق المخطط",
+      "scheduledEnd": "الوصول المخطط",
+      "startedAt": "بدأت في",
+      "completedAt": "اكتملت في",
+      "estimatedDuration": "المدة المقدّرة",
+      "duration": "المدة",
+      "distance": "المسافة",
+      "baseRate": "السعر الأساسي",
+      "fuelCost": "تكلفة الوقود",
+      "additionalFees": "رسوم إضافية",
+      "totalCost": "الإجمالي",
+      "notes": "ملاحظات",
+      "customerNotes": "ملاحظات للعميل",
+      "internalNotes": "ملاحظات داخلية",
+      "customer": "العميل"
+    }
+  },
+  "profile": {
+    "driverProfile": "ملف السائق",
+    "currentTrip": "فتح الرحلة الحالية",
+    "logout": "تسجيل الخروج",
+    "menu": "إعدادات الحساب",
+    "sections": {
+      "details": "البيانات الشخصية",
+      "security": "كلمة المرور",
+      "team": "دعوة أعضاء الفريق"
+    },
+    "detailsHint": "يظهر اسمك على الرحلات والفواتير. تغيير البريد يغيّر طريقة تسجيل الدخول.",
+    "saved": "تم حفظ الملف الشخصي",
+    "changePassword": "تغيير كلمة المرور",
+    "securityHint": "تغييرها يسجّل خروجك من أجهزتك الأخرى.",
+    "currentPassword": "كلمة المرور الحالية",
+    "passwordChanged": "تم تغيير كلمة المرور",
+    "errors": {
+      "wrongPassword": "كلمة المرور الحالية غير صحيحة."
+    },
+    "inviteTitle": "دعوة عضو في الفريق",
+    "inviteHint": "سيتلقى بريدًا برابط لاختيار كلمة المرور، صالحًا لمدة 3 أيام.",
+    "role": "الدور",
+    "sendInvitation": "إرسال الدعوة",
+    "invitationSent": "تم إرسال الدعوة"
+  },
+  "auth": {
+    "hero": {
+      "title": "كل مركبة ورحلة وفاتورة على طريق واحد.",
+      "body": "تابع الأسطول مباشرة، وخطط للرحلات والصيانة، وأصدر فواتير العملاء دون تبديل الأدوات."
+    },
+    "fields": {
+      "email": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "newPassword": "كلمة المرور الجديدة",
+      "confirmPassword": "أكّد كلمة المرور",
+      "firstName": "الاسم",
+      "lastName": "اللقب"
+    },
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور",
+    "passwordHint": "8 أحرف على الأقل تتضمن حرفًا ورقمًا",
+    "backToSignIn": "العودة إلى تسجيل الدخول",
+    "signIn": {
+      "title": "تسجيل الدخول",
+      "subtitle": "مرحبًا بعودتك. استخدم البريد المرتبط بحسابك.",
+      "forgot": "نسيت كلمة المرور؟",
+      "submit": "تسجيل الدخول",
+      "newHere": "عميل جديد؟",
+      "createAccount": "أنشئ حسابًا",
+      "expired": "انتهت جلستك. سجّل الدخول مجددًا للمتابعة.",
+      "passwordSet": "تم تعيين كلمة المرور. سجّل الدخول بها الآن."
+    },
+    "signUp": {
+      "title": "أنشئ حسابك",
+      "subtitle": "احجز الرحلات واحتفظ بكل فواتيرك في مكان واحد.",
+      "submit": "إنشاء الحساب",
+      "haveAccount": "لديك حساب بالفعل؟",
+      "signIn": "سجّل الدخول"
+    },
+    "forgot": {
+      "title": "إعادة تعيين كلمة المرور",
+      "subtitle": "أدخل بريدك وسنرسل لك رابطًا لاختيار كلمة مرور جديدة.",
+      "submit": "إرسال الرابط",
+      "sentTitle": "تحقق من بريدك الوارد",
+      "sentBody": "إذا كان لـ {{email}} حساب، فإن رابط إعادة التعيين في الطريق. تنتهي صلاحيته خلال 30 دقيقة."
+    },
+    "reset": {
+      "title": "اختر كلمة مرور جديدة",
+      "subtitle": "سيتم تسجيل خروجك من جميع الأجهزة الأخرى.",
+      "submit": "حفظ كلمة المرور"
+    },
+    "activate": {
+      "title": "فعّل حسابك",
+      "subtitle": "اختر كلمة المرور التي ستستخدمها لتسجيل الدخول إلى SmartStreet.",
+      "submit": "تفعيل الحساب"
+    },
+    "errors": {
+      "invalidCredentials": "البريد الإلكتروني وكلمة المرور لا يطابقان أي حساب.",
+      "emailTaken": "هناك حساب يستخدم هذا البريد بالفعل.",
+      "linkExpired": "هذا الرابط غير صالح أو منتهي الصلاحية. اطلب رابطًا جديدًا.",
+      "rejected": "{{detail}}"
+    }
+  },
+  "workOrderKind": {
+    "PREVENTIVE": "صيانة وقائية",
+    "REPAIR": "إصلاح",
+    "INSPECTION": "فحص"
+  },
+  "workOrderKindHint": {
+    "PREVENTIVE": "صيانة مجدولة حسب التاريخ أو المسافة",
+    "REPAIR": "إصلاح عطل أو ضرر",
+    "INSPECTION": "فحص فني أو فحص سلامة"
+  },
+  "priority": {
+    "LOW": "منخفضة",
+    "MEDIUM": "متوسطة",
+    "HIGH": "عالية",
+    "CRITICAL": "حرجة"
+  },
+  "maintenance": {
+    "title": "الصيانة",
+    "subtitle": "أوامر العمل للصيانة والإصلاح والفحص",
+    "schedule": "جدولة عمل",
+    "scheduleTitle": "جدولة أمر عمل",
+    "editTitle": "تعديل أمر العمل",
+    "formSubtitle": "تُسحب المركبة من الخدمة عند بدء العمل وتعود عند انتهائه.",
+    "sections": {
+      "what": "ما يجب إنجازه",
+      "when": "المركبة والموعد",
+      "details": "التفاصيل",
+      "outcome": "النتيجة",
+      "complete": "إغلاق أمر العمل"
+    },
+    "completeHint": "سجّل التكلفة وقراءة العداد. ستعود المركبة إلى الخدمة.",
+    "titlePlaceholder": "استبدال وسادات الفرامل الأمامية",
+    "fields": {
+      "title": "العمل",
+      "vehicle": "المركبة",
+      "kind": "النوع",
+      "priority": "الأولوية",
+      "status": "الحالة",
+      "scheduledFor": "مقررة في",
+      "vendor": "الورشة أو المورّد",
+      "description": "ملاحظات",
+      "partsCost": "قطع الغيار",
+      "laborCost": "اليد العاملة",
+      "totalCost": "التكلفة",
+      "odometer": "قراءة العداد",
+      "resolutionNotes": "ما تم إنجازه"
+    },
+    "stats": {
+      "scheduled": "مجدولة",
+      "inProgress": "في الورشة",
+      "overdue": "متأخرة",
+      "overdueHint": "تجاوزت موعدها",
+      "costThisMonth": "المصروف هذا الشهر",
+      "completed": "{{count}} مكتملة"
+    },
+    "overdueOnly": "المتأخرة فقط",
+    "empty": "لا توجد أوامر عمل مطابقة لهذه المرشحات.",
+    "autoGenerated": "أُنشئ تلقائيًا من جدول الصيانة",
+    "notFound": "أمر العمل هذا غير موجود.",
+    "start": "بدء العمل",
+    "complete": "إكمال أمر العمل",
+    "cancel": "إلغاء أمر العمل",
+    "cancelTitle": "إلغاء أمر العمل هذا؟",
+    "cancelReason": "السبب",
+    "cancelledBecause": "أُلغي: {{reason}}",
+    "scheduled": "تمت جدولة أمر العمل",
+    "updated": "تم تحديث أمر العمل",
+    "started": "بدأ العمل",
+    "completed": "اكتمل أمر العمل",
+    "cancelled": "أُلغي أمر العمل",
+    "workOrders": "أوامر العمل",
+    "noneForVehicle": "لا توجد أوامر عمل لهذه المركبة بعد."
+  },
+  "invoiceStatus": {
+    "DRAFT": "مسودة",
+    "ISSUED": "صادرة",
+    "PAID": "مدفوعة",
+    "VOID": "ملغاة",
+    "OVERDUE": "متأخرة"
+  },
+  "paymentMethod": {
+    "CASH": "نقدًا",
+    "CARD": "بطاقة",
+    "BANK_TRANSFER": "تحويل بنكي"
+  },
+  "billing": {
+    "title": "الفوترة",
+    "subtitle": "الإيرادات من الرحلات والمصروفات على الصيانة والرواتب",
+    "detailSubtitle": "راجع الفاتورة وأصدرها وسجّل الدفع",
+    "views": {
+      "all": "الكل",
+      "drafts": "المسودات",
+      "outstanding": "بانتظار الدفع",
+      "overdue": "متأخرة",
+      "paid": "مدفوعة"
+    },
+    "stats": {
+      "outstanding": "بانتظار الدفع",
+      "overdue": "متأخرة",
+      "overdueCount": "{{count}} فواتير تجاوزت موعدها",
+      "collected": "المحصّل هذا الشهر",
+      "collectedHint": "{{amount}} محصّلة هذا الشهر",
+      "drafts": "المسودات",
+      "draftsHint": "جاهزة للمراجعة والإصدار"
+    },
+    "empty": "لا توجد فواتير هنا بعد.",
+    "notFound": "هذه الفاتورة غير موجودة.",
+    "fields": {
+      "number": "الفاتورة",
+      "customer": "العميل",
+      "vehicle": "المركبة",
+      "createdAt": "أُنشئت في",
+      "issuedOn": "تاريخ الإصدار",
+      "dueDate": "تاريخ الاستحقاق",
+      "paidOn": "تاريخ الدفع",
+      "status": "الحالة",
+      "subtotal": "المجموع الفرعي",
+      "tax": "ضريبة القيمة المضافة {{rate}}",
+      "total": "الإجمالي"
+    },
+    "document": {
+      "title": "فاتورة",
+      "issuer": "خدمات الأسطول والتنقل · تونس",
+      "billTo": "مفوترة إلى",
+      "walkIn": "بدون حساب عميل",
+      "trip": "الرحلة",
+      "description": "الوصف",
+      "amount": "المبلغ",
+      "terms": "يُدفع قبل تاريخ الاستحقاق نقدًا أو بالبطاقة أو بالتحويل. المبالغ بالدينار التونسي.",
+      "voided": "أُلغيت: {{reason}}"
+    },
+    "issueTitle": "إصدار هذه الفاتورة",
+    "issueHint": "سيُبلَّغ العميل ويمكنه رؤيتها في حسابه.",
+    "paymentTerms": "مهلة الدفع",
+    "termDays": "{{days}} يومًا",
+    "issue": "إصدار الفاتورة",
+    "collectTitle": "تسجيل الدفع",
+    "collectHint": "اختر طريقة دفع العميل.",
+    "markPaid": "تحديد كمدفوعة",
+    "print": "طباعة أو حفظ PDF",
+    "viewTrip": "فتح الرحلة",
+    "void": "إلغاء الفاتورة",
+    "voidTitle": "إلغاء هذه الفاتورة؟",
+    "voidReason": "السبب",
+    "issued": "تم إصدار الفاتورة",
+    "paid": "تم تسجيل الدفع",
+    "voided": "أُلغيت الفاتورة",
+    "tabs": {
+      "income": "الإيرادات",
+      "outcome": "المصروفات"
+    }
+  },
+  "myTrips": {
+    "title": "رحلاتك يا {{name}}",
+    "customerSubtitle": "الحجوزات القادمة والرحلات التي قمت بها",
+    "driverSubtitle": "الرحلات المكلّف بقيادتها",
+    "upcoming": "القادمة",
+    "past": "الرحلات السابقة",
+    "empty": "ليست لديك رحلات بعد."
+  },
+  "myInvoices": {
+    "title": "فواتيري",
+    "subtitle": "كل فواتير رحلاتك جاهزة للطباعة",
+    "toPay": "المستحق للدفع",
+    "overdue": "فواتير متأخرة",
+    "empty": "لا توجد فواتير بعد. تظهر هنا بعد اكتمال الرحلة."
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "subtitle": "تنبيهات وتحديثات حول الأسطول والرحلات والفواتير",
+    "bellLabel": "الإشعارات، {{count}} غير مقروءة",
+    "markAllRead": "تحديد الكل كمقروء",
+    "seeAll": "عرض كل الإشعارات",
+    "empty": "لا جديد لديك.",
+    "unread": "غير مقروء",
+    "all": "الكل",
+    "unreadOnly": "غير المقروءة ({{count}})",
+    "buckets": {
+      "today": "اليوم",
+      "week": "هذا الأسبوع",
+      "earlier": "أقدم"
+    },
+    "kinds": {
+      "GEOFENCE_ENTERED": {
+        "title": "دخلت {{vehicle}} منطقة {{zone}}",
+        "body": "رُصد الدخول من الموقع المباشر."
+      },
+      "GEOFENCE_EXITED": {
+        "title": "غادرت {{vehicle}} منطقة {{zone}}",
+        "body": "رُصدت المغادرة من الموقع المباشر."
+      },
+      "SPEED_LIMIT_EXCEEDED": {
+        "title": "{{vehicle}} تتجاوز السرعة في {{zone}}",
+        "body": "{{speed}} كم/س والحد {{limit}} كم/س."
+      },
+      "MAINTENANCE_SCHEDULED": {
+        "title": "عمل مجدول لـ {{vehicle}}",
+        "body": "{{title}} في {{date}}."
+      },
+      "MAINTENANCE_STARTED": {
+        "title": "{{vehicle}} في الورشة",
+        "body": "بدأ {{title}}."
+      },
+      "MAINTENANCE_COMPLETED": {
+        "title": "عادت {{vehicle}} إلى الخدمة",
+        "body": "اكتمل {{title}}."
+      },
+      "MAINTENANCE_OVERDUE": {
+        "title": "عمل متأخر لـ {{vehicle}}",
+        "body": "كان {{title}} مقررًا في {{date}}."
+      },
+      "TRIP_ASSIGNED": {
+        "title": "رحلة جديدة بـ {{vehicle}}",
+        "body": "تبدأ {{start}}."
+      },
+      "TRIP_RESCHEDULED": {
+        "title": "تغيّرت رحلتك بـ {{vehicle}}",
+        "body": "الانطلاق الجديد: {{start}}."
+      },
+      "TRIP_STARTED": {
+        "title": "بدأت رحلتك",
+        "body": "{{vehicle}} في الطريق."
+      },
+      "TRIP_COMPLETED": {
+        "title": "اكتملت الرحلة",
+        "body": "قطعت {{vehicle}} {{distance}} كم. ستصلك الفاتورة."
+      },
+      "TRIP_CANCELLED": {
+        "title": "أُلغيت الرحلة بـ {{vehicle}}",
+        "body": "{{reason}}"
+      },
+      "INVOICE_ISSUED": {
+        "title": "الفاتورة {{number}} جاهزة",
+        "body": "{{total}} د.ت، تستحق في {{dueDate}}."
+      },
+      "INVOICE_PAID": {
+        "title": "دُفعت الفاتورة {{number}}",
+        "body": "تم استلام {{total}} د.ت. شكرًا."
+      },
+      "INVOICE_OVERDUE": {
+        "title": "الفاتورة {{number}} متأخرة",
+        "body": "كان {{total}} د.ت مستحقًا في {{dueDate}}."
+      },
+      "LICENSE_EXPIRING": {
+        "title": "رخصة {{driver}} تنتهي قريبًا",
+        "body": "تاريخ الانتهاء: {{date}}. جدّدها لمواصلة القيادة."
+      }
+    }
+  },
+  "booking": {
+    "title": "احجز رحلة",
+    "subtitle": "حدّد وجهتك وموعدك، ونحن نختار المركبة والسائق.",
+    "where": "إلى أين؟",
+    "when": "متى؟",
+    "from": "نقطة الانطلاق",
+    "to": "الوجهة",
+    "searchPlaceholder": "ابحث عن عنوان أو مكان",
+    "useMyLocation": "استخدم موقعي الحالي",
+    "clear": "مسح هذا الموقع",
+    "swap": "تبديل الانطلاق والوجهة",
+    "tapForFrom": "أو انقر على الخريطة لتحديد نقطة الانطلاق",
+    "tapForTo": "أو انقر على الخريطة لتحديد الوجهة",
+    "now": "انطلق الآن",
+    "later": "جدولة",
+    "pickTime": "اختر وقت الانطلاق",
+    "noSlots": "لا مواعيد متبقية اليوم. اختر يومًا آخر.",
+    "periods": {
+      "morning": "صباحًا",
+      "afternoon": "بعد الظهر",
+      "evening": "مساءً"
+    },
+    "assignment": "المركبة والسائق والعميل",
+    "automatic": "يُختار تلقائيًا",
+    "manual": "محدّد يدويًا",
+    "pickForMe": "اختر الأفضل المتاح",
+    "noCustomer": "بدون عميل",
+    "missing": {
+      "from": "اختر نقطة الانطلاق لرؤية السعر.",
+      "to": "اختر الآن الوجهة.",
+      "time": "اختر يومًا ووقت انطلاق."
+    },
+    "calculating": "جارٍ حساب المسار والسعر…",
+    "distance": "المسافة",
+    "duration": "مدة القيادة",
+    "minutes": "{{count}} د",
+    "arrival": "الوصول",
+    "estimatedPrice": "السعر التقديري",
+    "noVehicle": "لا توجد مركبة متاحة في هذا الوقت. جرّب وقتًا آخر.",
+    "quoteFailed": "تعذّر حساب السعر. تحقق من اتصالك.",
+    "bookNow": "احجز الآن",
+    "bookLater": "جدولة الرحلة",
+    "booked": "تم حجز الرحلة",
+    "map": "خريطة المسار"
+  },
+  "outcome": {
+    "stats": {
+      "toPay": "المتبقي للدفع",
+      "toPayHint": "{{count}} مصروفات غير مدفوعة",
+      "maintenance": "مصروفات الصيانة",
+      "salaries": "رواتب السائقين",
+      "unpaid": "{{amount}} لم تُدفع بعد",
+      "net": "صافي هذا الشهر",
+      "paidOut": "{{amount}} مدفوعة"
+    },
+    "payroll": {
+      "title": "الرواتب القادمة",
+      "subtitle": "الرواتب المستحقة خلال 30 يومًا، تُحتسب كل 30 يومًا من تاريخ التوظيف",
+      "total": "المتوقع",
+      "empty": "لا رواتب مستحقة خلال 30 يومًا. أضف الراتب الشهري في ملفات السائقين."
+    },
+    "kinds": {
+      "ALL": "الكل",
+      "MAINTENANCE": "الصيانة",
+      "SALARY": "الرواتب"
+    },
+    "statuses": {
+      "ALL": "الكل",
+      "UNPAID": "غير مدفوعة",
+      "PAID": "مدفوعة",
+      "OVERDUE": "متأخرة"
+    },
+    "fields": {
+      "description": "المصروف",
+      "kind": "النوع",
+      "related": "يخص",
+      "dueDate": "الاستحقاق",
+      "status": "الحالة",
+      "amount": "المبلغ"
+    },
+    "salaryOf": "راتب · {{name}}",
+    "empty": "لا مصروفات هنا. تظهر أوامر العمل المكتملة والرواتب تلقائيًا.",
+    "pay": "ادفع",
+    "paid": "تم دفع المصروف"
+  }
+}

@@ -1,0 +1,114 @@
+<app-page-header [title]="'vehicles.title' | translate" [subtitle]="'vehicles.subtitle' | translate">
+  <a mat-flat-button routerLink="new" *appHasRole="roles.MANAGEMENT">
+    <mat-icon>add</mat-icon>
+    {{ 'vehicles.register' | translate }}
+  </a>
+</app-page-header>
+
+<section class="filters">
+  <mat-form-field appearance="outline" subscriptSizing="dynamic" class="grow">
+    <mat-label>{{ 'vehicles.searchPlaceholder' | translate }}</mat-label>
+    <mat-icon matPrefix>search</mat-icon>
+    <input matInput [ngModel]="search()" (ngModelChange)="changeFilter(search.set, $event)" />
+  </mat-form-field>
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>{{ 'vehicles.fields.status' | translate }}</mat-label>
+    <mat-select [ngModel]="status()" (ngModelChange)="changeFilter(status.set, $event)">
+      <mat-option [value]="null">{{ 'common.all' | translate }}</mat-option>
+      @for (option of statuses; track option) {
+        <mat-option [value]="option">{{ 'status.' + option | translate }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>{{ 'vehicles.fields.fuelType' | translate }}</mat-label>
+    <mat-select [ngModel]="fuelType()" (ngModelChange)="changeFilter(fuelType.set, $event)">
+      <mat-option [value]="null">{{ 'common.all' | translate }}</mat-option>
+      @for (option of fuelTypes; track option) {
+        <mat-option [value]="option">{{ 'fuel.' + option | translate }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-slide-toggle [ngModel]="maintenanceDue()" (ngModelChange)="changeFilter(maintenanceDue.set, $event)">
+    {{ 'vehicles.maintenanceDueOnly' | translate }}
+  </mat-slide-toggle>
+</section>
+
+<app-load-state
+  [loading]="vehicles.isLoading() && !vehicles.hasValue()"
+  [failed]="vehicles.status() === 'error'"
+  [empty]="vehicles.hasValue() && rows().length === 0"
+  [emptyMessage]="'vehicles.empty' | translate"
+  (retry)="vehicles.reload()"
+>
+  <div class="table-card">
+    <div class="table-scroll">
+      <table mat-table [dataSource]="rows()">
+        <ng-container matColumnDef="licensePlate">
+          <th mat-header-cell *matHeaderCellDef>{{ 'vehicles.fields.licensePlate' | translate }}</th>
+          <td
+            mat-cell
+            [attr.data-label]="'vehicles.fields.licensePlate' | translate"
+            *matCellDef="let vehicle"
+            class="strong"
+          >
+            {{ vehicle.licensePlate }}
+            @if (vehicle.inUse) {
+              <mat-icon class="inline-icon" [matTooltip]="'vehicles.onTrip' | translate">route</mat-icon>
+            }
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="vehicle">
+          <th mat-header-cell *matHeaderCellDef>{{ 'vehicles.fields.vehicle' | translate }}</th>
+          <td mat-cell [attr.data-label]="'vehicles.fields.vehicle' | translate" *matCellDef="let vehicle">
+            {{ vehicle.make }} {{ vehicle.model }} · {{ vehicle.year }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>{{ 'vehicles.fields.status' | translate }}</th>
+          <td mat-cell [attr.data-label]="'vehicles.fields.status' | translate" *matCellDef="let vehicle">
+            <app-status-chip [status]="vehicle.status" />
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="fuelType">
+          <th mat-header-cell *matHeaderCellDef>{{ 'vehicles.fields.fuelType' | translate }}</th>
+          <td mat-cell [attr.data-label]="'vehicles.fields.fuelType' | translate" *matCellDef="let vehicle">
+            {{ 'fuel.' + vehicle.fuelType | translate }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="mileage">
+          <th mat-header-cell *matHeaderCellDef>{{ 'vehicles.fields.mileage' | translate }}</th>
+          <td mat-cell [attr.data-label]="'vehicles.fields.mileage' | translate" *matCellDef="let vehicle">
+            {{ vehicle.mileage | number }} km
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="dailyRate">
+          <th mat-header-cell *matHeaderCellDef>{{ 'vehicles.fields.dailyRate' | translate }}</th>
+          <td mat-cell [attr.data-label]="'vehicles.fields.dailyRate' | translate" *matCellDef="let vehicle">
+            {{ vehicle.dailyRate | money }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="nextMaintenance">
+          <th mat-header-cell *matHeaderCellDef>{{ 'vehicles.fields.nextMaintenance' | translate }}</th>
+          <td
+            mat-cell
+            [attr.data-label]="'vehicles.fields.nextMaintenance' | translate"
+            *matCellDef="let vehicle"
+            [class.warning-text]="vehicle.maintenanceDue"
+          >
+            {{ vehicle.nextMaintenanceDate | date: 'mediumDate' }}
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let vehicle; columns: columns" class="clickable" (click)="open(vehicle.id)"></tr>
+      </table>
+    </div>
+    <mat-paginator
+      [length]="total()"
+      [pageIndex]="page()"
+      [pageSize]="size()"
+      [pageSizeOptions]="[10, 20, 50]"
+      (page)="changePage($event)"
+    />
+  </div>
+</app-load-state>

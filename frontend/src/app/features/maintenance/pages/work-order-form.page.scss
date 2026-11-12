@@ -1,0 +1,52 @@
+.form {
+  max-inline-size: 920px;
+}
+
+.kind-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: var(--space-3);
+}
+
+.kind {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-surface);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition:
+    border-color var(--duration) var(--ease-out),
+    background var(--duration) var(--ease-out);
+
+  &:hover {
+    border-color: var(--line-strong);
+  }
+
+  &[aria-checked='true'] {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+
+    mat-icon {
+      color: var(--accent);
+    }
+  }
+
+  mat-icon {
+    color: var(--ink-muted);
+  }
+}
+
+.kind-name {
+  font-weight: 600;
+}
+
+.kind-hint {
+  color: var(--ink-muted);
+  font-size: var(--text-sm);
+}

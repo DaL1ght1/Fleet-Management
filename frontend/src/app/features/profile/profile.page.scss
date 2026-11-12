@@ -1,0 +1,138 @@
+.hero {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-6);
+  margin-block-end: var(--space-6);
+  padding: var(--space-8);
+  border-radius: var(--radius-panel);
+  background: radial-gradient(circle at 100% 0%, rgb(18 150 143 / 35%), transparent 50%), var(--asphalt-900);
+  color: #fff;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 22px;
+    block-size: 4px;
+    background: repeating-linear-gradient(to right, var(--signal-500) 0 26px, transparent 26px 44px);
+    opacity: 0.55;
+  }
+
+  @media (max-width: 600px) {
+    padding: var(--space-6) var(--space-5) var(--space-10);
+  }
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  inline-size: 88px;
+  block-size: 88px;
+  border-radius: 50%;
+  background: var(--signal-500);
+  color: var(--signal-ink);
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: 700;
+}
+
+.who {
+  display: grid;
+  gap: var(--space-2);
+  min-inline-size: 0;
+
+  p {
+    color: var(--asphalt-200);
+    overflow-wrap: anywhere;
+  }
+}
+
+.roles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+
+  .role {
+    background: rgb(255 255 255 / 12%);
+    color: #fff;
+  }
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: start;
+
+  @media (max-width: 860px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tabs {
+  display: grid;
+  gap: var(--space-1);
+
+  @media (max-width: 860px) {
+    display: flex;
+    overflow-x: auto;
+  }
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border: 0;
+    border-radius: var(--radius-control);
+    background: transparent;
+    color: var(--ink-muted);
+    font: inherit;
+    font-weight: 600;
+    text-align: start;
+    white-space: nowrap;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--surface-hover);
+      color: var(--ink);
+    }
+
+    &[aria-current='true'] {
+      background: var(--surface);
+      color: var(--ink);
+      box-shadow: var(--shadow-raised);
+
+      mat-icon {
+        color: var(--accent);
+      }
+    }
+  }
+}
+
+.panels {
+  display: grid;
+  gap: var(--space-4);
+  max-inline-size: 760px;
+}
+
+.panel-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  margin-block-end: var(--space-5);
+
+  p {
+    flex-basis: 100%;
+  }
+}
+
+.password-fields {
+  display: grid;
+  max-inline-size: 440px;
+}

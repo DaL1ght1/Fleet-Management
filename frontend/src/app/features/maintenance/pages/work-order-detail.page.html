@@ -1,0 +1,146 @@
+<app-load-state
+  [loading]="workOrder.isLoading() && !workOrder.hasValue()"
+  [failed]="workOrder.status() === 'error'"
+  [empty]="workOrder.hasValue() && !workOrder.value()"
+  [emptyMessage]="'maintenance.notFound' | translate"
+  (retry)="workOrder.reload()"
+>
+  @if (workOrder.value(); as order) {
+    <app-page-header
+      [title]="order.title"
+      [subtitle]="('workOrderKind.' + order.kind | translate) + ' · ' + (order.scheduledFor | date: 'fullDate')"
+      backLink="/maintenance"
+    >
+      @if (order.status === 'SCHEDULED') {
+        <a mat-stroked-button routerLink="edit">
+          <mat-icon>edit</mat-icon>
+          {{ 'common.edit' | translate }}
+        </a>
+        <button mat-flat-button (click)="start()" [disabled]="busy()">
+          <mat-icon>play_arrow</mat-icon>
+          {{ 'maintenance.start' | translate }}
+        </button>
+      }
+      @if (order.status === 'SCHEDULED' || order.status === 'IN_PROGRESS') {
+        <button mat-stroked-button class="destructive" (click)="cancel()" [disabled]="busy()">
+          <mat-icon>close</mat-icon>
+          {{ 'maintenance.cancel' | translate }}
+        </button>
+      }
+    </app-page-header>
+
+    @if (order.status !== 'CANCELLED') {
+      <ol class="progress card" [attr.aria-label]="'maintenance.fields.status' | translate">
+        @for (stage of stages; track stage; let index = $index) {
+          <li [class.done]="index < stageIndex()" [class.current]="index === stageIndex()">
+            <span class="marker">
+              @if (index < stageIndex() || (index === stageIndex() && stage === 'COMPLETED')) {
+                <mat-icon>check</mat-icon>
+              } @else {
+                {{ index + 1 }}
+              }
+            </span>
+            <span class="stage-name">{{ 'status.' + stage | translate }}</span>
+            <span class="stage-time muted">
+              @switch (stage) {
+                @case ('SCHEDULED') {
+                  {{ order.scheduledFor | date: 'mediumDate' }}
+                }
+                @case ('IN_PROGRESS') {
+                  {{ order.startedAt | date: 'medium' }}
+                }
+                @case ('COMPLETED') {
+                  {{ order.completedAt | date: 'medium' }}
+                }
+              }
+            </span>
+          </li>
+        }
+      </ol>
+    } @else {
+      <p class="cancelled card">
+        <mat-icon>block</mat-icon>
+        <span>{{ 'maintenance.cancelledBecause' | translate: { reason: order.cancellationReason } }}</span>
+      </p>
+    }
+
+    <div class="card-grid">
+      <section class="card">
+        <h2>{{ 'maintenance.sections.details' | translate }}</h2>
+        <dl class="facts">
+          <dt>{{ 'maintenance.fields.vehicle' | translate }}</dt>
+          <dd>
+            <a [routerLink]="['/vehicles', order.vehicle.id]" class="plate">{{ order.vehicle.licensePlate }}</a>
+            <span class="muted"> {{ order.vehicle.make }} {{ order.vehicle.model }}</span>
+          </dd>
+          <dt>{{ 'maintenance.fields.status' | translate }}</dt>
+          <dd><app-status-chip [status]="order.overdue ? 'OVERDUE' : order.status" /></dd>
+          <dt>{{ 'maintenance.fields.priority' | translate }}</dt>
+          <dd><app-status-chip [status]="order.priority" prefix="priority." /></dd>
+          <dt>{{ 'maintenance.fields.vendor' | translate }}</dt>
+          <dd>{{ order.vendor ?? '—' }}</dd>
+          <dt>{{ 'vehicles.fields.mileage' | translate }}</dt>
+          <dd>{{ order.vehicle.mileage | number }} km</dd>
+          @if (order.description) {
+            <dt>{{ 'maintenance.fields.description' | translate }}</dt>
+            <dd class="prose">{{ order.description }}</dd>
+          }
+        </dl>
+      </section>
+
+      @if (order.status === 'COMPLETED') {
+        <section class="card">
+          <h2>{{ 'maintenance.sections.outcome' | translate }}</h2>
+          <dl class="facts">
+            <dt>{{ 'maintenance.fields.partsCost' | translate }}</dt>
+            <dd>{{ order.partsCost | money }}</dd>
+            <dt>{{ 'maintenance.fields.laborCost' | translate }}</dt>
+            <dd>{{ order.laborCost | money }}</dd>
+            <dt>{{ 'maintenance.fields.totalCost' | translate }}</dt>
+            <dd class="total">{{ order.totalCost | money }}</dd>
+            <dt>{{ 'maintenance.fields.odometer' | translate }}</dt>
+            <dd>{{ order.odometerKm !== null ? (order.odometerKm | number) + ' km' : '—' }}</dd>
+            @if (order.resolutionNotes) {
+              <dt>{{ 'maintenance.fields.resolutionNotes' | translate }}</dt>
+              <dd class="prose">{{ order.resolutionNotes }}</dd>
+            }
+          </dl>
+        </section>
+      }
+
+      @if (order.status === 'IN_PROGRESS') {
+        <form class="card" [formGroup]="completion" (ngSubmit)="complete()">
+          <h2>{{ 'maintenance.sections.complete' | translate }}</h2>
+          <p class="muted lead">{{ 'maintenance.completeHint' | translate }}</p>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'maintenance.fields.partsCost' | translate }}</mat-label>
+              <input matInput type="number" min="0" step="0.001" formControlName="partsCost" />
+              <span matTextSuffix>TND</span>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'maintenance.fields.laborCost' | translate }}</mat-label>
+              <input matInput type="number" min="0" step="0.001" formControlName="laborCost" />
+              <span matTextSuffix>TND</span>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="span-all">
+              <mat-label>{{ 'maintenance.fields.odometer' | translate }}</mat-label>
+              <input matInput type="number" [min]="order.vehicle.mileage" formControlName="odometerKm" />
+              <span matTextSuffix>km</span>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="span-all">
+              <mat-label>{{ 'maintenance.fields.resolutionNotes' | translate }}</mat-label>
+              <textarea matInput rows="3" formControlName="resolutionNotes"></textarea>
+            </mat-form-field>
+          </div>
+          <div class="form-actions">
+            <button mat-flat-button type="submit" [disabled]="busy()">
+              <mat-icon>task_alt</mat-icon>
+              {{ 'maintenance.complete' | translate }}
+            </button>
+          </div>
+        </form>
+      }
+    </div>
+  }
+</app-load-state>

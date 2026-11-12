@@ -1,0 +1,103 @@
+<app-load-state
+  [loading]="vehicle.isLoading() && !vehicle.hasValue()"
+  [failed]="vehicle.status() === 'error'"
+  [empty]="vehicle.hasValue() && !vehicle.value()"
+  [emptyMessage]="'vehicles.notFound' | translate"
+  (retry)="vehicle.reload()"
+>
+  @if (vehicle.value(); as current) {
+    <app-page-header
+      [title]="current.licensePlate"
+      [subtitle]="current.make + ' ' + current.model + ' · ' + current.year"
+      backLink="/vehicles"
+    >
+      <app-status-chip [status]="current.status" />
+      <ng-container *appHasRole="roles.MANAGEMENT">
+        <a mat-stroked-button [routerLink]="['edit']">
+          <mat-icon>edit</mat-icon>
+          {{ 'common.edit' | translate }}
+        </a>
+        <button mat-stroked-button [matMenuTriggerFor]="statusMenu">
+          <mat-icon>swap_horiz</mat-icon>
+          {{ 'vehicles.changeStatus' | translate }}
+        </button>
+        <mat-menu #statusMenu="matMenu">
+          @for (option of statuses; track option) {
+            <button mat-menu-item [disabled]="option === current.status" (click)="changeStatus(option)">
+              {{ 'status.' + option | translate }}
+            </button>
+          }
+        </mat-menu>
+      </ng-container>
+      <button mat-stroked-button class="destructive" *appHasRole="roles.ADMIN" (click)="remove()">
+        <mat-icon>delete</mat-icon>
+        {{ 'common.delete' | translate }}
+      </button>
+    </app-page-header>
+
+    <div class="card-grid">
+      <section class="card">
+        <h2>{{ 'vehicles.sections.identity' | translate }}</h2>
+        <dl class="facts">
+          <dt>{{ 'vehicles.fields.vin' | translate }}</dt>
+          <dd>{{ current.vin }}</dd>
+          <dt>{{ 'vehicles.fields.color' | translate }}</dt>
+          <dd>{{ current.color }}</dd>
+          <dt>{{ 'vehicles.fields.fuelType' | translate }}</dt>
+          <dd>{{ 'fuel.' + current.fuelType | translate }}</dd>
+          <dt>{{ 'vehicles.fields.seatingCapacity' | translate }}</dt>
+          <dd>{{ current.seatingCapacity }}</dd>
+          <dt>{{ 'vehicles.fields.gpsEnabled' | translate }}</dt>
+          <dd>{{ (current.gpsEnabled ? 'common.yes' : 'common.no') | translate }}</dd>
+          <dt>{{ 'vehicles.fields.dailyRate' | translate }}</dt>
+          <dd>{{ current.dailyRate | money }}</dd>
+        </dl>
+      </section>
+
+      <section class="card">
+        <h2>{{ 'vehicles.sections.usage' | translate }}</h2>
+        <dl class="facts">
+          <dt>{{ 'vehicles.fields.mileage' | translate }}</dt>
+          <dd>{{ current.mileage | number }} km</dd>
+          <dt>{{ 'vehicles.fields.currentTrip' | translate }}</dt>
+          <dd>
+            @if (current.currentTripId) {
+              <a [routerLink]="['/trips', current.currentTripId]">{{ 'vehicles.viewTrip' | translate }}</a>
+            } @else {
+              {{ 'vehicles.available' | translate }}
+            }
+          </dd>
+        </dl>
+        <div class="inline-form">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>{{ 'vehicles.newOdometerReading' | translate }}</mat-label>
+            <input
+              matInput
+              type="number"
+              [min]="current.mileage"
+              [ngModel]="odometer()"
+              (ngModelChange)="odometer.set($event)"
+            />
+          </mat-form-field>
+          <button mat-stroked-button [disabled]="odometer() === null" (click)="recordOdometer()">
+            {{ 'vehicles.record' | translate }}
+          </button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>{{ 'vehicles.sections.maintenance' | translate }}</h2>
+        <dl class="facts">
+          <dt>{{ 'vehicles.fields.lastMaintenance' | translate }}</dt>
+          <dd>{{ current.lastMaintenanceDate | date: 'mediumDate' }}</dd>
+          <dt>{{ 'vehicles.fields.maintenanceInterval' | translate }}</dt>
+          <dd>{{ 'vehicles.days' | translate: { count: current.maintenanceIntervalDays } }}</dd>
+          <dt>{{ 'vehicles.fields.nextMaintenance' | translate }}</dt>
+          <dd [class.warning-text]="current.maintenanceDue">{{ current.nextMaintenanceDate | date: 'mediumDate' }}</dd>
+        </dl>
+      </section>
+      <app-vehicle-work-orders [vehicleId]="current.id" />
+      <app-vehicle-telemetry [vehicleId]="current.id" [licensePlate]="current.licensePlate" />
+    </div>
+  }
+</app-load-state>

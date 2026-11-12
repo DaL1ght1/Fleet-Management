@@ -1,0 +1,20 @@
+.layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: var(--space-4);
+  min-block-size: calc(100vh - 220px);
+}
+
+.map {
+  min-block-size: 480px;
+}
+
+@media (max-width: 960px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .map {
+    block-size: 60vh;
+  }
+}

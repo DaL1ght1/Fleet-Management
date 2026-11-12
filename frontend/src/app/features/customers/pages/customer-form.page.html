@@ -1,0 +1,39 @@
+<app-page-header
+  [title]="(editing() ? 'customers.editTitle' : 'customers.registerTitle') | translate"
+  backLink="/customers"
+>
+  @if (editing()) {
+    <button mat-stroked-button class="destructive" *appHasRole="roles.ADMIN" (click)="remove()">
+      <mat-icon>delete</mat-icon>
+      {{ 'common.delete' | translate }}
+    </button>
+  }
+</app-page-header>
+
+<form class="card form-grid" [formGroup]="form" (ngSubmit)="save()">
+  <mat-form-field appearance="outline">
+    <mat-label>{{ 'customers.fields.firstName' | translate }}</mat-label>
+    <input matInput formControlName="firstName" autocomplete="given-name" />
+    <mat-error>{{ 'validation.required' | translate }}</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>{{ 'customers.fields.lastName' | translate }}</mat-label>
+    <input matInput formControlName="lastName" autocomplete="family-name" />
+    <mat-error>{{ 'validation.required' | translate }}</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>{{ 'customers.fields.email' | translate }}</mat-label>
+    <input matInput type="email" formControlName="email" autocomplete="email" />
+    <mat-error>{{ 'validation.email' | translate }}</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>{{ 'customers.fields.phoneNumber' | translate }}</mat-label>
+    <input matInput type="tel" formControlName="phoneNumber" autocomplete="tel" />
+    <mat-error>{{ 'validation.phone' | translate }}</mat-error>
+  </mat-form-field>
+
+  <div class="form-actions span-all">
+    <button mat-button type="button" (click)="cancel()">{{ 'common.cancel' | translate }}</button>
+    <button mat-flat-button type="submit" [disabled]="saving()">{{ 'common.save' | translate }}</button>
+  </div>
+</form>

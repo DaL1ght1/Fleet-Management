@@ -1,0 +1,22 @@
+.severity {
+  display: inline-block;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+
+.severity-INFO {
+  background: var(--info-soft);
+  color: var(--info);
+}
+
+.severity-WARNING {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.severity-CRITICAL {
+  background: var(--danger-soft);
+  color: var(--danger);
+}

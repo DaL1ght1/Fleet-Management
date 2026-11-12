@@ -1,0 +1,172 @@
+fragment InvoiceSummary on Invoice {
+  id
+  number
+  status
+  total
+  currency
+  issuedOn
+  dueDate
+  paidOn
+  overdue
+  createdAt
+}
+
+fragment InvoiceDocument on Invoice {
+  ...InvoiceSummary
+  lines {
+    description
+    amount
+  }
+  subtotal
+  taxRate
+  taxAmount
+  paymentMethod
+  voidReason
+  trip {
+    id
+    type
+    scheduledStart
+    completedAt
+    distanceKm
+    startLocation {
+      address
+      city
+    }
+    endLocation {
+      address
+      city
+    }
+  }
+  vehicle {
+    id
+    licensePlate
+    make
+    model
+  }
+}
+
+query Invoices($filter: InvoiceFilter, $page: Int, $size: Int) {
+  invoices(filter: $filter, page: $page, size: $size) {
+    items {
+      ...InvoiceSummary
+      customer {
+        id
+        fullName
+        email
+      }
+      vehicle {
+        id
+        licensePlate
+      }
+    }
+    totalCount
+    page
+    size
+    hasNext
+  }
+}
+
+query Invoice($id: UUID!) {
+  invoice(id: $id) {
+    ...InvoiceDocument
+    customer {
+      id
+      fullName
+      email
+      phoneNumber
+    }
+  }
+}
+
+query BillingStatistics {
+  billingStatistics {
+    drafts
+    outstanding
+    overdue
+    overdueCount
+    collectedThisMonth
+  }
+}
+
+mutation IssueInvoice($id: UUID!, $paymentTermDays: Int) {
+  issueInvoice(id: $id, paymentTermDays: $paymentTermDays) {
+    ...InvoiceSummary
+  }
+}
+
+mutation MarkInvoicePaid($id: UUID!, $method: PaymentMethod!) {
+  markInvoicePaid(id: $id, method: $method) {
+    ...InvoiceSummary
+    paymentMethod
+  }
+}
+
+mutation VoidInvoice($id: UUID!, $reason: String!) {
+  voidInvoice(id: $id, reason: $reason) {
+    ...InvoiceSummary
+    voidReason
+  }
+}
+
+fragment ExpenseFields on Expense {
+  id
+  kind
+  status
+  description
+  amount
+  dueDate
+  overdue
+  paidOn
+  paymentMethod
+  workOrderId
+  vehicle {
+    id
+    licensePlate
+  }
+  driver {
+    id
+    fullName
+  }
+}
+
+query Expenses($filter: ExpenseFilter, $page: Int, $size: Int) {
+  expenses(filter: $filter, page: $page, size: $size) {
+    items {
+      ...ExpenseFields
+    }
+    totalCount
+    page
+    size
+    hasNext
+  }
+}
+
+query Outcome {
+  expenseStatistics {
+    maintenanceTotal
+    maintenanceUnpaid
+    salariesTotal
+    salariesUnpaid
+    unpaidTotal
+    unpaidCount
+    paidThisMonth
+  }
+  upcomingSalaries(days: 30) {
+    driver {
+      id
+      fullName
+    }
+    driverName
+    payday
+    amount
+  }
+  billingStatistics {
+    collectedThisMonth
+  }
+}
+
+mutation PayExpense($id: UUID!, $method: PaymentMethod!) {
+  payExpense(id: $id, method: $method) {
+    ...ExpenseFields
+  }
+}

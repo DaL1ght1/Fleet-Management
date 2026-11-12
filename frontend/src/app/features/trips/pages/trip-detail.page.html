@@ -1,0 +1,162 @@
+<app-load-state
+  [loading]="trip.isLoading() && !trip.hasValue()"
+  [failed]="trip.status() === 'error'"
+  [empty]="trip.hasValue() && !trip.value()"
+  [emptyMessage]="'trips.notFound' | translate"
+  (retry)="trip.reload()"
+>
+  @if (trip.value(); as current) {
+    <app-page-header
+      [title]="('tripType.' + current.type | translate) + ' · ' + current.vehicle.licensePlate"
+      [subtitle]="(current.scheduledStart | date: 'full') ?? ''"
+      backLink="/trips"
+    >
+      <app-status-chip [status]="current.status" />
+      @if (current.status === 'SCHEDULED') {
+        <button mat-flat-button *appHasRole="roles.STAFF" (click)="start()">
+          <mat-icon>play_arrow</mat-icon>
+          {{ 'trips.start' | translate }}
+        </button>
+        <a mat-stroked-button [routerLink]="['edit']" *appHasRole="roles.MANAGEMENT">
+          <mat-icon>edit_calendar</mat-icon>
+          {{ 'trips.reschedule' | translate }}
+        </a>
+      }
+      @if (current.status === 'SCHEDULED' || current.status === 'IN_PROGRESS') {
+        <button mat-stroked-button *appHasRole="roles.MANAGEMENT" (click)="cancel()">
+          <mat-icon>block</mat-icon>
+          {{ 'trips.cancelTrip' | translate }}
+        </button>
+      }
+      @if (current.status !== 'IN_PROGRESS') {
+        <button mat-stroked-button class="destructive" *appHasRole="roles.ADMIN" (click)="remove()">
+          <mat-icon>delete</mat-icon>
+          {{ 'common.delete' | translate }}
+        </button>
+      }
+    </app-page-header>
+
+    @if (current.status === 'IN_PROGRESS') {
+      <form class="card completion" *appHasRole="roles.STAFF" [formGroup]="completion" (ngSubmit)="complete()">
+        <h2>{{ 'trips.completeTitle' | translate }}</h2>
+        <div class="inline-form">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'trips.fields.distance' | translate }}</mat-label>
+            <input matInput type="number" min="0" step="0.1" formControlName="distanceKm" />
+            <span matTextSuffix>km</span>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'trips.fields.fuelCost' | translate }}</mat-label>
+            <input matInput type="number" min="0" step="0.01" formControlName="fuelCost" />
+            <span matTextSuffix>TND</span>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'trips.fields.additionalFees' | translate }}</mat-label>
+            <input matInput type="number" min="0" step="0.01" formControlName="additionalFees" />
+            <span matTextSuffix>TND</span>
+          </mat-form-field>
+          <button mat-flat-button type="submit">
+            <mat-icon>flag</mat-icon>
+            {{ 'trips.complete' | translate }}
+          </button>
+        </div>
+      </form>
+    }
+
+    <div class="card-grid">
+      <section class="card span-2">
+        <h2>{{ 'trips.sections.route' | translate }}</h2>
+        <app-route-map [start]="current.startLocation" [end]="current.endLocation" [waypoints]="current.waypoints" />
+        <dl class="facts">
+          <dt>{{ 'trips.fields.start' | translate }}</dt>
+          <dd>{{ current.startLocation.address }}</dd>
+          @for (stop of current.waypoints; track $index) {
+            <dt>{{ 'trips.fields.stop' | translate: { index: $index + 1 } }}</dt>
+            <dd>{{ stop.address }}</dd>
+          }
+          <dt>{{ 'trips.fields.end' | translate }}</dt>
+          <dd>{{ current.endLocation.address }}</dd>
+        </dl>
+      </section>
+
+      <section class="card">
+        <h2>{{ 'trips.sections.assignment' | translate }}</h2>
+        <dl class="facts">
+          <dt>{{ 'trips.fields.vehicle' | translate }}</dt>
+          <dd>
+            <a [routerLink]="['/vehicles', current.vehicle.id]">
+              {{ current.vehicle.licensePlate }} · {{ current.vehicle.make }} {{ current.vehicle.model }}
+            </a>
+          </dd>
+          <dt>{{ 'trips.fields.driver' | translate }}</dt>
+          <dd>
+            @if (current.driver; as driver) {
+              <a [routerLink]="['/drivers', driver.id]">{{ driver.fullName }}</a> · {{ driver.phoneNumber }}
+            } @else {
+              {{ 'trips.unassigned' | translate }}
+            }
+          </dd>
+        </dl>
+      </section>
+
+      <section class="card">
+        <h2>{{ 'trips.sections.timing' | translate }}</h2>
+        <dl class="facts">
+          <dt>{{ 'trips.fields.scheduledStart' | translate }}</dt>
+          <dd>{{ current.scheduledStart | date: 'medium' }}</dd>
+          <dt>{{ 'trips.fields.scheduledEnd' | translate }}</dt>
+          <dd>{{ current.scheduledEnd | date: 'medium' }}</dd>
+          <dt>{{ 'trips.fields.startedAt' | translate }}</dt>
+          <dd>{{ (current.startedAt | date: 'medium') ?? '—' }}</dd>
+          <dt>{{ 'trips.fields.completedAt' | translate }}</dt>
+          <dd>{{ (current.completedAt | date: 'medium') ?? '—' }}</dd>
+          <dt>{{ 'trips.fields.duration' | translate }}</dt>
+          <dd>
+            {{ current.actualDurationMinutes ?? current.estimatedDurationMinutes ?? '—' }}
+            {{ 'trips.minutes' | translate }}
+          </dd>
+          <dt>{{ 'trips.fields.distance' | translate }}</dt>
+          <dd>{{ current.distanceKm !== null ? (current.distanceKm | number: '1.0-1') + ' km' : '—' }}</dd>
+        </dl>
+      </section>
+
+      <section class="card">
+        <h2>{{ 'trips.sections.costs' | translate }}</h2>
+        <dl class="facts">
+          <dt>{{ 'trips.fields.baseRate' | translate }}</dt>
+          <dd>{{ current.costs.baseRate | money }}</dd>
+          <dt>{{ 'trips.fields.fuelCost' | translate }}</dt>
+          <dd>{{ current.costs.fuelCost | money }}</dd>
+          <dt>{{ 'trips.fields.additionalFees' | translate }}</dt>
+          <dd>{{ current.costs.additionalFees | money }}</dd>
+          <dt class="strong">{{ 'trips.fields.totalCost' | translate }}</dt>
+          <dd class="strong">{{ current.costs.totalCost | money }}</dd>
+        </dl>
+      </section>
+
+      @if (current.notes || current.customerNotes || current.internalNotes || current.cancellationReason) {
+        <section class="card">
+          <h2>{{ 'trips.sections.notes' | translate }}</h2>
+          <dl class="facts">
+            @if (current.cancellationReason) {
+              <dt>{{ 'trips.cancellationReason' | translate }}</dt>
+              <dd>{{ current.cancellationReason }}</dd>
+            }
+            @if (current.notes) {
+              <dt>{{ 'trips.fields.notes' | translate }}</dt>
+              <dd>{{ current.notes }}</dd>
+            }
+            @if (current.customerNotes) {
+              <dt>{{ 'trips.fields.customerNotes' | translate }}</dt>
+              <dd>{{ current.customerNotes }}</dd>
+            }
+            @if (current.internalNotes) {
+              <dt>{{ 'trips.fields.internalNotes' | translate }}</dt>
+              <dd>{{ current.internalNotes }}</dd>
+            }
+          </dl>
+        </section>
+      }
+    </div>
+  }
+</app-load-state>

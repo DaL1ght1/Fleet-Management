@@ -1,0 +1,130 @@
+<app-page-header [title]="'trips.rescheduleTitle' | translate" [backLink]="['/trips', id()]" />
+
+<form [formGroup]="form" (ngSubmit)="save()" class="stack">
+  <section class="card form-grid">
+    <h2 class="span-all">{{ 'trips.sections.assignment' | translate }}</h2>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'trips.fields.type' | translate }}</mat-label>
+      <mat-select formControlName="type">
+        @for (option of types; track option) {
+          <mat-option [value]="option">{{ 'tripType.' + option | translate }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'trips.fields.vehicle' | translate }}</mat-label>
+      <mat-select formControlName="vehicleId">
+        @for (vehicle of options.value()?.vehicles?.items ?? []; track vehicle.id) {
+          <mat-option [value]="vehicle.id">
+            {{ vehicle.licensePlate }} · {{ vehicle.make }} {{ vehicle.model }}
+            @if (vehicle.inUse) {
+              ({{ 'trips.onTrip' | translate }})
+            }
+          </mat-option>
+        }
+      </mat-select>
+      <mat-error>{{ 'validation.required' | translate }}</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'trips.fields.driver' | translate }}</mat-label>
+      <mat-select formControlName="driverId">
+        <mat-option value="">{{ 'trips.unassigned' | translate }}</mat-option>
+        @for (driver of options.value()?.drivers?.items ?? []; track driver.id) {
+          <mat-option [value]="driver.id">
+            {{ driver.fullName }}
+            @if (!driver.available) {
+              ({{ 'trips.busy' | translate }})
+            }
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </section>
+
+  <section class="card form-grid">
+    <h2 class="span-all">{{ 'trips.sections.timing' | translate }}</h2>
+    <app-date-time-field formControlName="scheduledStart" [label]="'trips.fields.scheduledStart' | translate" />
+    <app-date-time-field formControlName="scheduledEnd" [label]="'trips.fields.scheduledEnd' | translate" />
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'trips.fields.estimatedDuration' | translate }}</mat-label>
+      <input matInput type="number" min="0" formControlName="estimatedDurationMinutes" />
+      <span matTextSuffix>{{ 'trips.minutes' | translate }}</span>
+    </mat-form-field>
+    @if (form.hasError('scheduleOrder')) {
+      <p class="error-text span-all">{{ 'validation.scheduleOrder' | translate }}</p>
+    }
+  </section>
+
+  <section class="card">
+    <h2>{{ 'trips.sections.route' | translate }}</h2>
+    <div class="picker-grid">
+      <app-location-picker [label]="'trips.fields.start' | translate" [(location)]="startLocation" />
+      <app-location-picker [label]="'trips.fields.end' | translate" [(location)]="endLocation" />
+    </div>
+    @if (locationsMissing()) {
+      <p class="error-text">{{ 'validation.locations' | translate }}</p>
+    }
+    <div class="waypoints">
+      <app-location-picker [label]="'trips.addStop' | translate" [(location)]="pendingWaypoint" />
+      <button mat-stroked-button type="button" [disabled]="!pendingWaypoint()" (click)="addWaypoint()">
+        <mat-icon>add_location_alt</mat-icon>
+        {{ 'trips.addStop' | translate }}
+      </button>
+      <ol>
+        @for (stop of waypoints(); track $index) {
+          <li>
+            {{ stop.address }}
+            <button
+              mat-icon-button
+              type="button"
+              (click)="removeWaypoint($index)"
+              [attr.aria-label]="'common.remove' | translate"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          </li>
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="card form-grid">
+    <h2 class="span-all">{{ 'trips.sections.costs' | translate }}</h2>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'trips.fields.baseRate' | translate }}</mat-label>
+      <input matInput type="number" min="0" step="0.01" formControlName="baseRate" />
+      <span matTextSuffix>TND</span>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'trips.fields.fuelCost' | translate }}</mat-label>
+      <input matInput type="number" min="0" step="0.01" formControlName="fuelCost" />
+      <span matTextSuffix>TND</span>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'trips.fields.additionalFees' | translate }}</mat-label>
+      <input matInput type="number" min="0" step="0.01" formControlName="additionalFees" />
+      <span matTextSuffix>TND</span>
+    </mat-form-field>
+  </section>
+
+  <section class="card form-grid">
+    <h2 class="span-all">{{ 'trips.sections.notes' | translate }}</h2>
+    <mat-form-field appearance="outline" class="span-all">
+      <mat-label>{{ 'trips.fields.notes' | translate }}</mat-label>
+      <textarea matInput rows="2" formControlName="notes"></textarea>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'trips.fields.customerNotes' | translate }}</mat-label>
+      <textarea matInput rows="2" formControlName="customerNotes"></textarea>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'trips.fields.internalNotes' | translate }}</mat-label>
+      <textarea matInput rows="2" formControlName="internalNotes"></textarea>
+    </mat-form-field>
+  </section>
+
+  <div class="form-actions">
+    <button mat-button type="button" (click)="cancel()">{{ 'common.cancel' | translate }}</button>
+    <button mat-flat-button type="submit" [disabled]="saving()">{{ 'common.save' | translate }}</button>
+  </div>
+</form>

@@ -1,613 +1,173 @@
-# 🚗 SmartStreet - Intelligent Fleet Management Platform
+# SmartStreet — Fleet Management Platform
 
-[![Angular](https://img.shields.io/badge/Angular-20.2-red)](https://angular.io/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.4-green)](https://spring.io/projects/spring-boot)
-[![GraphQL](https://img.shields.io/badge/GraphQL-Federation-e10098)](https://www.apollographql.com/docs/federation/)
-[![Keycloak](https://img.shields.io/badge/Keycloak-24.0.2-blue)](https://www.keycloak.org/)
-[![Docker](https://img.shields.io/badge/Docker-Compose-2496ed)](https://www.docker.com/)
-
-A comprehensive fleet management platform built with modern microservices architecture, featuring real-time vehicle tracking, trip management, maintenance scheduling, and driver coordination.
-
-## 📋 Table of Contents
-
-- [🏗️ Architecture Overview](#️-architecture-overview)
-- [✨ Features](#-features)
-- [🛠️ Tech Stack](#️-tech-stack)
-- [📦 Project Structure](#-project-structure)
-- [🚀 Quick Start](#-quick-start)
-- [🔧 Development Setup](#-development-setup)
-- [📱 Frontend Application](#-frontend-application)
-- [🔌 Backend Services](#-backend-services)
-- [🔐 Authentication & Security](#-authentication--security)
-- [🌐 API Documentation](#-api-documentation)
-- [🧪 Testing](#-testing)
-- [🚀 Deployment](#-deployment)
-- [🤝 Contributing](#-contributing)
-- [📄 License](#-license)
-
-## 🏗️ Architecture Overview
-
-SmartStreet follows a microservices architecture pattern with GraphQL Federation, providing scalable and maintainable fleet management solutions.
+SmartStreet manages a rental and service fleet: vehicles, drivers, customers, the trips that connect them, the workshop that keeps them running and the invoices that pay for them. It is a set of Spring Boot GraphQL subgraphs federated by Apollo Router, an identity service in front of Keycloak, and an Angular front end with its own sign-in, sign-up and account pages.
 
 ```mermaid
-graph TB
-    Frontend[Angular Frontend] --> Gateway[GraphQL Gateway]
-    Gateway --> Auth[Keycloak Auth]
-    Gateway --> US[User Service]
-    Gateway --> VS[Vehicles Service]
-    Gateway --> TS[Trips Service]
-    Gateway --> MS[Maintenance Service]
-    Gateway --> GS[Geofence Service]
-    Gateway --> BS[Billing Service]
-    Gateway --> NS[Notifications Service]
-    Gateway --> TI[Telemetry Ingest]
-    
-    US --> DB[(PostgreSQL)]
-    VS --> DB
-    TS --> DB
-    MS --> DB
-    GS --> DB
-    BS --> DB
-    
-    US --> Kafka[Apache Kafka]
-    VS --> Kafka
-    TS --> Kafka
-    MS --> Kafka
-    
-    Gateway --> Redis[(Redis Cache)]
-    
-    subgraph "Infrastructure"
-        DB
-        Kafka
-        Redis
-        Auth
-    end
+graph LR
+    UI[Angular app] -->|GraphQL + JWT| Router[Apollo Router]
+    UI -->|/auth REST + session cookie| Identity[identity-service]
+    Identity -->|password grant, admin API| Keycloak
+    Identity -->|reset and invitation emails| Mailpit
+    Router -->|x-router-secret + JWT| Users[user-service]
+    Router --> Vehicles[vehicles-service]
+    Router --> Trips[trips-service]
+    Router --> Telemetry[telemetry-service]
+    Router --> Geofence[geofence-service]
+    Router --> Maintenance[maintenance-service]
+    Router --> Billing[billing-service]
+    Router --> Notifications[notification-service]
+    Devices[GPS trackers] -->|X-Device-Key| Telemetry
+    Keycloak --> Postgres[(PostgreSQL)]
+    Identity & Users & Vehicles & Trips & Telemetry & Geofence & Maintenance & Billing & Notifications --> Postgres
+    Identity & Users & Vehicles & Trips & Telemetry & Geofence & Maintenance & Billing & Notifications <-->|domain events via outbox| Kafka[(Kafka)]
 ```
 
-## ✨ Features
+## Services
 
-### 🚙 Fleet Management
-- **Vehicle Registration & Management** - Complete vehicle lifecycle management
-- **Real-time Vehicle Tracking** - GPS-based location tracking and monitoring
-- **Vehicle Status Monitoring** - Active, inactive, and maintenance status tracking
-- **Fleet Analytics** - Comprehensive fleet performance metrics
+| Service | Owns | Publishes | Consumes |
+|---|---|---|---|
+| `identity-service` | Sign-in, sign-up, session refresh, password reset, staff invitations, profile (REST over Keycloak) | `account.events` | |
+| `user-service` | Customers, drivers (licence, status, rating, completed trips), account links | `customer.events`, `driver.events` | `trip.events` (driver busy/free, trip counts), `account.events` (customer self sign-up, driver account link) |
+| `vehicles-service` | Vehicles, odometer, maintenance schedule | `vehicle.events` | `trip.events` (vehicle in use), `telemetry.positions` (odometer sync) |
+| `trips-service` | Trip lifecycle `SCHEDULED → IN_PROGRESS → COMPLETED / CANCELLED`, costs, route, one-step booking (pickup, destination, optional departure) with automatic vehicle and driver assignment and a price quote | `trip.events` | `vehicle.events`, `driver.events` (local availability projection) |
+| `telemetry-service` | Tracking devices, position history, latest position per vehicle | `telemetry.positions` | `vehicle.events` (known vehicles, revoke devices of deleted vehicles) |
+| `geofence-service` | Zones (polygon or circle), occupancy, alerts | `geofence.events` | `telemetry.positions` |
+| `maintenance-service` | Work orders `SCHEDULED → IN_PROGRESS → COMPLETED / CANCELLED`, parts and labour costs, automatic preventive orders, overdue flags | `maintenance.events` | `vehicle.events` |
+| `billing-service` | Income: invoices drafted from completed trips, `DRAFT → ISSUED → PAID / VOID`, 19 % VAT, payment terms, overdue detection. Outcome: expenses from completed work orders and driver salaries accrued every 30 days from the hire date | `billing.events` | `trip.events`, `customer.events`, `maintenance.events`, `driver.events` |
+| `notification-service` | Per-user inbox with read state, audience routing (staff, driver, customer), licence expiry reminders | | `geofence.events`, `maintenance.events`, `trip.events`, `billing.events`, `vehicle.events`, `driver.events`, `customer.events` |
+| `shared` | Security, GraphQL error mapping, event contracts, transactional outbox, Kafka dead-lettering | | |
 
-### 🗺️ Trip Management
-- **Trip Planning & Scheduling** - Advanced trip creation and scheduling
-- **Route Optimization** - Intelligent routing for maximum efficiency
-- **Real-time Trip Tracking** - Live trip monitoring and updates
-- **Trip History & Analytics** - Detailed trip reports and analytics
+Key rules enforced by the backend:
 
-### 👥 Driver Management
-- **Driver Profiles** - Complete driver information management
-- **License & Certification Tracking** - Driver qualification management
-- **Performance Monitoring** - Driver performance metrics and scoring
-- **Assignment Management** - Efficient driver-vehicle assignments
+- A trip can only use an `ACTIVE` vehicle and an `ACTIVE` driver, and never overlaps another active trip for either. The service checks this, and PostgreSQL exclusion constraints guarantee it under concurrency.
+- Vehicles and drivers on a trip cannot be deleted or taken out of service.
+- Odometer readings never go backwards. Starting a work order takes the vehicle out of service and completing it brings the vehicle back with a fresh maintenance date.
+- A vehicle within 7 days of its next service gets a preventive work order automatically.
+- Every completed trip with a cost gets exactly one draft invoice. Customers only ever see issued invoices of their own account.
+- Geofence alerts follow the zone kind: leaving a service area or entering a restricted area is critical, depots are informational, and speeding inside a zone with a limit is a warning (at most one every 10 minutes per vehicle).
+- Every state change is written to an outbox table in the same transaction and relayed to Kafka. Consumers are idempotent, and failed records go to `<topic>.DLT` after retries.
+- Driver salaries accrue every 30 days from the hire date (`PayCycle` in `shared`) and show up as expenses on the billing *Outcome* tab.
 
-### 🔧 Maintenance Management
-- **Preventive Maintenance Scheduling** - Automated maintenance scheduling
-- **Maintenance History Tracking** - Complete maintenance records
-- **Cost Management** - Maintenance cost tracking and budgeting
-- **Service Provider Management** - Vendor and technician management
+### Trip booking
 
-### 💰 Billing & Finance
-- **Trip-based Billing** - Automated billing based on trip data
-- **Cost Tracking** - Comprehensive cost management
-- **Invoice Generation** - Automated invoice creation
-- **Financial Reporting** - Detailed financial analytics
+Customers and staff book a trip in one step: pick a pickup and a destination on the map, optionally a departure time, and `requestTrip` assigns a free `ACTIVE` vehicle and driver. `tripQuote` prices the trip before it is confirmed with a base fare plus a rate per kilometre. The defaults are 8.000 and 0.850, and you can override them with `TRIP_BASE_FARE` and `TRIP_PRICE_PER_KM` on `trips-service`. The duration estimate adds a handover margin to the travel time.
 
-### 🔔 Notifications & Alerts
-- **Real-time Notifications** - Instant alerts for critical events
-- **Maintenance Reminders** - Automated maintenance scheduling alerts
-- **Trip Status Updates** - Real-time trip status notifications
-- **Custom Alert Rules** - Configurable alert conditions
+The front end calls two public services directly, with URLs set in `frontend/src/environments`:
 
-### 🗺️ Geofencing
-- **Geographic Boundaries** - Define and manage geofenced areas
-- **Entry/Exit Alerts** - Automated notifications for boundary crossings
-- **Route Compliance** - Ensure vehicles stay within designated areas
-- **Location-based Services** - Context-aware fleet management
+| Purpose | Default |
+|---|---|
+| Address search (geocoding) | Photon, `https://photon.komoot.io` |
+| Driving routes | OSRM demo server, `https://router.project-osrm.org` |
 
-## 🛠️ Tech Stack
+Both are rate-limited public demos, so point them at your own instances in production.
 
-### Frontend
-- **Framework**: Angular 20.2 with Standalone Components
-- **UI Library**: Angular Material Design
-- **Styling**: SCSS with CSS Custom Properties
-- **State Management**: NgRx Signals
-- **GraphQL Client**: Apollo Angular
-- **Internationalization**: ngx-translate
-- **Authentication**: Keycloak JS Adapter
+## Quick start
 
-### Backend
-- **Framework**: Spring Boot 3.5.4
-- **Language**: Java 21
-- **GraphQL**: DGS Framework with Federation
-- **Database**: PostgreSQL 15
-- **Message Broker**: Apache Kafka
-- **Cache**: Redis 7
-- **Authentication**: Keycloak 24.0.2
+Prerequisites: Docker, Node.js 22, and Java 21 with Maven if you build outside Docker.
 
-### Infrastructure
-- **Containerization**: Docker & Docker Compose
-- **API Gateway**: Apollo Router v2.6.0
-- **Reverse Proxy**: Nginx
-- **Build Tools**: Maven (Backend), Angular CLI (Frontend)
-
-### Development Tools
-- **Code Quality**: ESLint, Prettier
-- **Testing**: Jasmine/Karma (Frontend), JUnit (Backend)
-- **Code Generation**: GraphQL Codegen
-- **IDE**: IntelliJ IDEA, VS Code
-
-## 📦 Project Structure
-
-```
-SmartStreet/
-├── 📱 SmartSFront/                    # Frontend Application
-│   └── smart-street-app/
-│       ├── src/
-│       │   ├── app/
-│       │   │   ├── core/              # Core services & guards
-│       │   │   ├── features/          # Feature modules
-│       │   │   │   ├── dashboard/     # Dashboard module
-│       │   │   │   ├── vehicles/      # Vehicle management
-│       │   │   │   ├── trips/         # Trip management
-│       │   │   │   ├── drivers/       # Driver management
-│       │   │   │   ├── maintenance/   # Maintenance module
-│       │   │   │   ├── billing/       # Billing module
-│       │   │   │   ├── geofences/     # Geofencing
-│       │   │   │   └── notifications/ # Notifications
-│       │   │   ├── shared/            # Shared components
-│       │   │   └── layout/            # Layout components
-│       │   ├── assets/                # Static assets
-│       │   └── styles/                # Global styles
-│       ├── package.json
-│       └── angular.json
-├── 🔧 Smart mobility/                  # Backend Services
-│   ├── src/
-│   │   ├── services/
-│   │   │   ├── shared/                # Shared utilities
-│   │   │   ├── api-gateway/           # GraphQL Gateway
-│   │   │   ├── user-service/          # User management
-│   │   │   ├── vehicles-service/      # Vehicle management
-│   │   │   ├── trips-service/         # Trip management
-│   │   │   ├── maintenance-service/   # Maintenance management
-│   │   │   ├── geofence-service/      # Geofencing service
-│   │   │   ├── billing-service/       # Billing service
-│   │   │   ├── notifications-service/ # Notifications
-│   │   │   └── telemetry-ingest/      # Telemetry processing
-│   │   └── pom.xml
-│   └── deploy/
-│       ├── docker-compose.yml         # Development stack
-│       └── ops/                       # Operations configs
-├── 🎨 keycloak-theme/                 # Custom Keycloak Theme
-│   ├── smartstreet/                   # Theme files
-│   └── README.md
-└── 📄 README.md                       # This file
-```
-
-## 🚀 Quick Start
-
-### Prerequisites
-- **Docker** & **Docker Compose** (for infrastructure)
-- **Node.js** 18+ & **npm** (for frontend)
-- **Java** 21 & **Maven** (for backend development)
-
-### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/SmartStreet.git
-cd SmartStreet
+docker compose up -d --build
 ```
 
-### 2. Start Infrastructure Services
-```bash
-cd "Smart mobility/deploy"
-docker-compose up -d postgresql redis kafka zookeeper keycloak
-```
+Run this from the repository root. It reads `.env` from the same folder; to start from scratch, copy `.env.example` to `.env` and fill in every value (`openssl rand -hex 32` works for `ROUTER_SECRET`). Compose refuses to start while a required value is missing.
 
-### 3. Start Backend Services
-```bash
-cd "../src"
-mvn clean install
-mvn spring-boot:run
-```
+Keycloak stores its data in the `keycloak` PostgreSQL database and imports the `Smart-Street` realm on first start (`deploy/keycloak/import/Smart-Street-realm.json`). The realm holds the confidential `smartstreet-identity` client used by the identity service, the roles `ADMIN`, `MANAGER`, `DRIVER` and `USER`, and these development accounts:
 
-### 4. Start Frontend Application
+| Email | Password | Roles |
+|---|---|---|
+| fleet-admin@smartstreet.local | admin12345 | Administrator, fleet manager |
+| fleet-manager@smartstreet.local | manager12345 | Fleet manager |
+| fleet-driver@smartstreet.local | driver12345 | Driver |
+| customer@smartstreet.local | customer12345 | Customer |
+
+Users never see Keycloak pages: sign-in, sign-up, password reset, account activation and profile editing all happen in the Angular app through `identity-service`. The access token stays in memory and the refresh token in an `HttpOnly`, `SameSite=Strict` cookie scoped to `/auth`. Emails (password reset, invitations) are caught by Mailpit.
+
 ```bash
-cd "../../SmartSFront/smart-street-app"
-npm install
+cd frontend
+npm ci
 npm start
 ```
 
-### 5. Access Applications
-- **Frontend**: http://localhost:4200
-- **GraphQL Gateway**: http://localhost:4000/graphql
-- **Keycloak Admin**: http://localhost:8083 (admin/admin)
+| URL | What |
+|---|---|
+| http://localhost:4200 | Web application (the dev server proxies `/graphql` and `/auth`, see `frontend/proxy.conf.json`) |
+| http://localhost:4000/graphql | Federated GraphQL API (bearer token required) |
+| http://localhost:8086/auth | Identity API |
+| http://localhost:8025 | Mailpit inbox for password reset and invitation emails |
+| http://localhost:8085/ingest/v1/positions | Device position ingestion (`X-Device-Key` header) |
+| http://localhost:8083 | Keycloak admin console (credentials from `.env`) |
 
-## 🔧 Development Setup
+### Live tracking demo
 
-### Backend Development
+1. Open a vehicle, choose **Add device** under *Live tracking*, and copy the key that is shown once.
+2. Run the simulator with one `--device` per key:
 
-1. **Database Setup**
    ```bash
-   # PostgreSQL will be automatically initialized with required schemas
-   docker-compose up -d postgresql
+   node tools/telemetry-simulator/simulate.mjs --device ssd_xxx --device ssd_yyy
    ```
 
-2. **Message Broker Setup**
-   ```bash
-   # Start Kafka and Zookeeper
-   docker-compose up -d kafka zookeeper
-   ```
+3. Watch the vehicles move on **Live map**. Draw zones under **Geofences** to see alerts appear.
 
-3. **Build & Run Services**
-   ```bash
-   cd "Smart mobility/src"
-   mvn clean install
-   
-   # Start individual services
-   cd services/user-service
-   mvn spring-boot:run
-   
-   cd ../vehicles-service
-   mvn spring-boot:run
-   
-   # ... repeat for other services
-   ```
+The schema is managed by Flyway. A one-shot `databases` container creates any missing database on every start, so new services also work on an existing volume. If you have a volume from a much older version, recreate it with `docker compose down -v`.
 
-### Frontend Development
+## Security model
 
-1. **Install Dependencies**
-   ```bash
-   cd SmartSFront/smart-street-app
-   npm install
-   ```
+- The router turns away any operation without a bearer token (`rhai/main.rhai`), and the Spring subgraphs verify the Keycloak JWT signature, expiry and roles on every request. It only accepts browser calls from `FRONTEND_ORIGIN`, and introspection is disabled.
+- `identity-service` is the only component that talks to Keycloak. Reset and invitation links carry single-use tokens stored as SHA-256 hashes (30 minutes and 72 hours), forgotten-password requests never reveal whether an email exists, and setting a new password signs the account out everywhere.
+- Subgraphs are not published on the host. Each one requires the router's `x-router-secret` (compared in constant time) and validates the JWT itself.
+- Resolvers enforce realm roles with `@AdminOnly`, `@ManagerOrAdmin` and `@Staff` from the shared module.
+- Tracking devices never get user tokens. They authenticate on the ingestion endpoint with a per-device key that is shown once and stored only as a SHA-256 hash; revoking it, or deleting the vehicle, cuts the device off.
+- Secrets live only in `.env`, which is git-ignored. CI runs Gitleaks on every push.
 
-2. **Development Server**
-   ```bash
-   npm start
-   # Runs on http://localhost:4200 with hot reload
-   ```
+## Development
 
-3. **Code Generation**
-   ```bash
-   npm run codegen
-   # Generates TypeScript types from GraphQL schema
-   ```
+Backend (from `backend`):
 
-4. **Code Quality**
-   ```bash
-   npm run lint        # Run ESLint
-   npm run lint:fix    # Fix linting issues
-   npm run format      # Format code with Prettier
-   ```
-
-## 📱 Frontend Application
-
-### Technology Stack
-- **Angular 20.2** with standalone components
-- **Angular Material** for UI components
-- **Apollo GraphQL** for data management
-- **NgRx Signals** for state management
-- **ngx-translate** for internationalization
-
-### Key Features
-- 🎨 **Modern Material Design** - Clean, responsive UI
-- 🌍 **Multi-language Support** - English, French, Spanish, Arabic
-- 📱 **Responsive Design** - Mobile-first approach
-- ⚡ **Real-time Updates** - GraphQL subscriptions
-- 🔐 **Role-based Access** - Keycloak integration
-- 📊 **Interactive Dashboards** - Rich data visualizations
-
-### Development Commands
 ```bash
-# Development server
-npm start
-
-# Production build
-npm run build:prod
-
-# Run tests
-npm test
-
-# Code generation
-npm run codegen
-
-# Format code
-npm run format
-```
-
-## 🔌 Backend Services
-
-### Microservices Architecture
-
-#### 👤 User Service
-- User authentication and authorization
-- Profile management
-- Role-based access control
-
-#### 🚗 Vehicles Service
-- Vehicle registration and management
-- Fleet monitoring and analytics
-- Vehicle status tracking
-
-#### 🗺️ Trips Service
-- Trip planning and scheduling
-- Route optimization
-- Real-time tracking
-
-#### 🔧 Maintenance Service
-- Maintenance scheduling
-- Service history tracking
-- Cost management
-
-#### 🏦 Billing Service
-- Trip-based billing
-- Invoice generation
-- Financial reporting
-
-#### 🔔 Notifications Service
-- Real-time notifications
-- Alert management
-- Communication channels
-
-#### 📍 Geofence Service
-- Geographic boundary management
-- Entry/exit monitoring
-- Location-based rules
-
-#### 📡 Telemetry Ingest
-- Real-time data processing
-- IoT device integration
-- Data streaming
-
-### GraphQL Federation
-Services are federated through Apollo Router, providing a unified GraphQL API.
-
-```graphql
-# Example: Vehicle query with trips
-query GetVehicleWithTrips($id: ID!) {
-  vehicle(id: $id) {
-    id
-    make
-    model
-    licensePlate
-    status
-    trips {
-      id
-      status
-      startTime
-      endTime
-    }
-  }
-}
-```
-
-## 🔐 Authentication & Security
-
-### Keycloak Integration
-- **Single Sign-On (SSO)** - Unified authentication across services
-- **Role-Based Access Control** - Granular permissions
-- **Multi-Factor Authentication** - Enhanced security
-- **Custom Themes** - Branded login experience
-
-### Security Features
-- **JWT Tokens** - Secure API authentication
-- **CORS Configuration** - Cross-origin resource sharing
-- **Rate Limiting** - API abuse protection
-- **Input Validation** - XSS and injection protection
-
-## 🌐 API Documentation
-
-### GraphQL Schema
-The API is fully documented through GraphQL introspection. Access the GraphQL Playground at:
-- **Development**: http://localhost:4000/graphql
-- **Production**: https://api.smartstreet.com/graphql
-
-### Key Endpoints
-
-#### Vehicles
-```graphql
-# Get all vehicles
-query GetVehicles {
-  vehicles {
-    id
-    make
-    model
-    status
-    licensePlate
-  }
-}
-
-# Create vehicle
-mutation CreateVehicle($input: CreateVehicleInput!) {
-  createVehicle(input: $input) {
-    id
-    make
-    model
-  }
-}
-```
-
-#### Trips
-```graphql
-# Get trip details
-query GetTrip($id: ID!) {
-  trip(id: $id) {
-    id
-    status
-    startTime
-    endTime
-    vehicle {
-      make
-      model
-    }
-    driver {
-      firstName
-      lastName
-    }
-  }
-}
-```
-
-## 🧪 Testing
-
-### Frontend Testing
-```bash
-# Run unit tests
-npm test
-
-# Run tests with coverage
-npm run test:coverage
-
-# Run e2e tests
-npm run e2e
-```
-
-### Backend Testing
-```bash
-# Run all tests
-mvn test
-
-# Run tests for specific service
-cd services/vehicles-service
-mvn test
-
-# Integration tests
 mvn verify
 ```
 
-## 🚀 Deployment
+`mvn verify` runs unit tests plus Testcontainers integration tests (PostgreSQL, Kafka, and Keycloak with Mailpit for the identity service), so Docker must be running. The identity test imports the realm file from `deploy/`, so run it from a full checkout.
 
-### Docker Deployment
+Changing a subgraph schema (from `backend/services/api-gateway`):
+
 ```bash
-# Build all services
-cd "Smart mobility/deploy"
-docker-compose build
-
-# Deploy full stack
-docker-compose up -d
-
-# Scale services
-docker-compose up -d --scale vehicles-service=3
+npm ci
+npm run compose
 ```
 
-### Environment Configuration
-Create environment-specific configuration files:
+This recomposes `supergraph.graphql`; CI runs `npm run check` to keep it in sync. Then regenerate the typed client in the front end with `npm run codegen`.
 
-```yaml
-# production.yml
-version: '3.8'
-services:
-  postgresql:
-    environment:
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-  keycloak:
-    environment:
-      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_PASSWORD}
-```
+Frontend (from `frontend`):
 
-### Health Checks
-All services include health check endpoints:
-- **Health**: `/actuator/health`
-- **Metrics**: `/actuator/metrics`
-- **Info**: `/actuator/info`
-
-## 🤝 Contributing
-
-### Development Workflow
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
-
-### Code Standards
-- **Frontend**: ESLint + Prettier configuration
-- **Backend**: Google Java Style Guide
-- **Commits**: Conventional commit format
-- **Documentation**: Update README for new features
-
-### Pull Request Guidelines
-- ✅ All tests passing
-- ✅ Code coverage maintained
-- ✅ Documentation updated
-- ✅ Breaking changes documented
-
-## 📊 Monitoring & Analytics
-
-### Application Monitoring
-- **Prometheus** metrics collection
-- **Grafana** dashboards
-- **Spring Boot Actuator** health endpoints
-- **GraphQL** query performance tracking
-
-### Business Analytics
-- **Fleet utilization** metrics
-- **Trip completion** rates
-- **Maintenance cost** analysis
-- **Driver performance** scoring
-
-## 🔧 Troubleshooting
-
-### Common Issues
-
-#### Frontend Issues
 ```bash
-# Clear node modules and reinstall
-rm -rf node_modules package-lock.json
-npm install
-
-# Clear Angular cache
-ng cache clean
+npm run lint
+npm run test:ci
+npm run build
 ```
 
-#### Backend Issues
-```bash
-# Clean and rebuild
-mvn clean install
+## Repository layout
 
-# Reset database
-docker-compose down -v
-docker-compose up -d postgresql
 ```
-
-#### Infrastructure Issues
-```bash
-# Restart all services
-docker-compose restart
-
-# View service logs
-docker-compose logs -f [service-name]
+docker-compose.yml           full stack (reads .env)
+.env.example                 required settings
+deploy/                      Keycloak realm, database bootstrap script
+backend/
+  Dockerfile                 one image definition, built per service with --build-arg SERVICE
+  pom.xml                    parent POM (Spring Boot 3.5, DGS 10, MapStruct)
+  services/
+    shared/                  security, outbox, Kafka, GraphQL errors, event contracts
+    user-service/            api · application · domain · infrastructure
+    vehicles-service/
+    trips-service/
+    telemetry-service/
+    geofence-service/
+    identity-service/        REST BFF for sign-in, sign-up, passwords, invitations, profile
+    maintenance-service/
+    billing-service/
+    notification-service/
+    api-gateway/             router.yaml, rhai, supergraph composition
+frontend/                    Angular 20 (zoneless, signals, OnPush, generated Apollo services, Material 3, 4 languages with RTL)
+tools/telemetry-simulator/   demo GPS feed
+.github/workflows/ci.yml     secrets scan, backend verify, supergraph check, frontend lint/test/build, images
 ```
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙋‍♂️ Support
-
-### Documentation
-- **API Docs**: Available in GraphQL Playground
-- **Architecture**: See `/docs` folder
-- **Deployment Guide**: See deployment section above
-
-### Community
-- **Issues**: GitHub Issues for bug reports
-- **Discussions**: GitHub Discussions for questions
-- **Contributing**: See contributing guidelines above
-
-### Contact
-- **Email**: support@smartstreet.com
-- **Website**: https://smartstreet.com
-- **Documentation**: https://docs.smartstreet.com
-
----
-
-<div align="center">
-  <p>Built with ❤️ by the SmartStreet Team</p>
-  <p>
-    <a href="#smartstreet---intelligent-fleet-management-platform">⬆️ Back to Top</a>
-  </p>
-</div>

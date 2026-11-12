@@ -1,0 +1,160 @@
+extend schema
+@link(url: "https://specs.apollo.dev/federation/v2.6", import: ["@key"])
+
+scalar UUID
+scalar Date
+scalar DateTime
+scalar BigDecimal
+
+type Trip @key(fields: "id") {
+    id: UUID!
+    invoice: Invoice
+}
+
+type Customer @key(fields: "id", resolvable: false) {
+    id: UUID!
+}
+
+type Vehicle @key(fields: "id", resolvable: false) {
+    id: UUID!
+}
+
+type Driver @key(fields: "id", resolvable: false) {
+    id: UUID!
+}
+
+enum ExpenseKind {
+    MAINTENANCE
+    SALARY
+}
+
+enum ExpenseStatus {
+    UNPAID
+    PAID
+}
+
+type Expense {
+    id: UUID!
+    kind: ExpenseKind!
+    status: ExpenseStatus!
+    description: String
+    amount: BigDecimal!
+    currency: String!
+    dueDate: Date!
+    overdue: Boolean!
+    paidOn: Date
+    paymentMethod: PaymentMethod
+    vehicle: Vehicle
+    driver: Driver
+    workOrderId: UUID
+    createdAt: DateTime!
+}
+
+type ExpensePage {
+    items: [Expense!]!
+    totalCount: Int!
+    page: Int!
+    size: Int!
+    hasNext: Boolean!
+}
+
+type ExpenseStatistics {
+    maintenanceTotal: BigDecimal!
+    maintenanceUnpaid: BigDecimal!
+    salariesTotal: BigDecimal!
+    salariesUnpaid: BigDecimal!
+    unpaidTotal: BigDecimal!
+    unpaidCount: Int!
+    paidThisMonth: BigDecimal!
+}
+
+type UpcomingSalary {
+    driver: Driver!
+    driverName: String
+    payday: Date!
+    amount: BigDecimal!
+}
+
+input ExpenseFilter {
+    kind: ExpenseKind
+    status: ExpenseStatus
+}
+
+enum InvoiceStatus {
+    DRAFT
+    ISSUED
+    PAID
+    VOID
+}
+
+enum PaymentMethod {
+    CASH
+    CARD
+    BANK_TRANSFER
+}
+
+type InvoiceLine {
+    description: String!
+    amount: BigDecimal!
+}
+
+type Invoice @key(fields: "id") {
+    id: UUID!
+    number: String!
+    status: InvoiceStatus!
+    trip: Trip!
+    customer: Customer
+    vehicle: Vehicle!
+    lines: [InvoiceLine!]!
+    subtotal: BigDecimal!
+    taxRate: BigDecimal!
+    taxAmount: BigDecimal!
+    total: BigDecimal!
+    currency: String!
+    issuedOn: Date
+    dueDate: Date
+    paidOn: Date
+    paymentMethod: PaymentMethod
+    voidReason: String
+    overdue: Boolean!
+    createdAt: DateTime!
+}
+
+type InvoicePage {
+    items: [Invoice!]!
+    totalCount: Int!
+    page: Int!
+    size: Int!
+    hasNext: Boolean!
+}
+
+type BillingStatistics {
+    drafts: Int!
+    outstanding: BigDecimal!
+    overdue: BigDecimal!
+    overdueCount: Int!
+    collectedThisMonth: BigDecimal!
+}
+
+input InvoiceFilter {
+    status: InvoiceStatus
+    customerId: UUID
+    overdue: Boolean
+}
+
+type Query {
+    invoice(id: UUID!): Invoice
+    invoices(filter: InvoiceFilter, page: Int = 0, size: Int = 20): InvoicePage!
+    billingStatistics: BillingStatistics!
+    myInvoices(page: Int = 0, size: Int = 20): InvoicePage!
+    expenses(filter: ExpenseFilter, page: Int = 0, size: Int = 20): ExpensePage!
+    expenseStatistics: ExpenseStatistics!
+    upcomingSalaries(days: Int = 30): [UpcomingSalary!]!
+}
+
+type Mutation {
+    issueInvoice(id: UUID!, paymentTermDays: Int = 30): Invoice!
+    markInvoicePaid(id: UUID!, method: PaymentMethod!): Invoice!
+    voidInvoice(id: UUID!, reason: String!): Invoice!
+    payExpense(id: UUID!, method: PaymentMethod!): Expense!
+}

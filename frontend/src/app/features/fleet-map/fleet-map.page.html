@@ -1,0 +1,48 @@
+<app-page-header [title]="'fleetMap.title' | translate" [subtitle]="'fleetMap.subtitle' | translate">
+  <button mat-stroked-button (click)="refresh()">
+    <mat-icon>refresh</mat-icon>
+    {{ 'fleetMap.refresh' | translate }}
+  </button>
+</app-page-header>
+
+<section class="legend">
+  <span class="dot moving"></span> {{ 'fleetMap.moving' | translate: { count: summary().moving } }}
+  <span class="dot idle"></span> {{ 'fleetMap.idle' | translate: { count: summary().idle } }}
+  <span class="dot stale"></span> {{ 'fleetMap.stale' | translate: { count: summary().stale } }}
+</section>
+
+<div class="layout">
+  <app-fleet-map
+    class="map"
+    [markers]="markers()"
+    [zones]="zones()"
+    [selectedId]="selectedId()"
+    (selected)="select($event)"
+  />
+
+  <aside class="card panel">
+    @if (selected(); as position) {
+      <h2>{{ position.vehicle.licensePlate }}</h2>
+      <p class="muted">{{ position.vehicle.make }} {{ position.vehicle.model }}</p>
+      <app-status-chip [status]="position.vehicle.status" />
+      <dl class="facts">
+        <dt>{{ 'fleetMap.speed' | translate }}</dt>
+        <dd>{{ position.speedKph | number: '1.0-0' }} km/h</dd>
+        <dt>{{ 'fleetMap.fuel' | translate }}</dt>
+        <dd>{{ position.fuelLevelPercent !== null ? (position.fuelLevelPercent | number: '1.0-0') + ' %' : '—' }}</dd>
+        <dt>{{ 'fleetMap.odometer' | translate }}</dt>
+        <dd>{{ position.odometerKm !== null ? (position.odometerKm | number: '1.0-0') + ' km' : '—' }}</dd>
+        <dt>{{ 'fleetMap.lastUpdate' | translate }}</dt>
+        <dd [class.warning-text]="position.stale">{{ position.recordedAt | date: 'medium' }}</dd>
+      </dl>
+      <a mat-flat-button [routerLink]="['/vehicles', position.vehicle.id]">
+        <mat-icon>directions_car</mat-icon>
+        {{ 'fleetMap.openVehicle' | translate }}
+      </a>
+    } @else {
+      <p class="muted">
+        {{ (positions().length ? 'fleetMap.selectVehicle' : 'fleetMap.noPositions') | translate }}
+      </p>
+    }
+  </aside>
+</div>

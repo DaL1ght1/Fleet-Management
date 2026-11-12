@@ -1,0 +1,115 @@
+extend schema
+@link(url: "https://specs.apollo.dev/federation/v2.6", import: ["@key"])
+
+scalar UUID
+scalar Date
+scalar DateTime
+scalar Long
+scalar BigDecimal
+
+enum VehicleStatus {
+    ACTIVE
+    INACTIVE
+    MAINTENANCE
+}
+
+enum FuelType {
+    GASOLINE
+    DIESEL
+    ELECTRIC
+    HYBRID
+}
+
+type Vehicle @key(fields: "id") {
+    id: UUID!
+    make: String!
+    model: String!
+    year: Int!
+    licensePlate: String!
+    vin: String!
+    color: String!
+    mileage: Long!
+    fuelType: FuelType!
+    seatingCapacity: Int!
+    dailyRate: BigDecimal!
+    gpsEnabled: Boolean!
+    status: VehicleStatus!
+    lastMaintenanceDate: Date!
+    maintenanceIntervalDays: Int!
+    nextMaintenanceDate: Date!
+    maintenanceDue: Boolean!
+    currentTripId: UUID
+    inUse: Boolean!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+}
+
+type VehiclePage {
+    items: [Vehicle!]!
+    totalCount: Int!
+    page: Int!
+    size: Int!
+    hasNext: Boolean!
+}
+
+type FleetStatistics {
+    total: Int!
+    active: Int!
+    inactive: Int!
+    inMaintenance: Int!
+    inUse: Int!
+    maintenanceDue: Int!
+}
+
+input VehicleFilter {
+    status: VehicleStatus
+    fuelType: FuelType
+    search: String
+    maintenanceDue: Boolean
+}
+
+input RegisterVehicleInput {
+    make: String!
+    model: String!
+    year: Int!
+    licensePlate: String!
+    vin: String!
+    color: String!
+    mileage: Long!
+    fuelType: FuelType!
+    seatingCapacity: Int!
+    dailyRate: BigDecimal!
+    gpsEnabled: Boolean!
+    lastMaintenanceDate: Date!
+    maintenanceIntervalDays: Int!
+}
+
+input UpdateVehicleInput {
+    make: String
+    model: String
+    year: Int
+    licensePlate: String
+    color: String
+    fuelType: FuelType
+    seatingCapacity: Int
+    dailyRate: BigDecimal
+    gpsEnabled: Boolean
+    maintenanceIntervalDays: Int
+}
+
+type Query {
+    vehicle(id: UUID!): Vehicle
+    vehicleByLicensePlate(licensePlate: String!): Vehicle
+    vehicleByVin(vin: String!): Vehicle
+    vehicles(filter: VehicleFilter, page: Int = 0, size: Int = 20): VehiclePage!
+    fleetStatistics: FleetStatistics!
+}
+
+type Mutation {
+    registerVehicle(input: RegisterVehicleInput!): Vehicle!
+    updateVehicle(id: UUID!, input: UpdateVehicleInput!): Vehicle!
+    changeVehicleStatus(id: UUID!, status: VehicleStatus!): Vehicle!
+    recordOdometerReading(id: UUID!, mileage: Long!): Vehicle!
+    completeMaintenance(id: UUID!, date: Date): Vehicle!
+    deleteVehicle(id: UUID!): Boolean!
+}

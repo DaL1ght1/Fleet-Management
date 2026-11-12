@@ -1,0 +1,49 @@
+homepage:
+  enabled: false
+
+sandbox:
+  enabled: false
+
+cors:
+  allow_credentials: true
+  policies:
+    - origins:
+        - ${env.FRONTEND_ORIGIN:-http://localhost:4200}
+      allow_headers:
+        - content-type
+        - authorization
+        - apollo-require-preflight
+
+rhai:
+  scripts: /etc/router/rhai
+  main: main.rhai
+
+headers:
+  all:
+    request:
+      - propagate:
+          named: Authorization
+      - insert:
+          name: x-router-secret
+          value: ${env.ROUTER_SECRET}
+
+include_subgraph_errors:
+  all: false
+
+health_check:
+  enabled: true
+  listen: 0.0.0.0:8088
+  path: /health
+
+supergraph:
+  listen: 0.0.0.0:4000
+  path: /graphql
+  introspection: false
+
+telemetry:
+  exporters:
+    metrics:
+      prometheus:
+        enabled: true
+        listen: 0.0.0.0:9090
+        path: /metrics

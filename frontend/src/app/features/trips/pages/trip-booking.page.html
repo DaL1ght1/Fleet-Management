@@ -1,0 +1,151 @@
+<app-page-header
+  [title]="'booking.title' | translate"
+  [subtitle]="'booking.subtitle' | translate"
+  [backLink]="backLink()"
+/>
+
+<div class="booking">
+  <section class="panel">
+    <div class="step">
+      <h2>{{ 'booking.where' | translate }}</h2>
+      <div class="route-fields">
+        <app-place-field
+          kind="from"
+          [label]="'booking.from' | translate"
+          [place]="from()"
+          (placeChange)="setFrom($event)"
+          [active]="activeField() === 'from'"
+          (focused)="activeField.set('from')"
+        />
+        <div class="connector" aria-hidden="true"></div>
+        <app-place-field
+          kind="to"
+          [label]="'booking.to' | translate"
+          [(place)]="to"
+          [near]="from()"
+          [active]="activeField() === 'to'"
+          (focused)="activeField.set('to')"
+        />
+        <button
+          mat-icon-button
+          type="button"
+          class="swap"
+          (click)="swap()"
+          [disabled]="!from() && !to()"
+          [matTooltip]="'booking.swap' | translate"
+          [attr.aria-label]="'booking.swap' | translate"
+        >
+          <mat-icon>swap_vert</mat-icon>
+        </button>
+      </div>
+      <p class="hint">
+        <mat-icon>touch_app</mat-icon>
+        {{ (activeField() === 'from' ? 'booking.tapForFrom' : 'booking.tapForTo') | translate }}
+      </p>
+    </div>
+
+    <div class="step">
+      <h2>{{ 'booking.when' | translate }}</h2>
+      <app-departure-picker [(departAt)]="departAt" [(scheduled)]="scheduled" />
+    </div>
+
+    @if (staff()) {
+      <mat-expansion-panel class="assignment">
+        <mat-expansion-panel-header>
+          <mat-panel-title>{{ 'booking.assignment' | translate }}</mat-panel-title>
+          <mat-panel-description>
+            {{ (vehicleId() || driverId() || customerId() ? 'booking.manual' : 'booking.automatic') | translate }}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div class="assignment-fields">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>{{ 'trips.fields.type' | translate }}</mat-label>
+            <mat-select [ngModel]="type()" (ngModelChange)="type.set($event)">
+              @for (option of types; track option) {
+                <mat-option [value]="option">{{ 'tripType.' + option | translate }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>{{ 'trips.fields.customer' | translate }}</mat-label>
+            <mat-select [ngModel]="customerId() ?? ''" (ngModelChange)="customerId.set($event || null)">
+              <mat-option value="">{{ 'booking.noCustomer' | translate }}</mat-option>
+              @for (customer of options.value()?.customers?.items ?? []; track customer.id) {
+                <mat-option [value]="customer.id">{{ customer.fullName }} · {{ customer.email }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>{{ 'trips.fields.vehicle' | translate }}</mat-label>
+            <mat-select [ngModel]="vehicleId() ?? ''" (ngModelChange)="vehicleId.set($event || null)">
+              <mat-option value="">{{ 'booking.pickForMe' | translate }}</mat-option>
+              @for (vehicle of options.value()?.vehicles?.items ?? []; track vehicle.id) {
+                <mat-option [value]="vehicle.id">
+                  {{ vehicle.licensePlate }} · {{ vehicle.make }} {{ vehicle.model }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>{{ 'trips.fields.driver' | translate }}</mat-label>
+            <mat-select [ngModel]="driverId() ?? ''" (ngModelChange)="driverId.set($event || null)">
+              <mat-option value="">{{ 'booking.pickForMe' | translate }}</mat-option>
+              @for (driver of options.value()?.drivers?.items ?? []; track driver.id) {
+                <mat-option [value]="driver.id">{{ driver.fullName }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </mat-expansion-panel>
+    }
+
+    <footer class="summary" aria-live="polite">
+      @if (missing(); as reason) {
+        <p class="placeholder">{{ reason | translate }}</p>
+      } @else if (quote.isLoading() || route.isLoading()) {
+        <p class="placeholder"><mat-spinner diameter="20" /> {{ 'booking.calculating' | translate }}</p>
+      } @else if (quote.value(); as estimate) {
+        <dl class="figures">
+          <div>
+            <dt>{{ 'booking.distance' | translate }}</dt>
+            <dd>{{ estimate.distanceKm | number: '1.0-1' }} km</dd>
+          </div>
+          <div>
+            <dt>{{ 'booking.duration' | translate }}</dt>
+            <dd>{{ 'booking.minutes' | translate: { count: estimate.durationMinutes } }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'booking.arrival' | translate }}</dt>
+            <dd>{{ estimate.arriveAt | date: 'HH:mm' }}</dd>
+          </div>
+        </dl>
+        <div class="price">
+          <span>{{ 'booking.estimatedPrice' | translate }}</span>
+          <strong>{{ estimate.price | money }}</strong>
+        </div>
+        @if (!estimate.vehicleAvailable) {
+          <p class="warning"><mat-icon>no_crash</mat-icon>{{ 'booking.noVehicle' | translate }}</p>
+        }
+      } @else {
+        <p class="warning"><mat-icon>cloud_off</mat-icon>{{ 'booking.quoteFailed' | translate }}</p>
+      }
+      @if (failure(); as message) {
+        <p class="warning" role="alert"><mat-icon>error</mat-icon>{{ message }}</p>
+      }
+      <button mat-flat-button class="cta" type="button" [disabled]="!canBook()" (click)="book()">
+        @if (booking()) {
+          <mat-spinner diameter="20" />
+        } @else {
+          <span class="cta-label">
+            <mat-icon>{{ scheduled() ? 'event_available' : 'bolt' }}</mat-icon>
+            {{ (scheduled() ? 'booking.bookLater' : 'booking.bookNow') | translate }}
+          </span>
+        }
+      </button>
+    </footer>
+  </section>
+
+  <section class="map-panel" [attr.aria-label]="'booking.map' | translate">
+    <app-booking-map [from]="from()" [to]="to()" [path]="route.value()?.path ?? null" (picked)="pickOnMap($event)" />
+  </section>
+</div>

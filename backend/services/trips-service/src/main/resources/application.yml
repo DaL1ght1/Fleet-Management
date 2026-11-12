@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: trips-service
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://postgresql:5432/trips}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka:9092}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${KEYCLOAK_JWK_SET_URI:http://keycloak:8080/realms/Smart-Street/protocol/openid-connect/certs}
+  threads:
+    virtual:
+      enabled: true
+
+server:
+  port: 8080
+
+dgs:
+  graphql:
+    virtualthreads:
+      enabled: true
+    graphiql:
+      enabled: ${GRAPHIQL_ENABLED:false}
+
+smartstreet:
+  security:
+    router-secret: ${ROUTER_SECRET}
+  trips:
+    booking:
+      base-fare: ${TRIP_BASE_FARE:8.000}
+      price-per-km: ${TRIP_PRICE_PER_KM:0.850}
+      average-speed-kph: 45
+      road-factor: 1.3
+      handover-minutes: 15

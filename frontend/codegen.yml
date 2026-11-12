@@ -1,0 +1,26 @@
+schema: "../backend/services/api-gateway/supergraph.graphql"
+documents: "src/app/**/*.graphql"
+generates:
+  src/app/core/graphql/generated.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-apollo-angular
+    config:
+      useTypeImports: true
+      enumsAsTypes: true
+      avoidOptionals:
+        field: true
+        inputValue: false
+        object: true
+        variableValue: false
+      scalars:
+        UUID: string
+        Date: string
+        DateTime: string
+        Long: number
+        BigDecimal: number
+        join__FieldSet: string
+        link__Import: string
+      addExplicitOverride: true
+      serviceProvidedInRoot: true

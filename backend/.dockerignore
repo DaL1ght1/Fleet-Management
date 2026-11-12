@@ -1,0 +1,9 @@
+**/target/
+**/node_modules/
+**/.idea/
+**/.vscode/
+**/*.iml
+**/.mvn/
+**/mvnw
+**/mvnw.cmd
+services/api-gateway/

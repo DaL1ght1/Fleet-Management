@@ -1,0 +1,14 @@
+{
+  "/graphql": {
+    "target": "http://localhost:4000",
+    "secure": false,
+    "changeOrigin": true,
+    "headers": { "Origin": "http://localhost:4000" }
+  },
+  "/auth": {
+    "target": "http://localhost:8086",
+    "secure": false,
+    "changeOrigin": true,
+    "headers": { "Origin": "http://localhost:8086" }
+  }
+}

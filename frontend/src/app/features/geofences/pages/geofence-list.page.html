@@ -1,0 +1,50 @@
+<app-page-header [title]="'geofences.title' | translate" [subtitle]="'geofences.subtitle' | translate">
+  <ng-container *appHasRole="roles.MANAGEMENT">
+    <a mat-stroked-button routerLink="alerts">
+      <mat-icon>notifications_active</mat-icon>
+      {{ 'geofences.alerts' | translate }}
+    </a>
+    <a mat-flat-button routerLink="new">
+      <mat-icon>add</mat-icon>
+      {{ 'geofences.create' | translate }}
+    </a>
+  </ng-container>
+</app-page-header>
+
+<app-load-state
+  [loading]="geofences.isLoading() && !geofences.hasValue()"
+  [failed]="geofences.status() === 'error'"
+  (retry)="geofences.reload()"
+>
+  <div class="layout">
+    <app-zone-map class="map" [zones]="zones()" />
+    <aside class="card zones">
+      @for (zone of zones(); track zone.id) {
+        <article class="zone" [class.inactive]="!zone.active">
+          <div class="zone-heading">
+            <span class="swatch" [class]="'swatch kind-' + zone.kind"></span>
+            <strong>{{ zone.name }}</strong>
+          </div>
+          <p class="muted">
+            {{ 'geofenceKind.' + zone.kind | translate }}
+            @if (zone.speedLimitKph) {
+              · {{ zone.speedLimitKph | number: '1.0-0' }} km/h
+            }
+            · {{ 'geofences.vehiclesInside' | translate: { count: zone.vehiclesInside } }}
+          </p>
+          <div class="zone-actions" *appHasRole="roles.MANAGEMENT">
+            <mat-slide-toggle [checked]="zone.active" (change)="toggle(zone.id, $event.checked)">
+              {{ 'geofences.active' | translate }}
+            </mat-slide-toggle>
+            <a mat-button [routerLink]="[zone.id, 'edit']">{{ 'common.edit' | translate }}</a>
+            <button mat-button class="destructive" *appHasRole="roles.ADMIN" (click)="remove(zone.id)">
+              {{ 'common.delete' | translate }}
+            </button>
+          </div>
+        </article>
+      } @empty {
+        <p class="muted">{{ 'geofences.empty' | translate }}</p>
+      }
+    </aside>
+  </div>
+</app-load-state>

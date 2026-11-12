@@ -1,0 +1,67 @@
+<app-page-header [title]="'customers.title' | translate" [subtitle]="'customers.subtitle' | translate">
+  <a mat-flat-button routerLink="new">
+    <mat-icon>person_add</mat-icon>
+    {{ 'customers.register' | translate }}
+  </a>
+</app-page-header>
+
+<section class="filters">
+  <mat-form-field appearance="outline" subscriptSizing="dynamic" class="grow">
+    <mat-label>{{ 'customers.searchPlaceholder' | translate }}</mat-label>
+    <mat-icon matPrefix>search</mat-icon>
+    <input matInput [ngModel]="search()" (ngModelChange)="changeSearch($event)" />
+  </mat-form-field>
+</section>
+
+<app-load-state
+  [loading]="customers.isLoading() && !customers.hasValue()"
+  [failed]="customers.status() === 'error'"
+  [empty]="customers.hasValue() && rows().length === 0"
+  [emptyMessage]="'customers.empty' | translate"
+  (retry)="customers.reload()"
+>
+  <div class="table-card">
+    <div class="table-scroll">
+      <table mat-table [dataSource]="rows()">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>{{ 'customers.fields.name' | translate }}</th>
+          <td
+            mat-cell
+            [attr.data-label]="'customers.fields.name' | translate"
+            *matCellDef="let customer"
+            class="strong"
+          >
+            {{ customer.fullName }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef>{{ 'customers.fields.email' | translate }}</th>
+          <td mat-cell [attr.data-label]="'customers.fields.email' | translate" *matCellDef="let customer">
+            {{ customer.email }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="phoneNumber">
+          <th mat-header-cell *matHeaderCellDef>{{ 'customers.fields.phoneNumber' | translate }}</th>
+          <td mat-cell [attr.data-label]="'customers.fields.phoneNumber' | translate" *matCellDef="let customer">
+            {{ customer.phoneNumber ?? '—' }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef>{{ 'customers.fields.since' | translate }}</th>
+          <td mat-cell [attr.data-label]="'customers.fields.since' | translate" *matCellDef="let customer">
+            {{ customer.createdAt | date: 'mediumDate' }}
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let customer; columns: columns" class="clickable" (click)="open(customer.id)"></tr>
+      </table>
+    </div>
+    <mat-paginator
+      [length]="total()"
+      [pageIndex]="page()"
+      [pageSize]="size()"
+      [pageSizeOptions]="[10, 20, 50]"
+      (page)="changePage($event)"
+    />
+  </div>
+</app-load-state>

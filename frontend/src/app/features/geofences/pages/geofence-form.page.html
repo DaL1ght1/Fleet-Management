@@ -1,0 +1,84 @@
+<app-page-header
+  [title]="(editing() ? 'geofences.editTitle' : 'geofences.createTitle') | translate"
+  backLink="/geofences"
+/>
+
+<form class="layout" [formGroup]="form" (ngSubmit)="save()">
+  <section class="card stack">
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'geofences.fields.name' | translate }}</mat-label>
+      <input matInput formControlName="name" />
+      <mat-error>{{ 'validation.required' | translate }}</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'geofences.fields.kind' | translate }}</mat-label>
+      <mat-select formControlName="kind">
+        @for (option of kinds; track option) {
+          <mat-option [value]="option">{{ 'geofenceKind.' + option | translate }}</mat-option>
+        }
+      </mat-select>
+      <mat-hint>{{ 'geofenceKindHint.' + kind() | translate }}</mat-hint>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'geofences.fields.speedLimit' | translate }}</mat-label>
+      <input matInput type="number" min="1" max="200" formControlName="speedLimitKph" />
+      <span matTextSuffix>km/h</span>
+      <mat-error>{{ 'validation.range' | translate: { min: 1, max: 200 } }}</mat-error>
+    </mat-form-field>
+
+    <mat-button-toggle-group
+      [value]="shape()"
+      (change)="shape.set($event.value); clear()"
+      [hideSingleSelectionIndicator]="true"
+    >
+      <mat-button-toggle value="polygon">
+        <mat-icon>pentagon</mat-icon>
+        {{ 'geofences.polygon' | translate }}
+      </mat-button-toggle>
+      <mat-button-toggle value="circle">
+        <mat-icon>radio_button_unchecked</mat-icon>
+        {{ 'geofences.circle' | translate }}
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+
+    @if (shape() === 'polygon') {
+      <p class="muted">{{ 'geofences.polygonHint' | translate: { count: polygon().length } }}</p>
+      <div class="inline-form">
+        <button mat-stroked-button type="button" [disabled]="!polygon().length" (click)="undo()">
+          <mat-icon>undo</mat-icon>
+          {{ 'geofences.undo' | translate }}
+        </button>
+        <button mat-stroked-button type="button" [disabled]="!polygon().length" (click)="clear()">
+          {{ 'geofences.clear' | translate }}
+        </button>
+      </div>
+    } @else {
+      <p class="muted">{{ 'geofences.circleHint' | translate }}</p>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'geofences.fields.radius' | translate }}</mat-label>
+        <input matInput type="number" min="10" formControlName="radiusMeters" />
+        <span matTextSuffix>m</span>
+        <mat-error>{{ 'validation.range' | translate: { min: 10, max: 200000 } }}</mat-error>
+      </mat-form-field>
+    }
+    @if (shapeMissing()) {
+      <p class="error-text">{{ 'geofences.shapeMissing' | translate }}</p>
+    }
+
+    <div class="form-actions">
+      <button mat-button type="button" (click)="cancel()">{{ 'common.cancel' | translate }}</button>
+      <button mat-flat-button type="submit" [disabled]="saving()">{{ 'common.save' | translate }}</button>
+    </div>
+  </section>
+
+  <app-zone-map
+    class="map"
+    [zones]="otherZones.value() ?? []"
+    [drawMode]="shape()"
+    [draftKind]="kind()"
+    [draftPolygon]="polygon()"
+    [draftCenter]="center()"
+    [draftRadiusMeters]="radius()"
+    (pointPicked)="pick($event)"
+  />
+</form>

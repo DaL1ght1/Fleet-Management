@@ -1,0 +1,157 @@
+extend schema
+@link(url: "https://specs.apollo.dev/federation/v2.6", import: ["@key"])
+
+scalar UUID
+scalar Date
+scalar DateTime
+scalar BigDecimal
+
+enum DriverStatus {
+    ACTIVE
+    INACTIVE
+    SUSPENDED
+    ON_LEAVE
+}
+
+type Customer @key(fields: "id") {
+    id: UUID!
+    accountId: UUID
+    firstName: String!
+    lastName: String!
+    fullName: String!
+    email: String!
+    phoneNumber: String
+    createdAt: DateTime!
+    updatedAt: DateTime!
+}
+
+type EmergencyContact {
+    name: String!
+    phoneNumber: String!
+}
+
+type Driver @key(fields: "id") {
+    id: UUID!
+    accountId: UUID
+    firstName: String!
+    lastName: String!
+    fullName: String!
+    email: String!
+    phoneNumber: String!
+    licenseNumber: String!
+    licenseExpiryDate: Date!
+    licenseExpired: Boolean!
+    status: DriverStatus!
+    dateOfBirth: Date
+    hireDate: Date!
+    monthlySalary: BigDecimal
+    nextPayday: Date
+    emergencyContact: EmergencyContact
+    currentTripId: UUID
+    available: Boolean!
+    rating: Float
+    ratingCount: Int!
+    completedTrips: Int!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+}
+
+type CustomerPage {
+    items: [Customer!]!
+    totalCount: Int!
+    page: Int!
+    size: Int!
+    hasNext: Boolean!
+}
+
+type DriverPage {
+    items: [Driver!]!
+    totalCount: Int!
+    page: Int!
+    size: Int!
+    hasNext: Boolean!
+}
+
+type DriverStatistics {
+    total: Int!
+    active: Int!
+    inactive: Int!
+    suspended: Int!
+    onLeave: Int!
+    available: Int!
+    onTrip: Int!
+    licensesExpiringSoon: Int!
+}
+
+input CustomerInput {
+    firstName: String!
+    lastName: String!
+    email: String!
+    phoneNumber: String
+}
+
+input UpdateCustomerInput {
+    firstName: String
+    lastName: String
+    email: String
+    phoneNumber: String
+}
+
+input EmergencyContactInput {
+    name: String!
+    phoneNumber: String!
+}
+
+input RegisterDriverInput {
+    accountId: UUID
+    firstName: String!
+    lastName: String!
+    email: String!
+    phoneNumber: String!
+    licenseNumber: String!
+    licenseExpiryDate: Date!
+    dateOfBirth: Date
+    hireDate: Date
+    emergencyContact: EmergencyContactInput
+    monthlySalary: BigDecimal
+}
+
+input UpdateDriverInput {
+    accountId: UUID
+    firstName: String
+    lastName: String
+    email: String
+    phoneNumber: String
+    licenseNumber: String
+    licenseExpiryDate: Date
+    dateOfBirth: Date
+    hireDate: Date
+    emergencyContact: EmergencyContactInput
+    monthlySalary: BigDecimal
+}
+
+input DriverFilter {
+    status: DriverStatus
+    available: Boolean
+    search: String
+}
+
+type Query {
+    customer(id: UUID!): Customer
+    customers(search: String, page: Int = 0, size: Int = 20): CustomerPage!
+    driver(id: UUID!): Driver
+    drivers(filter: DriverFilter, page: Int = 0, size: Int = 20): DriverPage!
+    driverStatistics: DriverStatistics!
+    myDriverProfile: Driver
+}
+
+type Mutation {
+    registerCustomer(input: CustomerInput!): Customer!
+    updateCustomer(id: UUID!, input: UpdateCustomerInput!): Customer!
+    deleteCustomer(id: UUID!): Boolean!
+    registerDriver(input: RegisterDriverInput!): Driver!
+    updateDriver(id: UUID!, input: UpdateDriverInput!): Driver!
+    changeDriverStatus(id: UUID!, status: DriverStatus!): Driver!
+    rateDriver(id: UUID!, rating: Int!): Driver!
+    deleteDriver(id: UUID!): Boolean!
+}

@@ -1,0 +1,64 @@
+<div class="no-print">
+  <app-page-header [title]="'myInvoices.title' | translate" [subtitle]="'myInvoices.subtitle' | translate" />
+</div>
+
+<app-load-state
+  [loading]="invoices.isLoading() && !invoices.hasValue()"
+  [failed]="invoices.status() === 'error'"
+  [empty]="invoices.hasValue() && items().length === 0"
+  [emptyMessage]="'myInvoices.empty' | translate"
+  emptyIcon="request_quote"
+  (retry)="invoices.reload()"
+>
+  <section class="stats no-print">
+    <app-stat-card
+      icon="account_balance_wallet"
+      tone="signal"
+      [label]="'myInvoices.toPay' | translate"
+      [value]="toPay() | money"
+    />
+    <app-stat-card
+      icon="running_with_errors"
+      [tone]="overdueCount() ? 'danger' : 'neutral'"
+      [label]="'myInvoices.overdue' | translate"
+      [value]="overdueCount()"
+    />
+  </section>
+
+  <div class="layout">
+    <nav class="list no-print" [attr.aria-label]="'myInvoices.title' | translate">
+      @for (invoice of items(); track invoice.id) {
+        <button
+          type="button"
+          class="entry"
+          [attr.aria-current]="selected()?.id === invoice.id"
+          (click)="select(invoice)"
+        >
+          <span class="entry-main">
+            <span class="strong">{{ invoice.number }}</span>
+            <span class="muted">{{ invoice.issuedOn | date: 'mediumDate' }}</span>
+          </span>
+          <span class="entry-side">
+            <span class="strong">{{ invoice.total | money }}</span>
+            <app-status-chip [status]="invoice.overdue ? 'OVERDUE' : invoice.status" prefix="invoiceStatus." />
+          </span>
+        </button>
+      }
+      @if (invoices.value()?.hasNext) {
+        <button mat-button (click)="showMore()">{{ 'common.showMore' | translate }}</button>
+      }
+    </nav>
+
+    @if (selected(); as invoice) {
+      <div class="preview">
+        <div class="preview-actions no-print">
+          <button mat-stroked-button (click)="print()">
+            <mat-icon>print</mat-icon>
+            {{ 'billing.print' | translate }}
+          </button>
+        </div>
+        <app-invoice-document [invoice]="invoice" [billTo]="billTo()" />
+      </div>
+    }
+  </div>
+</app-load-state>

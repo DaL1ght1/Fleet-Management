@@ -1,0 +1,93 @@
+<app-page-header
+  [title]="'myTrips.title' | translate: { name: firstName() }"
+  [subtitle]="(isDriver() ? 'myTrips.driverSubtitle' : 'myTrips.customerSubtitle') | translate"
+>
+  @if (!isDriver()) {
+    <a mat-flat-button routerLink="/my/trips/new">
+      <mat-icon>add_road</mat-icon>
+      {{ 'navigation.bookTrip' | translate }}
+    </a>
+  }
+</app-page-header>
+
+<ng-template #tripCard let-trip>
+  <article class="trip" [attr.data-status]="trip.status">
+    <header>
+      <span class="when">
+        <span class="day">{{ trip.scheduledStart | date: 'd' }}</span>
+        <span class="month">{{ trip.scheduledStart | date: 'MMM' }}</span>
+      </span>
+      <div class="headline">
+        <p class="route">
+          <span>{{ trip.startLocation.city ?? trip.startLocation.address }}</span>
+          <span class="lane direction-aware" aria-hidden="true"></span>
+          <span>{{ trip.endLocation.city ?? trip.endLocation.address }}</span>
+        </p>
+        <p class="muted">
+          {{ trip.scheduledStart | date: 'EEEE, HH:mm' }} – {{ trip.scheduledEnd | date: 'HH:mm' }} ·
+          {{ 'tripType.' + trip.type | translate }}
+        </p>
+      </div>
+      <app-status-chip [status]="trip.status" />
+    </header>
+    <dl class="details">
+      <div>
+        <dt>{{ 'trips.fields.vehicle' | translate }}</dt>
+        <dd>
+          <span class="plate">{{ trip.vehicle.licensePlate }}</span> {{ trip.vehicle.make }} {{ trip.vehicle.model }}
+        </dd>
+      </div>
+      <div>
+        <dt>{{ 'trips.fields.driver' | translate }}</dt>
+        <dd>{{ trip.driver?.fullName ?? ('trips.unassigned' | translate) }}</dd>
+      </div>
+      @if (trip.distanceKm !== null) {
+        <div>
+          <dt>{{ 'trips.fields.distance' | translate }}</dt>
+          <dd>{{ trip.distanceKm | number: '1.0-1' }} km</dd>
+        </div>
+      }
+      <div>
+        <dt>{{ 'trips.fields.totalCost' | translate }}</dt>
+        <dd>{{ trip.costs.totalCost | money }}</dd>
+      </div>
+    </dl>
+  </article>
+</ng-template>
+
+<app-load-state
+  [loading]="trips.isLoading() && !trips.hasValue()"
+  [failed]="trips.status() === 'error'"
+  [empty]="trips.hasValue() && items().length === 0"
+  [emptyMessage]="'myTrips.empty' | translate"
+  emptyIcon="luggage"
+  (retry)="trips.reload()"
+>
+  @if (upcoming().length) {
+    <section>
+      <h2 class="section-title">{{ 'myTrips.upcoming' | translate }}</h2>
+      <div class="trips">
+        @for (trip of upcoming(); track trip.id) {
+          <ng-container *ngTemplateOutlet="tripCard; context: { $implicit: trip }" />
+        }
+      </div>
+    </section>
+  }
+  @if (past().length) {
+    <section>
+      <h2 class="section-title">{{ 'myTrips.past' | translate }}</h2>
+      <div class="trips">
+        @for (trip of past(); track trip.id) {
+          <ng-container *ngTemplateOutlet="tripCard; context: { $implicit: trip }" />
+        }
+      </div>
+    </section>
+  }
+  @if (trips.value()?.hasNext) {
+    <div class="more">
+      <button mat-stroked-button (click)="showMore()" [disabled]="trips.isLoading()">
+        {{ 'common.showMore' | translate }}
+      </button>
+    </div>
+  }
+</app-load-state>

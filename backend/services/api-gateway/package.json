@@ -1,0 +1,14 @@
+{
+  "name": "smartstreet-supergraph",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "compose": "node compose-supergraph.mjs",
+    "check": "node compose-supergraph.mjs --check"
+  },
+  "devDependencies": {
+    "@apollo/composition": "2.14.4",
+    "graphql": "16.11.0",
+    "yaml": "2.8.1"
+  }
+}

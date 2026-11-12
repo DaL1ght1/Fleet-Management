@@ -1,0 +1,182 @@
+fragment LocationFields on Location {
+  latitude
+  longitude
+  address
+  city
+  state
+  zipCode
+}
+
+fragment TripSummary on Trip {
+  id
+  type
+  status
+  scheduledStart
+  scheduledEnd
+  startLocation {
+    ...LocationFields
+  }
+  endLocation {
+    ...LocationFields
+  }
+  vehicle {
+    id
+    licensePlate
+    make
+    model
+  }
+  driver {
+    id
+    fullName
+  }
+  costs {
+    totalCost
+  }
+}
+
+fragment TripDetails on Trip {
+  ...TripSummary
+  waypoints {
+    ...LocationFields
+  }
+  startedAt
+  completedAt
+  estimatedDurationMinutes
+  actualDurationMinutes
+  distanceKm
+  costs {
+    baseRate
+    fuelCost
+    additionalFees
+    totalCost
+  }
+  driver {
+    id
+    fullName
+    phoneNumber
+  }
+  notes
+  customerNotes
+  internalNotes
+  cancellationReason
+  createdAt
+  updatedAt
+}
+
+query Trips($filter: TripFilter, $page: Int, $size: Int) {
+  trips(filter: $filter, page: $page, size: $size) {
+    items {
+      ...TripSummary
+    }
+    totalCount
+    page
+    size
+    hasNext
+  }
+}
+
+query Trip($id: UUID!) {
+  trip(id: $id) {
+    ...TripDetails
+  }
+}
+
+query TripStatistics {
+  tripStatistics {
+    total
+    scheduled
+    inProgress
+    completed
+    cancelled
+    totalDistanceKm
+    totalRevenue
+  }
+}
+
+query TripResourceOptions {
+  vehicles(filter: { status: ACTIVE }, size: 100) {
+    items {
+      id
+      licensePlate
+      make
+      model
+      inUse
+    }
+  }
+  drivers(filter: { status: ACTIVE }, size: 100) {
+    items {
+      id
+      fullName
+      available
+    }
+  }
+}
+
+mutation UpdateTripPlan($id: UUID!, $input: UpdateTripPlanInput!) {
+  updateTripPlan(id: $id, input: $input) {
+    ...TripDetails
+  }
+}
+
+mutation StartTrip($id: UUID!) {
+  startTrip(id: $id) {
+    ...TripDetails
+  }
+}
+
+mutation CompleteTrip($id: UUID!, $input: CompleteTripInput!) {
+  completeTrip(id: $id, input: $input) {
+    ...TripDetails
+  }
+}
+
+mutation CancelTrip($id: UUID!, $reason: String!) {
+  cancelTrip(id: $id, reason: $reason) {
+    ...TripDetails
+  }
+}
+
+mutation DeleteTrip($id: UUID!) {
+  deleteTrip(id: $id)
+}
+
+query TripQuote($input: TripRequestInput!) {
+  tripQuote(input: $input) {
+    distanceKm
+    durationMinutes
+    departAt
+    arriveAt
+    price
+    vehicleAvailable
+  }
+}
+
+mutation RequestTrip($input: TripRequestInput!) {
+  requestTrip(input: $input) {
+    id
+  }
+}
+
+query BookingOptions {
+  vehicles(filter: { status: ACTIVE }, size: 100) {
+    items {
+      id
+      licensePlate
+      make
+      model
+    }
+  }
+  drivers(filter: { status: ACTIVE }, size: 100) {
+    items {
+      id
+      fullName
+    }
+  }
+  customers(size: 100) {
+    items {
+      id
+      fullName
+      email
+    }
+  }
+}

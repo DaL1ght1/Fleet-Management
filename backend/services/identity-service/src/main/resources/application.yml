@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: identity-service
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://postgresql:5432/identity}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka:9092}
+  mail:
+    host: ${MAIL_HOST:mailpit}
+    port: ${MAIL_PORT:1025}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${KEYCLOAK_JWK_SET_URI:http://keycloak:8080/realms/Smart-Street/protocol/openid-connect/certs}
+  threads:
+    virtual:
+      enabled: true
+
+server:
+  port: 8080
+
+smartstreet:
+  security:
+    router-secret: ${ROUTER_SECRET}
+    public-paths:
+      - /actuator/health/**
+      - /auth/sign-in
+      - /auth/sign-up
+      - /auth/refresh
+      - /auth/sign-out
+      - /auth/password/forgot
+      - /auth/password/reset
+    cors-origins:
+      - ${FRONTEND_ORIGIN:http://localhost:4200}
+  identity:
+    keycloak-url: ${KEYCLOAK_URL:http://keycloak:8080}
+    client-secret: ${IDENTITY_CLIENT_SECRET}
+    frontend-url: ${FRONTEND_ORIGIN:http://localhost:4200}
+    secure-cookies: ${SECURE_COOKIES:true}

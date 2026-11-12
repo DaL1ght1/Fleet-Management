@@ -1,0 +1,846 @@
+{
+  "navigation": {
+    "geofences": "Zones",
+    "fleetMap": "Carte en direct",
+    "dashboard": "Tableau de bord",
+    "trips": "Trajets",
+    "vehicles": "Véhicules",
+    "drivers": "Chauffeurs",
+    "customers": "Clients",
+    "groups": {
+      "operations": "Opérations",
+      "fleet": "Flotte",
+      "business": "Activité",
+      "mine": "Mon espace"
+    },
+    "maintenance": "Maintenance",
+    "billing": "Facturation",
+    "myTrips": "Mes trajets",
+    "myInvoices": "Mes factures",
+    "notifications": "Notifications",
+    "bookTrip": "Réserver un trajet"
+  },
+  "dashboard": {
+    "welcome": "Ravi de vous voir, {{name}}",
+    "utilization": "{{value}} % des véhicules actifs sont en trajet",
+    "scheduledTrips": "{{count}} planifiés",
+    "activeTrips": "Trajets en cours",
+    "revenue": "Chiffre d'affaires",
+    "distance": "{{value}} km parcourus",
+    "availableDrivers": "Chauffeurs disponibles",
+    "upcomingTrips": "Prochains trajets",
+    "viewAll": "Tout voir",
+    "noUpcomingTrips": "Aucun trajet n'est planifié.",
+    "openMap": "Ouvrir la carte",
+    "scheduleTrip": "Planifier un trajet",
+    "onTheRoad": "{{inUse}} véhicules sur {{total}} en route",
+    "segments": {
+      "inUse": "En trajet",
+      "available": "Disponibles",
+      "maintenance": "En maintenance",
+      "inactive": "Inactifs"
+    },
+    "attention": {
+      "title": "À traiter",
+      "clear": "Rien à traiter pour le moment.",
+      "alerts": "Alertes de zone ouvertes",
+      "overdueMaintenance": "Interventions en retard",
+      "maintenanceDue": "Véhicules à entretenir",
+      "overdueInvoices": "Factures en retard",
+      "draftInvoices": "Factures à émettre",
+      "licenses": "Permis expirant sous 30 jours"
+    },
+    "driversOnTrip": "{{count}} en trajet"
+  },
+  "geofenceKind": {
+    "DEPOT": "Dépôt",
+    "SERVICE_AREA": "Zone de service",
+    "RESTRICTED": "Zone interdite"
+  },
+  "geofenceKindHint": {
+    "DEPOT": "Les entrées et sorties sont enregistrées pour information.",
+    "SERVICE_AREA": "Quitter cette zone déclenche une alerte critique.",
+    "RESTRICTED": "Entrer dans cette zone déclenche une alerte critique."
+  },
+  "severity": {
+    "INFO": "Info",
+    "WARNING": "Avertissement",
+    "CRITICAL": "Critique"
+  },
+  "alertType": {
+    "VEHICLE_ENTERED": "Entrée dans la zone",
+    "VEHICLE_EXITED": "Sortie de la zone",
+    "SPEED_LIMIT_EXCEEDED": "Limite de vitesse dépassée"
+  },
+  "geofences": {
+    "title": "Zones géographiques",
+    "subtitle": "Dépôts, zones de service et zones interdites",
+    "create": "Nouvelle zone",
+    "createTitle": "Créer une zone",
+    "editTitle": "Modifier la zone",
+    "alerts": "Alertes",
+    "alertsTitle": "Alertes de zone",
+    "alertsSubtitle": "Entrées, sorties et excès de vitesse détectés en direct",
+    "empty": "Aucune zone définie.",
+    "active": "Active",
+    "vehiclesInside": "{{count}} véhicules à l'intérieur",
+    "polygon": "Polygone",
+    "circle": "Cercle",
+    "polygonHint": "Cliquez sur la carte pour ajouter des sommets ({{count}} pour l'instant, au moins 3).",
+    "circleHint": "Cliquez sur la carte pour placer le centre.",
+    "undo": "Annuler le dernier point",
+    "clear": "Effacer",
+    "shapeMissing": "Dessinez la zone sur la carte avant d'enregistrer.",
+    "created": "Zone créée",
+    "updated": "Zone modifiée",
+    "deleted": "Zone supprimée",
+    "deleteTitle": "Supprimer cette zone ?",
+    "deleteMessage": "La surveillance s'arrête immédiatement. Les alertes passées sont conservées.",
+    "acknowledge": "Acquitter",
+    "acknowledgeAll": "Tout acquitter",
+    "acknowledged": "Alertes acquittées",
+    "openOnly": "Alertes ouvertes uniquement",
+    "noAlerts": "Aucune alerte.",
+    "fields": {
+      "name": "Nom",
+      "kind": "Type",
+      "speedLimit": "Limite de vitesse",
+      "radius": "Rayon",
+      "severity": "Gravité",
+      "occurredAt": "Heure",
+      "event": "Événement",
+      "zone": "Zone"
+    }
+  },
+  "common": {
+    "done": "Terminé",
+    "all": "Tous",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "dismiss": "Fermer",
+    "edit": "Modifier",
+    "loadFailed": "Impossible de charger les données.",
+    "no": "Non",
+    "yes": "Oui",
+    "remove": "Retirer",
+    "retry": "Réessayer",
+    "save": "Enregistrer",
+    "saveChanges": "Enregistrer",
+    "showMore": "Afficher plus",
+    "date": "Date",
+    "time": "Heure",
+    "clear": "Effacer"
+  },
+  "fleetMap": {
+    "title": "Carte de la flotte en direct",
+    "subtitle": "Les positions se mettent à jour toutes les 10 secondes",
+    "refresh": "Actualiser",
+    "moving": "{{count}} en mouvement",
+    "idle": "{{count}} à l'arrêt",
+    "stale": "{{count}} sans signal",
+    "speed": "Vitesse",
+    "fuel": "Niveau de carburant",
+    "odometer": "Compteur",
+    "lastUpdate": "Dernière mise à jour",
+    "openVehicle": "Ouvrir le véhicule",
+    "selectVehicle": "Sélectionnez un véhicule sur la carte.",
+    "noPositions": "Aucun véhicule n'a encore transmis de position."
+  },
+  "telemetry": {
+    "title": "Suivi en direct",
+    "noData": "Aucune position reçue pour ce véhicule.",
+    "pointsToday": "Positions sur 24 h",
+    "devices": "Traceurs",
+    "register": "Ajouter un traceur",
+    "registerTitle": "Ajouter un traceur",
+    "deviceLabel": "Nom du traceur",
+    "registered": "Traceur ajouté",
+    "keyTitle": "Clé du traceur",
+    "keyWarning": "Configurez le traceur avec cette clé maintenant. Elle n'est affichée qu'une seule fois.",
+    "copy": "Copier",
+    "copied": "Copié",
+    "revoke": "Révoquer",
+    "revokeTitle": "Révoquer ce traceur ?",
+    "revokeMessage": "Le traceur ne pourra plus envoyer de positions.",
+    "revoked": "Traceur révoqué",
+    "revokedState": "révoqué",
+    "lastSeen": "vu le",
+    "neverSeen": "jamais connecté",
+    "noDevices": "Aucun traceur installé."
+  },
+  "app": {
+    "menu": "Menu",
+    "toggleTheme": "Changer de thème",
+    "language": "Langue"
+  },
+  "status": {
+    "ACTIVE": "Actif",
+    "INACTIVE": "Inactif",
+    "MAINTENANCE": "Maintenance",
+    "SUSPENDED": "Suspendu",
+    "ON_LEAVE": "En congé",
+    "SCHEDULED": "Planifié",
+    "IN_PROGRESS": "En cours",
+    "COMPLETED": "Terminé",
+    "CANCELLED": "Annulé",
+    "OVERDUE": "En retard"
+  },
+  "fuel": {
+    "GASOLINE": "Essence",
+    "DIESEL": "Diesel",
+    "ELECTRIC": "Électrique",
+    "HYBRID": "Hybride"
+  },
+  "tripType": {
+    "RENTAL": "Location",
+    "MAINTENANCE": "Maintenance",
+    "RELOCATION": "Transfert",
+    "EMERGENCY": "Urgence"
+  },
+  "roles": {
+    "ADMIN": "Administrateur",
+    "MANAGER": "Gestionnaire de flotte",
+    "DRIVER": "Chauffeur",
+    "USER": "Client"
+  },
+  "errors": {
+    "network": "Erreur réseau. Vérifiez votre connexion et réessayez.",
+    "sessionExpired": "Votre session a expiré. Veuillez vous reconnecter.",
+    "forbidden": "Vous n'êtes pas autorisé à effectuer cette action.",
+    "rateLimited": "Trop de requêtes. Veuillez patienter.",
+    "unavailable": "Le service est temporairement indisponible.",
+    "unexpected": "Une erreur inattendue s'est produite."
+  },
+  "validation": {
+    "required": "Ce champ est obligatoire",
+    "email": "Saisissez une adresse e-mail valide",
+    "phone": "Saisissez un numéro de téléphone valide",
+    "uuid": "Saisissez un identifiant de compte valide",
+    "vin": "Un VIN comporte 17 caractères sans I, O ni Q",
+    "nonNegative": "Doit être supérieur ou égal à zéro",
+    "positive": "Doit être supérieur à zéro",
+    "range": "Doit être entre {{min}} et {{max}}",
+    "yearRange": "Doit être entre 1950 et {{max}}",
+    "scheduleOrder": "La fin doit être postérieure au début",
+    "locations": "Choisissez un point de départ et d'arrivée",
+    "passwordLength": "Utilisez entre 8 et 128 caractères",
+    "passwordMix": "Incluez au moins une lettre et un chiffre",
+    "passwordMismatch": "Les mots de passe ne correspondent pas"
+  },
+  "map": {
+    "search": "Rechercher une adresse",
+    "find": "Chercher",
+    "clickToPick": "Recherchez ou cliquez sur la carte pour choisir un lieu"
+  },
+  "vehicles": {
+    "title": "Véhicules",
+    "subtitle": "Immatriculation, statut et maintenance de la flotte",
+    "register": "Ajouter un véhicule",
+    "registerTitle": "Ajouter un véhicule",
+    "editTitle": "Modifier le véhicule",
+    "searchPlaceholder": "Immatriculation, VIN, marque ou modèle",
+    "maintenanceDueOnly": "Maintenance à prévoir uniquement",
+    "empty": "Aucun véhicule ne correspond à ces filtres.",
+    "notFound": "Ce véhicule n'existe pas.",
+    "onTrip": "En trajet",
+    "available": "Disponible",
+    "viewTrip": "Voir le trajet en cours",
+    "changeStatus": "Changer le statut",
+    "newOdometerReading": "Nouveau relevé du compteur",
+    "record": "Enregistrer",
+    "vinHint": "17 caractères, indiqués sur la carte grise",
+    "days": "{{count}} jours",
+    "daysSuffix": "jours",
+    "registered": "Véhicule ajouté",
+    "updated": "Véhicule modifié",
+    "statusChanged": "Statut modifié",
+    "odometerRecorded": "Relevé du compteur enregistré",
+    "deleted": "Véhicule supprimé",
+    "deleteTitle": "Supprimer ce véhicule ?",
+    "deleteMessage": "Le véhicule sera retiré de la flotte. Cette action est irréversible.",
+    "sections": {
+      "identity": "Identité",
+      "usage": "Utilisation",
+      "maintenance": "Maintenance"
+    },
+    "fields": {
+      "vehicle": "Véhicule",
+      "make": "Marque",
+      "model": "Modèle",
+      "year": "Année",
+      "licensePlate": "Immatriculation",
+      "vin": "VIN",
+      "color": "Couleur",
+      "status": "Statut",
+      "fuelType": "Carburant",
+      "mileage": "Kilométrage",
+      "dailyRate": "Tarif journalier",
+      "seatingCapacity": "Places",
+      "gpsEnabled": "Traceur GPS installé",
+      "currentTrip": "Trajet en cours",
+      "lastMaintenance": "Dernière maintenance",
+      "maintenanceInterval": "Intervalle de maintenance",
+      "nextMaintenance": "Prochaine maintenance"
+    }
+  },
+  "drivers": {
+    "title": "Chauffeurs",
+    "subtitle": "Permis, disponibilité et performance",
+    "register": "Ajouter un chauffeur",
+    "registerTitle": "Ajouter un chauffeur",
+    "editTitle": "Modifier le chauffeur",
+    "searchPlaceholder": "Nom, e-mail ou permis",
+    "availableOnly": "Disponibles uniquement",
+    "empty": "Aucun chauffeur ne correspond à ces filtres.",
+    "notFound": "Ce chauffeur n'existe pas.",
+    "expires": "Expire le",
+    "licenseExpired": "Expiré",
+    "notRated": "Pas encore noté",
+    "available": "Disponible",
+    "unavailable": "Indisponible",
+    "viewTrip": "Voir le trajet en cours",
+    "changeStatus": "Changer le statut",
+    "rate": "Noter le dernier trajet",
+    "accountHint": "Identifiant Keycloak, relie la connexion à ce profil",
+    "registered": "Chauffeur ajouté",
+    "updated": "Chauffeur modifié",
+    "statusChanged": "Statut modifié",
+    "rated": "Note enregistrée",
+    "deleted": "Chauffeur supprimé",
+    "deleteTitle": "Supprimer ce chauffeur ?",
+    "deleteMessage": "Le profil sera supprimé. Cette action est irréversible.",
+    "sections": {
+      "contact": "Contact",
+      "license": "Permis",
+      "performance": "Performance"
+    },
+    "fields": {
+      "name": "Nom",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "email": "E-mail",
+      "phoneNumber": "Téléphone",
+      "contact": "Contact",
+      "license": "Permis",
+      "licenseNumber": "Numéro de permis",
+      "licenseExpiry": "Expiration du permis",
+      "dateOfBirth": "Date de naissance",
+      "hireDate": "Date d'embauche",
+      "emergencyContact": "Contact d'urgence",
+      "emergencyContactName": "Nom du contact d'urgence",
+      "emergencyContactPhone": "Téléphone du contact d'urgence",
+      "accountId": "Compte de connexion",
+      "status": "Statut",
+      "availability": "Disponible",
+      "rating": "Note",
+      "completedTrips": "Trajets effectués",
+      "currentTrip": "Trajet en cours",
+      "monthlySalary": "Salaire mensuel",
+      "nextPayday": "Prochaine paie"
+    },
+    "salaryHint": "Versé tous les 30 jours à partir de l'embauche"
+  },
+  "customers": {
+    "title": "Clients",
+    "subtitle": "Personnes et entreprises qui louent vos véhicules",
+    "register": "Ajouter un client",
+    "registerTitle": "Ajouter un client",
+    "editTitle": "Modifier le client",
+    "searchPlaceholder": "Nom ou e-mail",
+    "empty": "Aucun client trouvé.",
+    "registered": "Client ajouté",
+    "updated": "Client modifié",
+    "deleted": "Client supprimé",
+    "deleteTitle": "Supprimer ce client ?",
+    "deleteMessage": "Le client sera supprimé. Cette action est irréversible.",
+    "fields": {
+      "name": "Nom",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "email": "E-mail",
+      "phoneNumber": "Téléphone",
+      "since": "Client depuis"
+    }
+  },
+  "trips": {
+    "title": "Trajets",
+    "subtitle": "Planification, exécution et coûts",
+    "schedule": "Planifier un trajet",
+    "scheduleTitle": "Planifier un trajet",
+    "rescheduleTitle": "Replanifier le trajet",
+    "reschedule": "Replanifier",
+    "from": "Du",
+    "to": "Au",
+    "empty": "Aucun trajet ne correspond à ces filtres.",
+    "notFound": "Ce trajet n'existe pas.",
+    "unassigned": "Sans chauffeur",
+    "onTrip": "en trajet",
+    "busy": "occupé",
+    "minutes": "min",
+    "addStop": "Ajouter une étape",
+    "start": "Démarrer le trajet",
+    "complete": "Terminer le trajet",
+    "completeTitle": "Terminer ce trajet",
+    "cancelTrip": "Annuler le trajet",
+    "cancelTitle": "Annuler ce trajet ?",
+    "cancellationReason": "Motif d'annulation",
+    "scheduled": "Trajet planifié",
+    "rescheduled": "Trajet replanifié",
+    "started": "Trajet démarré",
+    "completed": "Trajet terminé",
+    "cancelled": "Trajet annulé",
+    "deleted": "Trajet supprimé",
+    "deleteTitle": "Supprimer ce trajet ?",
+    "deleteMessage": "Le trajet sera retiré de l'historique. Cette action est irréversible.",
+    "sections": {
+      "route": "Itinéraire",
+      "assignment": "Affectation",
+      "timing": "Horaires",
+      "costs": "Coûts",
+      "notes": "Notes"
+    },
+    "fields": {
+      "type": "Type",
+      "status": "Statut",
+      "schedule": "Planifié",
+      "route": "Itinéraire",
+      "vehicle": "Véhicule",
+      "driver": "Chauffeur",
+      "start": "Départ",
+      "end": "Arrivée",
+      "stop": "Étape {{index}}",
+      "scheduledStart": "Départ prévu",
+      "scheduledEnd": "Arrivée prévue",
+      "startedAt": "Démarré à",
+      "completedAt": "Terminé à",
+      "estimatedDuration": "Durée estimée",
+      "duration": "Durée",
+      "distance": "Distance",
+      "baseRate": "Tarif de base",
+      "fuelCost": "Coût du carburant",
+      "additionalFees": "Frais supplémentaires",
+      "totalCost": "Total",
+      "notes": "Notes",
+      "customerNotes": "Notes pour le client",
+      "internalNotes": "Notes internes",
+      "customer": "Client"
+    }
+  },
+  "profile": {
+    "driverProfile": "Profil chauffeur",
+    "currentTrip": "Ouvrir le trajet en cours",
+    "logout": "Se déconnecter",
+    "menu": "Paramètres du compte",
+    "sections": {
+      "details": "Informations personnelles",
+      "security": "Mot de passe",
+      "team": "Inviter l'équipe"
+    },
+    "detailsHint": "Votre nom apparaît sur les trajets et factures. Changer d'e-mail change votre identifiant.",
+    "saved": "Profil enregistré",
+    "changePassword": "Changer le mot de passe",
+    "securityHint": "Le modifier vous déconnecte de vos autres appareils.",
+    "currentPassword": "Mot de passe actuel",
+    "passwordChanged": "Mot de passe modifié",
+    "errors": {
+      "wrongPassword": "Le mot de passe actuel est incorrect."
+    },
+    "inviteTitle": "Inviter un membre de l'équipe",
+    "inviteHint": "Il reçoit un e-mail avec un lien pour choisir son mot de passe, valable 3 jours.",
+    "role": "Rôle",
+    "sendInvitation": "Envoyer l'invitation",
+    "invitationSent": "Invitation envoyée"
+  },
+  "auth": {
+    "hero": {
+      "title": "Chaque véhicule, trajet et facture sur une seule route.",
+      "body": "Suivez la flotte en direct, planifiez trajets et maintenance, et facturez vos clients sans changer d'outil."
+    },
+    "fields": {
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmez le mot de passe",
+      "firstName": "Prénom",
+      "lastName": "Nom"
+    },
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe",
+    "passwordHint": "Au moins 8 caractères avec une lettre et un chiffre",
+    "backToSignIn": "Retour à la connexion",
+    "signIn": {
+      "title": "Connexion",
+      "subtitle": "Bon retour. Utilisez l'e-mail associé à votre compte.",
+      "forgot": "Mot de passe oublié ?",
+      "submit": "Se connecter",
+      "newHere": "Nouveau client ?",
+      "createAccount": "Créer un compte",
+      "expired": "Votre session a expiré. Reconnectez-vous pour continuer.",
+      "passwordSet": "Votre mot de passe est défini. Connectez-vous avec."
+    },
+    "signUp": {
+      "title": "Créez votre compte",
+      "subtitle": "Réservez des trajets et retrouvez toutes vos factures au même endroit.",
+      "submit": "Créer le compte",
+      "haveAccount": "Vous avez déjà un compte ?",
+      "signIn": "Se connecter"
+    },
+    "forgot": {
+      "title": "Réinitialiser le mot de passe",
+      "subtitle": "Saisissez votre e-mail et nous vous enverrons un lien pour choisir un nouveau mot de passe.",
+      "submit": "Envoyer le lien",
+      "sentTitle": "Consultez votre boîte de réception",
+      "sentBody": "Si {{email}} possède un compte, un lien de réinitialisation arrive. Il expire dans 30 minutes."
+    },
+    "reset": {
+      "title": "Choisissez un nouveau mot de passe",
+      "subtitle": "Vous serez déconnecté de tous vos autres appareils.",
+      "submit": "Enregistrer le mot de passe"
+    },
+    "activate": {
+      "title": "Activez votre compte",
+      "subtitle": "Choisissez le mot de passe pour vous connecter à SmartStreet.",
+      "submit": "Activer le compte"
+    },
+    "errors": {
+      "invalidCredentials": "Cet e-mail et ce mot de passe ne correspondent à aucun compte.",
+      "emailTaken": "Un compte utilise déjà cet e-mail.",
+      "linkExpired": "Ce lien est invalide ou a expiré. Demandez-en un nouveau.",
+      "rejected": "{{detail}}"
+    }
+  },
+  "workOrderKind": {
+    "PREVENTIVE": "Entretien préventif",
+    "REPAIR": "Réparation",
+    "INSPECTION": "Inspection"
+  },
+  "workOrderKindHint": {
+    "PREVENTIVE": "Entretien planifié par date ou kilométrage",
+    "REPAIR": "Corriger une panne ou un dommage",
+    "INSPECTION": "Contrôle technique ou de sécurité"
+  },
+  "priority": {
+    "LOW": "Basse",
+    "MEDIUM": "Moyenne",
+    "HIGH": "Haute",
+    "CRITICAL": "Critique"
+  },
+  "maintenance": {
+    "title": "Maintenance",
+    "subtitle": "Interventions d'entretien, réparations et inspections",
+    "schedule": "Planifier une intervention",
+    "scheduleTitle": "Planifier une intervention",
+    "editTitle": "Modifier l'intervention",
+    "formSubtitle": "Le véhicule est immobilisé au début des travaux et remis en service à la fin.",
+    "sections": {
+      "what": "Travaux à réaliser",
+      "when": "Véhicule et date",
+      "details": "Détails",
+      "outcome": "Résultat",
+      "complete": "Clôturer l'intervention"
+    },
+    "completeHint": "Indiquez le coût et le kilométrage. Le véhicule est remis en service.",
+    "titlePlaceholder": "Remplacer les plaquettes avant",
+    "fields": {
+      "title": "Intervention",
+      "vehicle": "Véhicule",
+      "kind": "Type",
+      "priority": "Priorité",
+      "status": "Statut",
+      "scheduledFor": "Prévue le",
+      "vendor": "Garage ou prestataire",
+      "description": "Notes",
+      "partsCost": "Pièces",
+      "laborCost": "Main-d'œuvre",
+      "totalCost": "Coût",
+      "odometer": "Kilométrage relevé",
+      "resolutionNotes": "Travaux réalisés"
+    },
+    "stats": {
+      "scheduled": "Planifiées",
+      "inProgress": "À l'atelier",
+      "overdue": "En retard",
+      "overdueHint": "Date prévue dépassée",
+      "costThisMonth": "Dépensé ce mois-ci",
+      "completed": "{{count}} terminées"
+    },
+    "overdueOnly": "En retard uniquement",
+    "empty": "Aucune intervention ne correspond à ces filtres.",
+    "autoGenerated": "Créée automatiquement selon le plan d'entretien",
+    "notFound": "Cette intervention n'existe pas.",
+    "start": "Démarrer",
+    "complete": "Clôturer l'intervention",
+    "cancel": "Annuler l'intervention",
+    "cancelTitle": "Annuler cette intervention ?",
+    "cancelReason": "Motif",
+    "cancelledBecause": "Annulée : {{reason}}",
+    "scheduled": "Intervention planifiée",
+    "updated": "Intervention modifiée",
+    "started": "Travaux démarrés",
+    "completed": "Intervention terminée",
+    "cancelled": "Intervention annulée",
+    "workOrders": "Interventions",
+    "noneForVehicle": "Aucune intervention pour ce véhicule."
+  },
+  "invoiceStatus": {
+    "DRAFT": "Brouillon",
+    "ISSUED": "Émise",
+    "PAID": "Payée",
+    "VOID": "Annulée",
+    "OVERDUE": "En retard"
+  },
+  "paymentMethod": {
+    "CASH": "Espèces",
+    "CARD": "Carte",
+    "BANK_TRANSFER": "Virement"
+  },
+  "billing": {
+    "title": "Facturation",
+    "subtitle": "L'argent des trajets d'un côté, la maintenance et les salaires de l'autre",
+    "detailSubtitle": "Vérifier, émettre et enregistrer le paiement",
+    "views": {
+      "all": "Toutes",
+      "drafts": "Brouillons",
+      "outstanding": "En attente",
+      "overdue": "En retard",
+      "paid": "Payées"
+    },
+    "stats": {
+      "outstanding": "En attente de paiement",
+      "overdue": "En retard",
+      "overdueCount": "{{count}} factures échues",
+      "collected": "Encaissé ce mois-ci",
+      "collectedHint": "{{amount}} encaissés ce mois-ci",
+      "drafts": "Brouillons",
+      "draftsHint": "Prêtes à vérifier et émettre"
+    },
+    "empty": "Aucune facture pour l'instant.",
+    "notFound": "Cette facture n'existe pas.",
+    "fields": {
+      "number": "Facture",
+      "customer": "Client",
+      "vehicle": "Véhicule",
+      "createdAt": "Créée le",
+      "issuedOn": "Émise le",
+      "dueDate": "Échéance",
+      "paidOn": "Payée le",
+      "status": "Statut",
+      "subtotal": "Sous-total",
+      "tax": "TVA {{rate}}",
+      "total": "Total"
+    },
+    "document": {
+      "title": "Facture",
+      "issuer": "Services de flotte et mobilité · Tunis",
+      "billTo": "Facturé à",
+      "walkIn": "Sans compte client",
+      "trip": "Trajet",
+      "description": "Désignation",
+      "amount": "Montant",
+      "terms": "Paiement avant l'échéance en espèces, par carte ou virement. Montants en dinars tunisiens.",
+      "voided": "Annulée : {{reason}}"
+    },
+    "issueTitle": "Émettre la facture",
+    "issueHint": "Le client est notifié et la retrouve dans son compte.",
+    "paymentTerms": "Délai de paiement",
+    "termDays": "{{days}} jours",
+    "issue": "Émettre",
+    "collectTitle": "Enregistrer le paiement",
+    "collectHint": "Indiquez le mode de paiement.",
+    "markPaid": "Marquer comme payée",
+    "print": "Imprimer ou enregistrer en PDF",
+    "viewTrip": "Ouvrir le trajet",
+    "void": "Annuler la facture",
+    "voidTitle": "Annuler cette facture ?",
+    "voidReason": "Motif",
+    "issued": "Facture émise",
+    "paid": "Paiement enregistré",
+    "voided": "Facture annulée",
+    "tabs": {
+      "income": "Recettes",
+      "outcome": "Dépenses"
+    }
+  },
+  "myTrips": {
+    "title": "Vos trajets, {{name}}",
+    "customerSubtitle": "Réservations à venir et trajets effectués",
+    "driverSubtitle": "Les trajets qui vous sont confiés",
+    "upcoming": "À venir",
+    "past": "Trajets passés",
+    "empty": "Vous n'avez encore aucun trajet."
+  },
+  "myInvoices": {
+    "title": "Mes factures",
+    "subtitle": "Toutes les factures de vos trajets, prêtes à imprimer",
+    "toPay": "À régler",
+    "overdue": "Factures en retard",
+    "empty": "Aucune facture. Elles apparaissent ici après chaque trajet."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "subtitle": "Alertes et nouvelles de votre flotte, trajets et factures",
+    "bellLabel": "Notifications, {{count}} non lues",
+    "markAllRead": "Tout marquer comme lu",
+    "seeAll": "Voir toutes les notifications",
+    "empty": "Vous êtes à jour.",
+    "unread": "Non lue",
+    "all": "Toutes",
+    "unreadOnly": "Non lues ({{count}})",
+    "buckets": {
+      "today": "Aujourd'hui",
+      "week": "Cette semaine",
+      "earlier": "Plus tôt"
+    },
+    "kinds": {
+      "GEOFENCE_ENTERED": {
+        "title": "{{vehicle}} est entré dans {{zone}}",
+        "body": "Entrée détectée depuis la position en direct."
+      },
+      "GEOFENCE_EXITED": {
+        "title": "{{vehicle}} a quitté {{zone}}",
+        "body": "Sortie détectée depuis la position en direct."
+      },
+      "SPEED_LIMIT_EXCEEDED": {
+        "title": "{{vehicle}} dépasse la vitesse dans {{zone}}",
+        "body": "{{speed}} km/h pour une limite de {{limit}} km/h."
+      },
+      "MAINTENANCE_SCHEDULED": {
+        "title": "Intervention planifiée pour {{vehicle}}",
+        "body": "{{title}} le {{date}}."
+      },
+      "MAINTENANCE_STARTED": {
+        "title": "{{vehicle}} est à l'atelier",
+        "body": "{{title}} a commencé."
+      },
+      "MAINTENANCE_COMPLETED": {
+        "title": "{{vehicle}} est remis en service",
+        "body": "{{title}} est terminé."
+      },
+      "MAINTENANCE_OVERDUE": {
+        "title": "Intervention en retard pour {{vehicle}}",
+        "body": "{{title}} était prévu le {{date}}."
+      },
+      "TRIP_ASSIGNED": {
+        "title": "Nouveau trajet avec {{vehicle}}",
+        "body": "Départ {{start}}."
+      },
+      "TRIP_RESCHEDULED": {
+        "title": "Votre trajet avec {{vehicle}} a changé",
+        "body": "Nouveau départ : {{start}}."
+      },
+      "TRIP_STARTED": {
+        "title": "Votre trajet a commencé",
+        "body": "{{vehicle}} est en route."
+      },
+      "TRIP_COMPLETED": {
+        "title": "Trajet terminé",
+        "body": "{{vehicle}} a parcouru {{distance}} km. Votre facture suit."
+      },
+      "TRIP_CANCELLED": {
+        "title": "Trajet avec {{vehicle}} annulé",
+        "body": "{{reason}}"
+      },
+      "INVOICE_ISSUED": {
+        "title": "La facture {{number}} est disponible",
+        "body": "{{total}} TND, échéance le {{dueDate}}."
+      },
+      "INVOICE_PAID": {
+        "title": "Facture {{number}} payée",
+        "body": "{{total}} TND reçus. Merci."
+      },
+      "INVOICE_OVERDUE": {
+        "title": "La facture {{number}} est en retard",
+        "body": "{{total}} TND étaient dus le {{dueDate}}."
+      },
+      "LICENSE_EXPIRING": {
+        "title": "Le permis de {{driver}} expire bientôt",
+        "body": "Date d'expiration : {{date}}. Renouvelez-le pour continuer à conduire."
+      }
+    }
+  },
+  "booking": {
+    "title": "Réserver un trajet",
+    "subtitle": "Indiquez où et quand. Nous choisissons le véhicule et le chauffeur.",
+    "where": "Où allez-vous ?",
+    "when": "Quand ?",
+    "from": "Départ",
+    "to": "Destination",
+    "searchPlaceholder": "Rechercher une adresse ou un lieu",
+    "useMyLocation": "Utiliser ma position",
+    "clear": "Effacer ce lieu",
+    "swap": "Inverser départ et destination",
+    "tapForFrom": "Ou touchez la carte pour placer le départ",
+    "tapForTo": "Ou touchez la carte pour placer la destination",
+    "now": "Partir maintenant",
+    "later": "Planifier",
+    "pickTime": "Choisissez une heure de départ",
+    "noSlots": "Plus de départ aujourd'hui. Choisissez un autre jour.",
+    "periods": {
+      "morning": "Matin",
+      "afternoon": "Après-midi",
+      "evening": "Soir"
+    },
+    "assignment": "Véhicule, chauffeur et client",
+    "automatic": "Choisis automatiquement",
+    "manual": "Définis par vous",
+    "pickForMe": "Choisir le meilleur disponible",
+    "noCustomer": "Aucun client",
+    "missing": {
+      "from": "Choisissez un point de départ pour voir le prix.",
+      "to": "Choisissez maintenant la destination.",
+      "time": "Choisissez un jour et une heure de départ."
+    },
+    "calculating": "Calcul de l'itinéraire et du prix…",
+    "distance": "Distance",
+    "duration": "Durée",
+    "minutes": "{{count}} min",
+    "arrival": "Arrivée",
+    "estimatedPrice": "Prix estimé",
+    "noVehicle": "Aucun véhicule libre à cette heure. Essayez un autre horaire.",
+    "quoteFailed": "Impossible de calculer le prix. Vérifiez votre connexion.",
+    "bookNow": "Réserver maintenant",
+    "bookLater": "Planifier le trajet",
+    "booked": "Trajet réservé",
+    "map": "Carte de l'itinéraire"
+  },
+  "outcome": {
+    "stats": {
+      "toPay": "Reste à payer",
+      "toPayHint": "{{count}} dépenses non réglées",
+      "maintenance": "Dépenses de maintenance",
+      "salaries": "Salaires des chauffeurs",
+      "unpaid": "{{amount}} non réglés",
+      "net": "Solde du mois",
+      "paidOut": "{{amount}} décaissés"
+    },
+    "payroll": {
+      "title": "Paie à venir",
+      "subtitle": "Salaires dus dans les 30 prochains jours, tous les 30 jours depuis chaque embauche",
+      "total": "Prévu",
+      "empty": "Aucun salaire dû dans les 30 jours. Renseignez le salaire mensuel des chauffeurs."
+    },
+    "kinds": {
+      "ALL": "Toutes",
+      "MAINTENANCE": "Maintenance",
+      "SALARY": "Salaires"
+    },
+    "statuses": {
+      "ALL": "Toutes",
+      "UNPAID": "Non réglées",
+      "PAID": "Réglées",
+      "OVERDUE": "En retard"
+    },
+    "fields": {
+      "description": "Dépense",
+      "kind": "Type",
+      "related": "Concerne",
+      "dueDate": "Échéance",
+      "status": "Statut",
+      "amount": "Montant"
+    },
+    "salaryOf": "Salaire · {{name}}",
+    "empty": "Aucune dépense. Les interventions terminées et les salaires apparaissent automatiquement.",
+    "pay": "Régler",
+    "paid": "Dépense réglée"
+  }
+}
