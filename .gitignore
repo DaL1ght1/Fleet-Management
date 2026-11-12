@@ -1,52 +1,13 @@
-# Exclude embedded git repositories  
-SmartSFront/smart-street-app/.git/
-
-# Node modules
-node_modules/
-*/node_modules/
-
-# Build outputs
-dist/
-*/dist/
-build/
-*/build/
-
-# Environment files
 .env
-.env.local
-.env.production
-
-# IDE files
-.vscode/
+target/
+node_modules/
+dist/
 .idea/
-*.swp
-*.swo
-
-# OS files
+.vscode/
+*.iml
+*.log
 .DS_Store
 Thumbs.db
+deploy/keycloak/data/
 
-# Logs
-*.log
-logs/
-
-# Java/Maven specific
-target/
-*.jar
-*.war
-*.class
-*.iml
-.classpath
-.project
-.settings/
-
-# Spring Boot specific
-spring.log
-application-*.properties
-!application.properties
-!application-*.yml
-!application.yml
-
-# Database
-*.db
-*.sqlite
+TODO.md

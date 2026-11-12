@@ -1,0 +1,52 @@
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4) var(--space-6);
+  margin-block-end: var(--space-8);
+
+  @media (max-width: 600px) {
+    margin-block-end: var(--space-6);
+  }
+}
+
+.heading {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-inline-size: 0;
+}
+
+.back {
+  margin-block-start: 2px;
+  flex: none;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+h1 {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.subtitle {
+  margin-block-start: var(--space-2);
+  color: var(--ink-muted);
+  font-size: var(--text-lg);
+  max-inline-size: 60ch;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+
+  @media (max-width: 600px) {
+    inline-size: 100%;
+
+    ::ng-deep > * {
+      flex: 1 1 auto;
+    }
+  }
+}

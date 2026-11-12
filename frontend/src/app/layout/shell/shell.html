@@ -1,0 +1,78 @@
+<mat-sidenav-container class="shell" [hasBackdrop]="compact()">
+  <mat-sidenav
+    #drawer
+    class="rail"
+    [mode]="compact() ? 'over' : 'side'"
+    [opened]="!compact()"
+    [disableClose]="!compact()"
+  >
+    <a class="brand" [routerLink]="'/'" (click)="compact() && drawer.close()">
+      <app-brand-mark [size]="38" />
+      <span>SmartStreet</span>
+    </a>
+
+    <nav class="groups" [attr.aria-label]="'app.menu' | translate">
+      @for (group of navigation(); track group.labelKey) {
+        <section class="group">
+          <h2 class="group-label">{{ group.labelKey | translate }}</h2>
+          @for (item of group.items; track item.route) {
+            <a
+              class="nav-item"
+              [routerLink]="item.route"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: item.route.startsWith('/my') }"
+              ariaCurrentWhenActive="page"
+              (click)="compact() && drawer.close()"
+            >
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <span>{{ item.labelKey | translate }}</span>
+            </a>
+          }
+        </section>
+      }
+    </nav>
+
+    <a class="account" routerLink="/profile" routerLinkActive="active" (click)="compact() && drawer.close()">
+      <span class="avatar">{{ initials() }}</span>
+      <span class="identity">
+        <span class="name">{{ displayName() }}</span>
+        <span class="email">{{ account()?.email }}</span>
+      </span>
+    </a>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="main">
+    <header class="topbar">
+      @if (compact()) {
+        <button mat-icon-button (click)="drawer.toggle()" [attr.aria-label]="'app.menu' | translate">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <a class="compact-brand" routerLink="/"><app-brand-mark [size]="30" /></a>
+      }
+      <span class="spacer"></span>
+      <app-notification-bell />
+      <app-preference-controls />
+      <button mat-icon-button class="avatar-button" [matMenuTriggerFor]="accountMenu" [attr.aria-label]="displayName()">
+        <span class="avatar small">{{ initials() }}</span>
+      </button>
+      <mat-menu #accountMenu="matMenu" xPosition="before">
+        <div class="menu-identity" role="presentation">
+          <strong>{{ displayName() }}</strong>
+          <span class="muted">{{ account()?.email }}</span>
+        </div>
+        <mat-divider />
+        <a mat-menu-item routerLink="/profile">
+          <mat-icon>manage_accounts</mat-icon>
+          <span>{{ 'profile.menu' | translate }}</span>
+        </a>
+        <button mat-menu-item (click)="signOut()">
+          <mat-icon>logout</mat-icon>
+          <span>{{ 'profile.logout' | translate }}</span>
+        </button>
+      </mat-menu>
+    </header>
+    <main class="content">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

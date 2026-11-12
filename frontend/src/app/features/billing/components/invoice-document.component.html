@@ -1,0 +1,103 @@
+<article class="document" [attr.data-status]="invoice().status">
+  <header class="head">
+    <div class="issuer">
+      <app-brand-mark [size]="44" />
+      <div>
+        <strong>SmartStreet</strong>
+        <span class="muted">{{ 'billing.document.issuer' | translate }}</span>
+      </div>
+    </div>
+    <div class="identity">
+      <h2>{{ 'billing.document.title' | translate }}</h2>
+      <p class="number">{{ invoice().number }}</p>
+      <app-status-chip [status]="invoice().overdue ? 'OVERDUE' : invoice().status" prefix="invoiceStatus." />
+    </div>
+  </header>
+
+  <section class="meta">
+    <div>
+      <h3>{{ 'billing.document.billTo' | translate }}</h3>
+      @if (billTo(); as customer) {
+        <p class="strong">{{ customer.fullName }}</p>
+        <p class="muted">{{ customer.email }}</p>
+        @if (customer.phoneNumber) {
+          <p class="muted">{{ customer.phoneNumber }}</p>
+        }
+      } @else {
+        <p class="muted">{{ 'billing.document.walkIn' | translate }}</p>
+      }
+    </div>
+    <dl>
+      <dt>{{ 'billing.fields.issuedOn' | translate }}</dt>
+      <dd>{{ (invoice().issuedOn | date: 'mediumDate') ?? '—' }}</dd>
+      <dt>{{ 'billing.fields.dueDate' | translate }}</dt>
+      <dd [class.error-text]="invoice().overdue">{{ (invoice().dueDate | date: 'mediumDate') ?? '—' }}</dd>
+      @if (invoice().paidOn) {
+        <dt>{{ 'billing.fields.paidOn' | translate }}</dt>
+        <dd>
+          {{ invoice().paidOn | date: 'mediumDate' }}
+          @if (invoice().paymentMethod) {
+            · {{ 'paymentMethod.' + invoice().paymentMethod | translate }}
+          }
+        </dd>
+      }
+    </dl>
+  </section>
+
+  <section class="trip">
+    <h3>{{ 'billing.document.trip' | translate }}</h3>
+    <p class="route">
+      <span>{{ invoice().trip.startLocation.city ?? invoice().trip.startLocation.address }}</span>
+      <span class="arrow direction-aware" aria-hidden="true"></span>
+      <span>{{ invoice().trip.endLocation.city ?? invoice().trip.endLocation.address }}</span>
+    </p>
+    <p class="muted">
+      {{ 'tripType.' + invoice().trip.type | translate }} ·
+      <span class="plate">{{ invoice().vehicle.licensePlate }}</span>
+      {{ invoice().vehicle.make }} {{ invoice().vehicle.model }}
+      @if (invoice().trip.distanceKm !== null) {
+        · {{ invoice().trip.distanceKm | number: '1.0-1' }} km
+      }
+      @if (invoice().trip.completedAt) {
+        · {{ invoice().trip.completedAt | date: 'medium' }}
+      }
+    </p>
+  </section>
+
+  <table class="lines">
+    <thead>
+      <tr>
+        <th scope="col">{{ 'billing.document.description' | translate }}</th>
+        <th scope="col" class="amount">{{ 'billing.document.amount' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (line of invoice().lines; track $index) {
+        <tr>
+          <td>{{ line.description }}</td>
+          <td class="amount">{{ line.amount | money }}</td>
+        </tr>
+      }
+    </tbody>
+    <tfoot>
+      <tr>
+        <th scope="row">{{ 'billing.fields.subtotal' | translate }}</th>
+        <td class="amount">{{ invoice().subtotal | money }}</td>
+      </tr>
+      <tr>
+        <th scope="row">{{ 'billing.fields.tax' | translate: { rate: (invoice().taxRate | percent: '1.0-2') } }}</th>
+        <td class="amount">{{ invoice().taxAmount | money }}</td>
+      </tr>
+      <tr class="grand">
+        <th scope="row">{{ 'billing.fields.total' | translate }}</th>
+        <td class="amount">{{ invoice().total | money }}</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  @if (invoice().status === 'VOID') {
+    <p class="void-note">{{ 'billing.document.voided' | translate: { reason: invoice().voidReason } }}</p>
+  } @else {
+    <p class="muted terms">{{ 'billing.document.terms' | translate }}</p>
+  }
+</article>

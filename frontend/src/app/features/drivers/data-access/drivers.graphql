@@ -1,0 +1,97 @@
+fragment DriverSummary on Driver {
+  id
+  fullName
+  email
+  phoneNumber
+  licenseNumber
+  licenseExpiryDate
+  licenseExpired
+  status
+  available
+  rating
+  completedTrips
+}
+
+fragment DriverDetails on Driver {
+  ...DriverSummary
+  accountId
+  firstName
+  lastName
+  dateOfBirth
+  hireDate
+  monthlySalary
+  nextPayday
+  emergencyContact {
+    name
+    phoneNumber
+  }
+  currentTripId
+  ratingCount
+  createdAt
+  updatedAt
+}
+
+query Drivers($filter: DriverFilter, $page: Int, $size: Int) {
+  drivers(filter: $filter, page: $page, size: $size) {
+    items {
+      ...DriverSummary
+    }
+    totalCount
+    page
+    size
+    hasNext
+  }
+}
+
+query Driver($id: UUID!) {
+  driver(id: $id) {
+    ...DriverDetails
+  }
+}
+
+query MyDriverProfile {
+  myDriverProfile {
+    ...DriverDetails
+  }
+}
+
+query DriverStatistics {
+  driverStatistics {
+    total
+    active
+    inactive
+    suspended
+    onLeave
+    available
+    onTrip
+    licensesExpiringSoon
+  }
+}
+
+mutation RegisterDriver($input: RegisterDriverInput!) {
+  registerDriver(input: $input) {
+    ...DriverDetails
+  }
+}
+
+mutation UpdateDriver($id: UUID!, $input: UpdateDriverInput!) {
+  updateDriver(id: $id, input: $input) {
+    ...DriverDetails
+  }
+}
+
+mutation ChangeDriverStatus($id: UUID!, $status: DriverStatus!) {
+  changeDriverStatus(id: $id, status: $status) {
+    ...DriverDetails
+  }
+}
+
+mutation RateDriver($id: UUID!, $rating: Int!) {
+  rateDriver(id: $id, rating: $rating) {
+    ...DriverDetails
+  }
+}
+
+mutation DeleteDriver($id: UUID!) {
+  deleteDriver(id: $id)
+}

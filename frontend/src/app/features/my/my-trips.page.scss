@@ -1,0 +1,119 @@
+.section-title {
+  margin-block: var(--space-6) var(--space-4);
+
+  section:first-child & {
+    margin-block-start: 0;
+  }
+}
+
+.trips {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+  gap: var(--space-4);
+}
+
+.trip {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-surface);
+  background: var(--surface);
+  box-shadow: var(--shadow-raised);
+
+  &[data-status='IN_PROGRESS'] {
+    border-color: var(--signal-500);
+    box-shadow:
+      0 0 0 1px var(--signal-500),
+      var(--shadow-raised);
+  }
+
+  &[data-status='CANCELLED'] {
+    opacity: 0.7;
+  }
+
+  header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: var(--space-4);
+    align-items: start;
+
+    @media (max-width: 480px) {
+      grid-template-columns: auto 1fr;
+
+      app-status-chip {
+        grid-column: 1 / -1;
+      }
+    }
+  }
+}
+
+.when {
+  display: grid;
+  justify-items: center;
+  inline-size: 56px;
+  padding-block: var(--space-2);
+  border-radius: var(--radius-control);
+  background: var(--asphalt-900);
+  color: #fff;
+  line-height: 1;
+}
+
+.day {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+}
+
+.month {
+  margin-block-start: 2px;
+  color: var(--signal-500);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.headline {
+  min-inline-size: 0;
+}
+
+.route {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.lane {
+  inline-size: 32px;
+  block-size: 3px;
+  background: repeating-linear-gradient(to right, var(--signal-500) 0 6px, transparent 6px 10px);
+}
+
+.details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-3) var(--space-4);
+  margin: 0;
+  padding-block-start: var(--space-4);
+  border-block-start: 1px dashed var(--line-strong);
+
+  dt {
+    color: var(--ink-muted);
+    font-size: var(--text-sm);
+  }
+
+  dd {
+    margin: 0;
+    font-weight: 600;
+  }
+}
+
+.more {
+  display: flex;
+  justify-content: center;
+  margin-block-start: var(--space-6);
+}

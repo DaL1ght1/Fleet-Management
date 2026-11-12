@@ -1,0 +1,84 @@
+fragment VehicleSummary on Vehicle {
+  id
+  make
+  model
+  year
+  licensePlate
+  status
+  fuelType
+  mileage
+  dailyRate
+  nextMaintenanceDate
+  maintenanceDue
+  inUse
+}
+
+fragment VehicleDetails on Vehicle {
+  ...VehicleSummary
+  vin
+  color
+  seatingCapacity
+  gpsEnabled
+  lastMaintenanceDate
+  maintenanceIntervalDays
+  currentTripId
+  createdAt
+  updatedAt
+}
+
+query Vehicles($filter: VehicleFilter, $page: Int, $size: Int) {
+  vehicles(filter: $filter, page: $page, size: $size) {
+    items {
+      ...VehicleSummary
+    }
+    totalCount
+    page
+    size
+    hasNext
+  }
+}
+
+query Vehicle($id: UUID!) {
+  vehicle(id: $id) {
+    ...VehicleDetails
+  }
+}
+
+query FleetStatistics {
+  fleetStatistics {
+    total
+    active
+    inactive
+    inMaintenance
+    inUse
+    maintenanceDue
+  }
+}
+
+mutation RegisterVehicle($input: RegisterVehicleInput!) {
+  registerVehicle(input: $input) {
+    ...VehicleDetails
+  }
+}
+
+mutation UpdateVehicle($id: UUID!, $input: UpdateVehicleInput!) {
+  updateVehicle(id: $id, input: $input) {
+    ...VehicleDetails
+  }
+}
+
+mutation ChangeVehicleStatus($id: UUID!, $status: VehicleStatus!) {
+  changeVehicleStatus(id: $id, status: $status) {
+    ...VehicleDetails
+  }
+}
+
+mutation RecordOdometerReading($id: UUID!, $mileage: Long!) {
+  recordOdometerReading(id: $id, mileage: $mileage) {
+    ...VehicleDetails
+  }
+}
+
+mutation DeleteVehicle($id: UUID!) {
+  deleteVehicle(id: $id)
+}

@@ -1,0 +1,96 @@
+{
+  "realm": "Smart-Street",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "registrationEmailAsUsername": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "editUsernameAllowed": true,
+  "resetPasswordAllowed": false,
+  "bruteForceProtected": true,
+  "failureFactor": 8,
+  "permanentLockout": false,
+  "maxFailureWaitSeconds": 900,
+  "accessTokenLifespan": 300,
+  "ssoSessionIdleTimeout": 28800,
+  "ssoSessionMaxLifespan": 604800,
+  "passwordPolicy": "length(8) and digits(1) and notUsername",
+  "roles": {
+    "realm": [
+      { "name": "ADMIN", "description": "Full platform administration" },
+      { "name": "MANAGER", "description": "Fleet operations management" },
+      { "name": "DRIVER", "description": "Fleet driver" },
+      { "name": "USER", "description": "Customer account" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "smartstreet-identity",
+      "name": "SmartStreet identity service",
+      "enabled": true,
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${IDENTITY_CLIENT_SECRET}",
+      "protocol": "openid-connect",
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "fullScopeAllowed": true,
+      "attributes": {
+        "use.refresh.tokens": "true"
+      }
+    }
+  ],
+  "users": [
+    {
+      "username": "service-account-smartstreet-identity",
+      "enabled": true,
+      "serviceAccountClientId": "smartstreet-identity",
+      "clientRoles": {
+        "realm-management": ["manage-users", "view-users", "query-users", "view-realm"]
+      }
+    },
+    {
+      "username": "fleet-admin@smartstreet.local",
+      "email": "fleet-admin@smartstreet.local",
+      "firstName": "Fleet",
+      "lastName": "Admin",
+      "enabled": true,
+      "emailVerified": true,
+      "realmRoles": ["ADMIN", "MANAGER"],
+      "credentials": [{ "type": "password", "value": "admin12345", "temporary": false }]
+    },
+    {
+      "username": "fleet-manager@smartstreet.local",
+      "email": "fleet-manager@smartstreet.local",
+      "firstName": "Fleet",
+      "lastName": "Manager",
+      "enabled": true,
+      "emailVerified": true,
+      "realmRoles": ["MANAGER"],
+      "credentials": [{ "type": "password", "value": "manager12345", "temporary": false }]
+    },
+    {
+      "username": "fleet-driver@smartstreet.local",
+      "email": "fleet-driver@smartstreet.local",
+      "firstName": "Amine",
+      "lastName": "Driver",
+      "enabled": true,
+      "emailVerified": true,
+      "realmRoles": ["DRIVER"],
+      "credentials": [{ "type": "password", "value": "driver12345", "temporary": false }]
+    },
+    {
+      "username": "customer@smartstreet.local",
+      "email": "customer@smartstreet.local",
+      "firstName": "Sarra",
+      "lastName": "Customer",
+      "enabled": true,
+      "emailVerified": true,
+      "realmRoles": ["USER"],
+      "credentials": [{ "type": "password", "value": "customer12345", "temporary": false }]
+    }
+  ]
+}

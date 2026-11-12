@@ -1,0 +1,135 @@
+<header class="greeting">
+  <div>
+    <p class="date">{{ today | date: 'fullDate' : undefined : language().code }}</p>
+    <h1>{{ 'dashboard.welcome' | translate: { name: firstName() } }}</h1>
+  </div>
+  <div class="quick">
+    <a mat-stroked-button routerLink="/fleet-map">
+      <mat-icon>map</mat-icon>
+      {{ 'dashboard.openMap' | translate }}
+    </a>
+    <a mat-flat-button routerLink="/trips/new" *appHasRole="roles.MANAGEMENT">
+      <mat-icon>add_road</mat-icon>
+      {{ 'dashboard.scheduleTrip' | translate }}
+    </a>
+  </div>
+</header>
+
+<div class="top">
+  <section class="card fleet">
+    <app-load-state
+      [loading]="fleet.isLoading() && !fleet.hasValue()"
+      [failed]="fleet.status() === 'error'"
+      (retry)="fleet.reload()"
+    >
+      @if (fleet.value(); as stats) {
+        <div class="fleet-head">
+          <h2 class="headline">
+            {{ 'dashboard.onTheRoad' | translate: { inUse: stats.inUse, total: stats.total } }}
+          </h2>
+          <p class="muted">{{ 'dashboard.utilization' | translate: { value: utilization() } }}</p>
+        </div>
+        <app-fleet-status-bar [segments]="segments()" [summary]="fleetSummary()" />
+      }
+    </app-load-state>
+  </section>
+
+  <section class="card attention">
+    <h2>{{ 'dashboard.attention.title' | translate }}</h2>
+    @if (attention().length) {
+      <ul>
+        @for (item of attention(); track item.key) {
+          <li>
+            <a [routerLink]="item.link" [attr.data-tone]="item.tone">
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <span>{{ item.key | translate: { count: item.count } }}</span>
+              <strong>{{ item.count }}</strong>
+            </a>
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="all-clear">
+        <mat-icon>verified</mat-icon>
+        <span>{{ 'dashboard.attention.clear' | translate }}</span>
+      </p>
+    }
+  </section>
+</div>
+
+<ng-container *appHasRole="roles.MANAGEMENT">
+  <section class="stats">
+    @if (tripStatistics.value(); as trips) {
+      <app-stat-card
+        icon="payments"
+        tone="signal"
+        [label]="'dashboard.revenue' | translate"
+        [value]="trips.totalRevenue | money"
+        [hint]="'dashboard.distance' | translate: { value: (trips.totalDistanceKm | number: '1.0-0') }"
+      />
+      <app-stat-card
+        icon="route"
+        tone="accent"
+        [label]="'dashboard.activeTrips' | translate"
+        [value]="trips.inProgress"
+        [hint]="'dashboard.scheduledTrips' | translate: { count: trips.scheduled }"
+      />
+    }
+    @if (billing.value(); as invoices) {
+      <app-stat-card
+        icon="account_balance_wallet"
+        [label]="'billing.stats.outstanding' | translate"
+        [value]="invoices.outstanding | money"
+        [hint]="'billing.stats.collectedHint' | translate: { amount: (invoices.collectedThisMonth | money) }"
+      />
+    }
+    @if (driverStatistics.value(); as drivers) {
+      <app-stat-card
+        icon="badge"
+        [label]="'dashboard.availableDrivers' | translate"
+        [value]="drivers.available + ' / ' + drivers.total"
+        [hint]="'dashboard.driversOnTrip' | translate: { count: drivers.onTrip }"
+      />
+    }
+  </section>
+</ng-container>
+
+<section class="card">
+  <div class="section-heading">
+    <h2>{{ 'dashboard.upcomingTrips' | translate }}</h2>
+    <a mat-button routerLink="/trips">{{ 'dashboard.viewAll' | translate }}</a>
+  </div>
+  <app-load-state
+    [loading]="upcoming.isLoading() && !upcoming.hasValue()"
+    [failed]="upcoming.status() === 'error'"
+    [empty]="upcoming.hasValue() && !upcoming.value().length"
+    [emptyMessage]="'dashboard.noUpcomingTrips' | translate"
+    emptyIcon="event_available"
+    (retry)="upcoming.reload()"
+  >
+    <ol class="timeline">
+      @for (trip of upcoming.value() ?? []; track trip.id) {
+        <li>
+          <a [routerLink]="['/trips', trip.id]">
+            <span class="time">
+              <strong>{{ trip.scheduledStart | date: 'HH:mm' }}</strong>
+              <span>{{ trip.scheduledStart | date: 'EEE d MMM' }}</span>
+            </span>
+            <span class="what">
+              <span class="route">
+                {{ trip.startLocation.city ?? trip.startLocation.address }}
+                <span class="lane direction-aware" aria-hidden="true"></span>
+                {{ trip.endLocation.city ?? trip.endLocation.address }}
+              </span>
+              <span class="muted">
+                <span class="plate">{{ trip.vehicle.licensePlate }}</span>
+                {{ trip.driver?.fullName ?? ('trips.unassigned' | translate) }}
+              </span>
+            </span>
+            <app-status-chip [status]="trip.status" />
+          </a>
+        </li>
+      }
+    </ol>
+  </app-load-state>
+</section>

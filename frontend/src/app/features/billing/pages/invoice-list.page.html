@@ -1,0 +1,139 @@
+<app-page-header [title]="'billing.title' | translate" [subtitle]="'billing.subtitle' | translate" />
+
+<nav class="ledger-tabs" [attr.aria-label]="'billing.title' | translate">
+  <a [routerLink]="[]" [queryParams]="{ tab: null }" [attr.aria-current]="tab() !== 'outcome' ? 'page' : null">
+    <mat-icon>south_west</mat-icon>
+    <span>{{ 'billing.tabs.income' | translate }}</span>
+  </a>
+  <a [routerLink]="[]" [queryParams]="{ tab: 'outcome' }" [attr.aria-current]="tab() === 'outcome' ? 'page' : null">
+    <mat-icon>north_east</mat-icon>
+    <span>{{ 'billing.tabs.outcome' | translate }}</span>
+  </a>
+</nav>
+
+@if (tab() === 'outcome') {
+  <app-outcome-panel />
+} @else {
+  @if (statistics.value(); as stats) {
+    <section class="stats">
+      <app-stat-card
+        icon="account_balance_wallet"
+        tone="signal"
+        [label]="'billing.stats.outstanding' | translate"
+        [value]="stats.outstanding | money"
+      />
+      <app-stat-card
+        icon="running_with_errors"
+        [tone]="stats.overdueCount ? 'danger' : 'neutral'"
+        [label]="'billing.stats.overdue' | translate"
+        [value]="stats.overdue | money"
+        [hint]="'billing.stats.overdueCount' | translate: { count: stats.overdueCount }"
+      />
+      <app-stat-card
+        icon="savings"
+        tone="accent"
+        [label]="'billing.stats.collected' | translate"
+        [value]="stats.collectedThisMonth | money"
+      />
+      <app-stat-card
+        icon="edit_document"
+        [tone]="stats.drafts ? 'warning' : 'neutral'"
+        [label]="'billing.stats.drafts' | translate"
+        [value]="stats.drafts"
+        [hint]="'billing.stats.draftsHint' | translate"
+      />
+    </section>
+  }
+
+  <div class="filters">
+    <div class="segmented" role="group" [attr.aria-label]="'billing.title' | translate">
+      @for (option of views; track option) {
+        <button type="button" [attr.aria-pressed]="view() === option" (click)="show(option)">
+          {{ 'billing.views.' + option | translate }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <app-load-state
+    [loading]="invoices.isLoading() && !invoices.hasValue()"
+    [failed]="invoices.status() === 'error'"
+    [empty]="invoices.hasValue() && rows().length === 0"
+    [emptyMessage]="'billing.empty' | translate"
+    emptyIcon="receipt_long"
+    (retry)="invoices.reload()"
+  >
+    <div class="table-card">
+      <div class="table-scroll">
+        <table mat-table [dataSource]="rows()">
+          <ng-container matColumnDef="number">
+            <th mat-header-cell *matHeaderCellDef>{{ 'billing.fields.number' | translate }}</th>
+            <td
+              mat-cell
+              [attr.data-label]="'billing.fields.number' | translate"
+              *matCellDef="let invoice"
+              class="strong"
+            >
+              {{ invoice.number }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="customer">
+            <th mat-header-cell *matHeaderCellDef>{{ 'billing.fields.customer' | translate }}</th>
+            <td mat-cell *matCellDef="let invoice" [attr.data-label]="'billing.fields.customer' | translate">
+              {{ invoice.customer?.fullName ?? ('billing.document.walkIn' | translate) }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="vehicle">
+            <th mat-header-cell *matHeaderCellDef>{{ 'billing.fields.vehicle' | translate }}</th>
+            <td mat-cell *matCellDef="let invoice" [attr.data-label]="'billing.fields.vehicle' | translate">
+              <span class="plate">{{ invoice.vehicle.licensePlate }}</span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="createdAt">
+            <th mat-header-cell *matHeaderCellDef>{{ 'billing.fields.createdAt' | translate }}</th>
+            <td mat-cell *matCellDef="let invoice" [attr.data-label]="'billing.fields.createdAt' | translate">
+              {{ invoice.createdAt | date: 'mediumDate' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="dueDate">
+            <th mat-header-cell *matHeaderCellDef>{{ 'billing.fields.dueDate' | translate }}</th>
+            <td
+              mat-cell
+              *matCellDef="let invoice"
+              [class.error-text]="invoice.overdue"
+              [attr.data-label]="'billing.fields.dueDate' | translate"
+            >
+              {{ (invoice.dueDate | date: 'mediumDate') ?? '—' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>{{ 'billing.fields.status' | translate }}</th>
+            <td mat-cell *matCellDef="let invoice" [attr.data-label]="'billing.fields.status' | translate">
+              <app-status-chip [status]="invoice.overdue ? 'OVERDUE' : invoice.status" prefix="invoiceStatus." />
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="total">
+            <th mat-header-cell *matHeaderCellDef>{{ 'billing.fields.total' | translate }}</th>
+            <td
+              mat-cell
+              *matCellDef="let invoice"
+              class="strong"
+              [attr.data-label]="'billing.fields.total' | translate"
+            >
+              {{ invoice.total | money }}
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="columns"></tr>
+          <tr mat-row *matRowDef="let invoice; columns: columns" class="clickable" (click)="open(invoice.id)"></tr>
+        </table>
+      </div>
+      <mat-paginator
+        [length]="total()"
+        [pageIndex]="page()"
+        [pageSize]="size()"
+        [pageSizeOptions]="[10, 20, 50]"
+        (page)="changePage($event)"
+      />
+    </div>
+  </app-load-state>
+}

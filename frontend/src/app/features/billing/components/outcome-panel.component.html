@@ -1,0 +1,194 @@
+@if (outcome.value(); as data) {
+  <section class="stats">
+    <app-stat-card
+      icon="account_balance"
+      tone="signal"
+      [label]="'outcome.stats.toPay' | translate"
+      [value]="data.expenseStatistics.unpaidTotal | money"
+      [hint]="'outcome.stats.toPayHint' | translate: { count: data.expenseStatistics.unpaidCount }"
+    />
+    <app-stat-card
+      icon="build"
+      [tone]="data.expenseStatistics.maintenanceUnpaid ? 'warning' : 'neutral'"
+      [label]="'outcome.stats.maintenance' | translate"
+      [value]="data.expenseStatistics.maintenanceTotal | money"
+      [hint]="'outcome.stats.unpaid' | translate: { amount: (data.expenseStatistics.maintenanceUnpaid | money) }"
+    />
+    <app-stat-card
+      icon="badge"
+      [tone]="data.expenseStatistics.salariesUnpaid ? 'warning' : 'neutral'"
+      [label]="'outcome.stats.salaries' | translate"
+      [value]="data.expenseStatistics.salariesTotal | money"
+      [hint]="'outcome.stats.unpaid' | translate: { amount: (data.expenseStatistics.salariesUnpaid | money) }"
+    />
+    <app-stat-card
+      [icon]="netThisMonth() >= 0 ? 'trending_up' : 'trending_down'"
+      [tone]="netThisMonth() >= 0 ? 'accent' : 'danger'"
+      [label]="'outcome.stats.net' | translate"
+      [value]="netThisMonth() | money"
+      [hint]="'outcome.stats.paidOut' | translate: { amount: (data.expenseStatistics.paidThisMonth | money) }"
+    />
+  </section>
+
+  <section class="card payroll">
+    <div class="section-heading">
+      <div>
+        <h2>{{ 'outcome.payroll.title' | translate }}</h2>
+        <p class="muted">{{ 'outcome.payroll.subtitle' | translate }}</p>
+      </div>
+      <p class="payroll-total">
+        <span class="muted">{{ 'outcome.payroll.total' | translate }}</span>
+        <strong>{{ payrollTotal() | money }}</strong>
+      </p>
+    </div>
+    @if (data.upcomingSalaries.length) {
+      <ol class="payroll-list">
+        @for (salary of data.upcomingSalaries; track salary.driver.id) {
+          <li>
+            <span class="payday">
+              <strong>{{ salary.payday | date: 'd' }}</strong>
+              <span>{{ salary.payday | date: 'MMM' }}</span>
+            </span>
+            <a class="who" [routerLink]="['/drivers', salary.driver.id]">
+              {{ salary.driver.fullName || salary.driverName }}
+            </a>
+            <span class="amount">{{ salary.amount | money }}</span>
+          </li>
+        }
+      </ol>
+    } @else {
+      <p class="muted">{{ 'outcome.payroll.empty' | translate }}</p>
+    }
+  </section>
+}
+
+<div class="filters">
+  <div class="segmented" role="group" [attr.aria-label]="'outcome.fields.kind' | translate">
+    @for (option of kinds; track option) {
+      <button type="button" [attr.aria-pressed]="kind() === option" (click)="showKind(option)">
+        {{ 'outcome.kinds.' + (option ?? 'ALL') | translate }}
+      </button>
+    }
+  </div>
+  <div class="segmented" role="group" [attr.aria-label]="'outcome.fields.status' | translate">
+    @for (option of statuses; track option) {
+      <button type="button" [attr.aria-pressed]="status() === option" (click)="showStatus(option)">
+        {{ 'outcome.statuses.' + (option ?? 'ALL') | translate }}
+      </button>
+    }
+  </div>
+</div>
+
+<app-load-state
+  [loading]="expenses.isLoading() && !expenses.hasValue()"
+  [failed]="expenses.status() === 'error'"
+  [empty]="expenses.hasValue() && rows().length === 0"
+  [emptyMessage]="'outcome.empty' | translate"
+  emptyIcon="savings"
+  (retry)="expenses.reload()"
+>
+  <div class="table-card">
+    <div class="table-scroll">
+      <table mat-table [dataSource]="rows()">
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef>{{ 'outcome.fields.description' | translate }}</th>
+          <td mat-cell *matCellDef="let expense" class="strong">
+            {{
+              expense.kind === 'SALARY'
+                ? ('outcome.salaryOf' | translate: { name: expense.driver?.fullName ?? expense.description })
+                : expense.description
+            }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="kind">
+          <th mat-header-cell *matHeaderCellDef>{{ 'outcome.fields.kind' | translate }}</th>
+          <td mat-cell *matCellDef="let expense" [attr.data-label]="'outcome.fields.kind' | translate">
+            <span class="kind" [attr.data-kind]="expense.kind">
+              <mat-icon>{{ expense.kind === 'SALARY' ? 'badge' : 'build' }}</mat-icon>
+              {{ 'outcome.kinds.' + expense.kind | translate }}
+            </span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="related">
+          <th mat-header-cell *matHeaderCellDef>{{ 'outcome.fields.related' | translate }}</th>
+          <td mat-cell *matCellDef="let expense" [attr.data-label]="'outcome.fields.related' | translate">
+            @if (expense.vehicle) {
+              <a class="plate" [routerLink]="['/maintenance', expense.workOrderId]">{{
+                expense.vehicle.licensePlate
+              }}</a>
+            } @else if (expense.driver) {
+              <a [routerLink]="['/drivers', expense.driver.id]">{{ expense.driver.fullName }}</a>
+            } @else {
+              —
+            }
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="dueDate">
+          <th mat-header-cell *matHeaderCellDef>{{ 'outcome.fields.dueDate' | translate }}</th>
+          <td
+            mat-cell
+            *matCellDef="let expense"
+            [class.error-text]="expense.overdue"
+            [attr.data-label]="'outcome.fields.dueDate' | translate"
+          >
+            {{ expense.dueDate | date: 'mediumDate' }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>{{ 'outcome.fields.status' | translate }}</th>
+          <td mat-cell *matCellDef="let expense" [attr.data-label]="'outcome.fields.status' | translate">
+            <app-status-chip
+              [status]="expense.status === 'PAID' ? 'PAID' : expense.overdue ? 'OVERDUE' : 'UNPAID'"
+              prefix="outcome.statuses."
+            />
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef>{{ 'outcome.fields.amount' | translate }}</th>
+          <td mat-cell *matCellDef="let expense" class="strong" [attr.data-label]="'outcome.fields.amount' | translate">
+            {{ expense.amount | money }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>
+            <span class="visually-hidden">{{ 'outcome.pay' | translate }}</span>
+          </th>
+          <td mat-cell *matCellDef="let expense" class="actions-cell">
+            @if (expense.status === 'UNPAID') {
+              <button
+                mat-stroked-button
+                [matMenuTriggerFor]="methodMenu"
+                [matMenuTriggerData]="{ id: expense.id }"
+                [disabled]="paying() === expense.id"
+              >
+                <mat-icon>payments</mat-icon>
+                {{ 'outcome.pay' | translate }}
+              </button>
+            } @else {
+              <span class="muted">
+                {{ expense.paidOn | date: 'mediumDate' }} · {{ 'paymentMethod.' + expense.paymentMethod | translate }}
+              </span>
+            }
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let expense; columns: columns"></tr>
+      </table>
+    </div>
+    <mat-paginator
+      [length]="total()"
+      [pageIndex]="page()"
+      [pageSize]="size()"
+      [pageSizeOptions]="[10, 20, 50]"
+      (page)="changePage($event)"
+    />
+  </div>
+</app-load-state>
+
+<mat-menu #methodMenu="matMenu">
+  <ng-template matMenuContent let-id="id">
+    @for (method of methods; track method) {
+      <button mat-menu-item (click)="pay(id, method)">{{ 'paymentMethod.' + method | translate }}</button>
+    }
+  </ng-template>
+</mat-menu>

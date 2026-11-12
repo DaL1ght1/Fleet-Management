@@ -1,0 +1,846 @@
+{
+  "navigation": {
+    "geofences": "Geofences",
+    "fleetMap": "Live map",
+    "dashboard": "Dashboard",
+    "trips": "Trips",
+    "vehicles": "Vehicles",
+    "drivers": "Drivers",
+    "customers": "Customers",
+    "groups": {
+      "operations": "Operations",
+      "fleet": "Fleet",
+      "business": "Business",
+      "mine": "My space"
+    },
+    "maintenance": "Maintenance",
+    "billing": "Billing",
+    "myTrips": "My trips",
+    "myInvoices": "My invoices",
+    "notifications": "Notifications",
+    "bookTrip": "Book a trip"
+  },
+  "dashboard": {
+    "welcome": "Good to see you, {{name}}",
+    "utilization": "{{value}}% of active vehicles are on a trip",
+    "scheduledTrips": "{{count}} scheduled",
+    "activeTrips": "Trips in progress",
+    "revenue": "Revenue",
+    "distance": "{{value}} km travelled",
+    "availableDrivers": "Available drivers",
+    "upcomingTrips": "Upcoming trips",
+    "viewAll": "View all",
+    "noUpcomingTrips": "No trips are scheduled.",
+    "openMap": "Open live map",
+    "scheduleTrip": "Schedule a trip",
+    "onTheRoad": "{{inUse}} of {{total}} vehicles on the road",
+    "segments": {
+      "inUse": "On a trip",
+      "available": "Available",
+      "maintenance": "In maintenance",
+      "inactive": "Inactive"
+    },
+    "attention": {
+      "title": "Needs attention",
+      "clear": "Nothing needs you right now.",
+      "alerts": "Open zone alerts",
+      "overdueMaintenance": "Overdue work orders",
+      "maintenanceDue": "Vehicles due for service",
+      "overdueInvoices": "Overdue invoices",
+      "draftInvoices": "Invoices waiting to be issued",
+      "licenses": "Licenses expiring within 30 days"
+    },
+    "driversOnTrip": "{{count}} on a trip"
+  },
+  "geofenceKind": {
+    "DEPOT": "Depot",
+    "SERVICE_AREA": "Service area",
+    "RESTRICTED": "Restricted area"
+  },
+  "geofenceKindHint": {
+    "DEPOT": "Entries and exits are logged for information.",
+    "SERVICE_AREA": "Leaving this area raises a critical alert.",
+    "RESTRICTED": "Entering this area raises a critical alert."
+  },
+  "severity": {
+    "INFO": "Info",
+    "WARNING": "Warning",
+    "CRITICAL": "Critical"
+  },
+  "alertType": {
+    "VEHICLE_ENTERED": "Entered zone",
+    "VEHICLE_EXITED": "Left zone",
+    "SPEED_LIMIT_EXCEEDED": "Speed limit exceeded"
+  },
+  "geofences": {
+    "title": "Geofences",
+    "subtitle": "Depots, service areas and restricted zones",
+    "create": "New zone",
+    "createTitle": "Create a zone",
+    "editTitle": "Edit zone",
+    "alerts": "Alerts",
+    "alertsTitle": "Zone alerts",
+    "alertsSubtitle": "Entries, exits and speeding detected from live positions",
+    "empty": "No zone defined yet.",
+    "active": "Active",
+    "vehiclesInside": "{{count}} vehicles inside",
+    "polygon": "Polygon",
+    "circle": "Circle",
+    "polygonHint": "Click the map to add corners ({{count}} so far, at least 3).",
+    "circleHint": "Click the map to place the center.",
+    "undo": "Undo",
+    "clear": "Clear",
+    "shapeMissing": "Draw the zone on the map before saving.",
+    "created": "Zone created",
+    "updated": "Zone updated",
+    "deleted": "Zone deleted",
+    "deleteTitle": "Delete this zone?",
+    "deleteMessage": "Monitoring stops immediately. Past alerts are kept.",
+    "acknowledge": "Acknowledge",
+    "acknowledgeAll": "Acknowledge all",
+    "acknowledged": "Alerts acknowledged",
+    "openOnly": "Open alerts only",
+    "noAlerts": "No alerts.",
+    "fields": {
+      "name": "Name",
+      "kind": "Kind",
+      "speedLimit": "Speed limit",
+      "radius": "Radius",
+      "severity": "Severity",
+      "occurredAt": "Time",
+      "event": "Event",
+      "zone": "Zone"
+    }
+  },
+  "common": {
+    "done": "Done",
+    "all": "All",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "dismiss": "Dismiss",
+    "edit": "Edit",
+    "loadFailed": "The data could not be loaded.",
+    "no": "No",
+    "yes": "Yes",
+    "remove": "Remove",
+    "retry": "Retry",
+    "save": "Save",
+    "saveChanges": "Save changes",
+    "showMore": "Show more",
+    "date": "Date",
+    "time": "Time",
+    "clear": "Clear"
+  },
+  "fleetMap": {
+    "title": "Live fleet map",
+    "subtitle": "Positions refresh every 10 seconds",
+    "refresh": "Refresh",
+    "moving": "{{count}} moving",
+    "idle": "{{count}} stopped",
+    "stale": "{{count}} not reporting",
+    "speed": "Speed",
+    "fuel": "Fuel level",
+    "odometer": "Odometer",
+    "lastUpdate": "Last update",
+    "openVehicle": "Open vehicle",
+    "selectVehicle": "Select a vehicle on the map.",
+    "noPositions": "No vehicle has reported a position yet."
+  },
+  "telemetry": {
+    "title": "Live tracking",
+    "noData": "No position received for this vehicle yet.",
+    "pointsToday": "Positions in the last 24 h",
+    "devices": "Tracking devices",
+    "register": "Add device",
+    "registerTitle": "Add a tracking device",
+    "deviceLabel": "Device name",
+    "registered": "Device added",
+    "keyTitle": "Device key",
+    "keyWarning": "Configure the device with this key now. It is shown only once.",
+    "copy": "Copy",
+    "copied": "Copied",
+    "revoke": "Revoke",
+    "revokeTitle": "Revoke this device?",
+    "revokeMessage": "The device will no longer be able to send positions.",
+    "revoked": "Device revoked",
+    "revokedState": "revoked",
+    "lastSeen": "last seen",
+    "neverSeen": "never connected",
+    "noDevices": "No device installed."
+  },
+  "app": {
+    "menu": "Menu",
+    "toggleTheme": "Toggle theme",
+    "language": "Language"
+  },
+  "status": {
+    "ACTIVE": "Active",
+    "INACTIVE": "Inactive",
+    "MAINTENANCE": "Maintenance",
+    "SUSPENDED": "Suspended",
+    "ON_LEAVE": "On leave",
+    "SCHEDULED": "Scheduled",
+    "IN_PROGRESS": "In progress",
+    "COMPLETED": "Completed",
+    "CANCELLED": "Cancelled",
+    "OVERDUE": "Overdue"
+  },
+  "fuel": {
+    "GASOLINE": "Gasoline",
+    "DIESEL": "Diesel",
+    "ELECTRIC": "Electric",
+    "HYBRID": "Hybrid"
+  },
+  "tripType": {
+    "RENTAL": "Rental",
+    "MAINTENANCE": "Maintenance",
+    "RELOCATION": "Relocation",
+    "EMERGENCY": "Emergency"
+  },
+  "roles": {
+    "ADMIN": "Administrator",
+    "MANAGER": "Fleet manager",
+    "DRIVER": "Driver",
+    "USER": "Customer"
+  },
+  "errors": {
+    "network": "Network error. Check your connection and try again.",
+    "sessionExpired": "Your session has expired. Please sign in again.",
+    "forbidden": "You are not allowed to perform this action.",
+    "rateLimited": "Too many requests. Please wait a moment.",
+    "unavailable": "The service is temporarily unavailable.",
+    "unexpected": "An unexpected error occurred."
+  },
+  "validation": {
+    "required": "This field is required",
+    "email": "Enter a valid email address",
+    "phone": "Enter a valid phone number",
+    "uuid": "Enter a valid account identifier",
+    "vin": "A VIN has 17 characters and no I, O or Q",
+    "nonNegative": "Must be zero or more",
+    "positive": "Must be greater than zero",
+    "range": "Must be between {{min}} and {{max}}",
+    "yearRange": "Must be between 1950 and {{max}}",
+    "scheduleOrder": "The end must be after the start",
+    "locations": "Choose a start and an end location",
+    "passwordLength": "Use between 8 and 128 characters",
+    "passwordMix": "Include at least one letter and one number",
+    "passwordMismatch": "The passwords don't match"
+  },
+  "map": {
+    "search": "Search an address",
+    "find": "Find",
+    "clickToPick": "Search or click the map to choose a location"
+  },
+  "vehicles": {
+    "title": "Vehicles",
+    "subtitle": "Registration, status and maintenance of the fleet",
+    "register": "Register vehicle",
+    "registerTitle": "Register a vehicle",
+    "editTitle": "Edit vehicle",
+    "searchPlaceholder": "Plate, VIN, make or model",
+    "maintenanceDueOnly": "Maintenance due only",
+    "empty": "No vehicles match these filters.",
+    "notFound": "This vehicle does not exist.",
+    "onTrip": "On a trip",
+    "available": "Available",
+    "viewTrip": "View current trip",
+    "changeStatus": "Change status",
+    "newOdometerReading": "New odometer reading",
+    "record": "Record",
+    "vinHint": "17 characters, printed on the registration document",
+    "days": "{{count}} days",
+    "daysSuffix": "days",
+    "registered": "Vehicle registered",
+    "updated": "Vehicle updated",
+    "statusChanged": "Status changed",
+    "odometerRecorded": "Odometer reading recorded",
+    "deleted": "Vehicle deleted",
+    "deleteTitle": "Delete this vehicle?",
+    "deleteMessage": "The vehicle will be removed from the fleet. This cannot be undone.",
+    "sections": {
+      "identity": "Identity",
+      "usage": "Usage",
+      "maintenance": "Maintenance"
+    },
+    "fields": {
+      "vehicle": "Vehicle",
+      "make": "Make",
+      "model": "Model",
+      "year": "Year",
+      "licensePlate": "License plate",
+      "vin": "VIN",
+      "color": "Color",
+      "status": "Status",
+      "fuelType": "Fuel",
+      "mileage": "Mileage",
+      "dailyRate": "Daily rate",
+      "seatingCapacity": "Seats",
+      "gpsEnabled": "GPS tracker installed",
+      "currentTrip": "Current trip",
+      "lastMaintenance": "Last maintenance",
+      "maintenanceInterval": "Maintenance interval",
+      "nextMaintenance": "Next maintenance"
+    }
+  },
+  "drivers": {
+    "title": "Drivers",
+    "subtitle": "Licenses, availability and performance",
+    "register": "Add driver",
+    "registerTitle": "Add a driver",
+    "editTitle": "Edit driver",
+    "searchPlaceholder": "Name, email or license",
+    "availableOnly": "Available only",
+    "empty": "No drivers match these filters.",
+    "notFound": "This driver does not exist.",
+    "expires": "Expires",
+    "licenseExpired": "Expired",
+    "notRated": "Not rated yet",
+    "available": "Available",
+    "unavailable": "Unavailable",
+    "viewTrip": "View current trip",
+    "changeStatus": "Change status",
+    "rate": "Rate the last trip",
+    "accountHint": "Keycloak user id, links the login to this driver profile",
+    "registered": "Driver added",
+    "updated": "Driver updated",
+    "statusChanged": "Status changed",
+    "rated": "Rating saved",
+    "deleted": "Driver deleted",
+    "deleteTitle": "Delete this driver?",
+    "deleteMessage": "The driver profile will be removed. This cannot be undone.",
+    "sections": {
+      "contact": "Contact",
+      "license": "License",
+      "performance": "Performance"
+    },
+    "fields": {
+      "name": "Name",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "phoneNumber": "Phone",
+      "contact": "Contact",
+      "license": "License",
+      "licenseNumber": "License number",
+      "licenseExpiry": "License expiry",
+      "dateOfBirth": "Date of birth",
+      "hireDate": "Hire date",
+      "emergencyContact": "Emergency contact",
+      "emergencyContactName": "Emergency contact name",
+      "emergencyContactPhone": "Emergency contact phone",
+      "accountId": "Login account",
+      "status": "Status",
+      "availability": "Available",
+      "rating": "Rating",
+      "completedTrips": "Completed trips",
+      "currentTrip": "Current trip",
+      "monthlySalary": "Monthly salary",
+      "nextPayday": "Next payday"
+    },
+    "salaryHint": "Paid every 30 days from the hire date"
+  },
+  "customers": {
+    "title": "Customers",
+    "subtitle": "People and companies renting your vehicles",
+    "register": "Add customer",
+    "registerTitle": "Add a customer",
+    "editTitle": "Edit customer",
+    "searchPlaceholder": "Name or email",
+    "empty": "No customers found.",
+    "registered": "Customer added",
+    "updated": "Customer updated",
+    "deleted": "Customer deleted",
+    "deleteTitle": "Delete this customer?",
+    "deleteMessage": "The customer will be removed. This cannot be undone.",
+    "fields": {
+      "name": "Name",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "phoneNumber": "Phone",
+      "since": "Customer since"
+    }
+  },
+  "trips": {
+    "title": "Trips",
+    "subtitle": "Planning, execution and costs",
+    "schedule": "Schedule trip",
+    "scheduleTitle": "Schedule a trip",
+    "rescheduleTitle": "Reschedule trip",
+    "reschedule": "Reschedule",
+    "from": "From",
+    "to": "To",
+    "empty": "No trips match these filters.",
+    "notFound": "This trip does not exist.",
+    "unassigned": "No driver",
+    "onTrip": "on a trip",
+    "busy": "busy",
+    "minutes": "min",
+    "addStop": "Add a stop",
+    "start": "Start trip",
+    "complete": "Complete trip",
+    "completeTitle": "Complete this trip",
+    "cancelTrip": "Cancel trip",
+    "cancelTitle": "Cancel this trip?",
+    "cancellationReason": "Cancellation reason",
+    "scheduled": "Trip scheduled",
+    "rescheduled": "Trip rescheduled",
+    "started": "Trip started",
+    "completed": "Trip completed",
+    "cancelled": "Trip cancelled",
+    "deleted": "Trip deleted",
+    "deleteTitle": "Delete this trip?",
+    "deleteMessage": "The trip will be removed from the history. This cannot be undone.",
+    "sections": {
+      "route": "Route",
+      "assignment": "Assignment",
+      "timing": "Schedule",
+      "costs": "Costs",
+      "notes": "Notes"
+    },
+    "fields": {
+      "type": "Type",
+      "status": "Status",
+      "schedule": "Scheduled",
+      "route": "Route",
+      "vehicle": "Vehicle",
+      "driver": "Driver",
+      "start": "Start",
+      "end": "Destination",
+      "stop": "Stop {{index}}",
+      "scheduledStart": "Planned start",
+      "scheduledEnd": "Planned end",
+      "startedAt": "Started at",
+      "completedAt": "Completed at",
+      "estimatedDuration": "Estimated duration",
+      "duration": "Duration",
+      "distance": "Distance",
+      "baseRate": "Base rate",
+      "fuelCost": "Fuel cost",
+      "additionalFees": "Additional fees",
+      "totalCost": "Total",
+      "notes": "Notes",
+      "customerNotes": "Notes for the customer",
+      "internalNotes": "Internal notes",
+      "customer": "Customer"
+    }
+  },
+  "profile": {
+    "driverProfile": "Driver profile",
+    "currentTrip": "Open current trip",
+    "logout": "Sign out",
+    "menu": "Account settings",
+    "sections": {
+      "details": "Personal details",
+      "security": "Password",
+      "team": "Invite teammates"
+    },
+    "detailsHint": "Your name appears on trips and invoices. Changing your email changes how you sign in.",
+    "saved": "Profile saved",
+    "changePassword": "Change password",
+    "securityHint": "Changing it signs you out on your other devices.",
+    "currentPassword": "Current password",
+    "passwordChanged": "Password changed",
+    "errors": {
+      "wrongPassword": "The current password is wrong."
+    },
+    "inviteTitle": "Invite a teammate",
+    "inviteHint": "They get an email with a link to choose their password. The link is valid for 3 days.",
+    "role": "Role",
+    "sendInvitation": "Send invitation",
+    "invitationSent": "Invitation sent"
+  },
+  "auth": {
+    "hero": {
+      "title": "Every vehicle, trip and invoice on one road.",
+      "body": "Track the fleet live, plan trips and maintenance, and bill customers without switching tools."
+    },
+    "fields": {
+      "email": "Email",
+      "password": "Password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm the password",
+      "firstName": "First name",
+      "lastName": "Last name"
+    },
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "passwordHint": "At least 8 characters with a letter and a number",
+    "backToSignIn": "Back to sign in",
+    "signIn": {
+      "title": "Sign in",
+      "subtitle": "Welcome back. Use the email linked to your account.",
+      "forgot": "Forgot your password?",
+      "submit": "Sign in",
+      "newHere": "New customer?",
+      "createAccount": "Create an account",
+      "expired": "Your session ended. Sign in again to continue.",
+      "passwordSet": "Your password is set. Sign in with it now."
+    },
+    "signUp": {
+      "title": "Create your account",
+      "subtitle": "Book trips and keep every invoice in one place.",
+      "submit": "Create account",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign in"
+    },
+    "forgot": {
+      "title": "Reset your password",
+      "subtitle": "Enter your email and we'll send you a link to choose a new password.",
+      "submit": "Send reset link",
+      "sentTitle": "Check your inbox",
+      "sentBody": "If {{email}} has an account, a reset link is on its way. It expires in 30 minutes."
+    },
+    "reset": {
+      "title": "Choose a new password",
+      "subtitle": "You'll be signed out of every other device.",
+      "submit": "Save new password"
+    },
+    "activate": {
+      "title": "Activate your account",
+      "subtitle": "Choose the password you'll use to sign in to SmartStreet.",
+      "submit": "Activate account"
+    },
+    "errors": {
+      "invalidCredentials": "That email and password don't match an account.",
+      "emailTaken": "An account already uses this email.",
+      "linkExpired": "This link is invalid or has expired. Request a new one.",
+      "rejected": "{{detail}}"
+    }
+  },
+  "workOrderKind": {
+    "PREVENTIVE": "Preventive service",
+    "REPAIR": "Repair",
+    "INSPECTION": "Inspection"
+  },
+  "workOrderKindHint": {
+    "PREVENTIVE": "Scheduled service by date or mileage",
+    "REPAIR": "Fix a fault or damage",
+    "INSPECTION": "Technical or safety check"
+  },
+  "priority": {
+    "LOW": "Low",
+    "MEDIUM": "Medium",
+    "HIGH": "High",
+    "CRITICAL": "Critical"
+  },
+  "maintenance": {
+    "title": "Maintenance",
+    "subtitle": "Work orders for service, repairs and inspections",
+    "schedule": "Schedule work",
+    "scheduleTitle": "Schedule a work order",
+    "editTitle": "Edit work order",
+    "formSubtitle": "The vehicle is taken off the road when work starts and returns when it's done.",
+    "sections": {
+      "what": "What needs doing",
+      "when": "Vehicle and timing",
+      "details": "Details",
+      "outcome": "Outcome",
+      "complete": "Close the work order"
+    },
+    "completeHint": "Record what it cost and the odometer reading. The vehicle goes back into service.",
+    "titlePlaceholder": "Replace front brake pads",
+    "fields": {
+      "title": "Work",
+      "vehicle": "Vehicle",
+      "kind": "Type",
+      "priority": "Priority",
+      "status": "Status",
+      "scheduledFor": "Planned for",
+      "vendor": "Garage or vendor",
+      "description": "Notes",
+      "partsCost": "Parts",
+      "laborCost": "Labor",
+      "totalCost": "Cost",
+      "odometer": "Odometer reading",
+      "resolutionNotes": "What was done"
+    },
+    "stats": {
+      "scheduled": "Scheduled",
+      "inProgress": "In the workshop",
+      "overdue": "Overdue",
+      "overdueHint": "Past their planned date",
+      "costThisMonth": "Spent this month",
+      "completed": "{{count}} completed"
+    },
+    "overdueOnly": "Overdue only",
+    "empty": "No work orders match these filters.",
+    "autoGenerated": "Created automatically from the service schedule",
+    "notFound": "This work order doesn't exist.",
+    "start": "Start work",
+    "complete": "Complete work order",
+    "cancel": "Cancel work order",
+    "cancelTitle": "Cancel this work order?",
+    "cancelReason": "Reason",
+    "cancelledBecause": "Cancelled: {{reason}}",
+    "scheduled": "Work order scheduled",
+    "updated": "Work order updated",
+    "started": "Work started",
+    "completed": "Work order completed",
+    "cancelled": "Work order cancelled",
+    "workOrders": "Work orders",
+    "noneForVehicle": "No work orders for this vehicle yet."
+  },
+  "invoiceStatus": {
+    "DRAFT": "Draft",
+    "ISSUED": "Issued",
+    "PAID": "Paid",
+    "VOID": "Void",
+    "OVERDUE": "Overdue"
+  },
+  "paymentMethod": {
+    "CASH": "Cash",
+    "CARD": "Card",
+    "BANK_TRANSFER": "Bank transfer"
+  },
+  "billing": {
+    "title": "Billing",
+    "subtitle": "Money in from trips and money out for maintenance and salaries",
+    "detailSubtitle": "Review, issue and record the payment",
+    "views": {
+      "all": "All",
+      "drafts": "Drafts",
+      "outstanding": "Awaiting payment",
+      "overdue": "Overdue",
+      "paid": "Paid"
+    },
+    "stats": {
+      "outstanding": "Awaiting payment",
+      "overdue": "Overdue",
+      "overdueCount": "{{count}} invoices past due",
+      "collected": "Collected this month",
+      "collectedHint": "{{amount}} collected this month",
+      "drafts": "Drafts",
+      "draftsHint": "Ready to review and issue"
+    },
+    "empty": "No invoices here yet.",
+    "notFound": "This invoice doesn't exist.",
+    "fields": {
+      "number": "Invoice",
+      "customer": "Customer",
+      "vehicle": "Vehicle",
+      "createdAt": "Created",
+      "issuedOn": "Issued",
+      "dueDate": "Due",
+      "paidOn": "Paid",
+      "status": "Status",
+      "subtotal": "Subtotal",
+      "tax": "VAT {{rate}}",
+      "total": "Total"
+    },
+    "document": {
+      "title": "Invoice",
+      "issuer": "Fleet & mobility services · Tunis",
+      "billTo": "Billed to",
+      "walkIn": "No customer account",
+      "trip": "Trip",
+      "description": "Description",
+      "amount": "Amount",
+      "terms": "Pay by the due date by cash, card or bank transfer. Amounts are in Tunisian dinars.",
+      "voided": "Voided: {{reason}}"
+    },
+    "issueTitle": "Issue this invoice",
+    "issueHint": "The customer is notified and can see it in their account.",
+    "paymentTerms": "Payment terms",
+    "termDays": "{{days}} days",
+    "issue": "Issue invoice",
+    "collectTitle": "Record the payment",
+    "collectHint": "Choose how the customer paid.",
+    "markPaid": "Mark as paid",
+    "print": "Print or save as PDF",
+    "viewTrip": "Open the trip",
+    "void": "Void invoice",
+    "voidTitle": "Void this invoice?",
+    "voidReason": "Reason",
+    "issued": "Invoice issued",
+    "paid": "Payment recorded",
+    "voided": "Invoice voided",
+    "tabs": {
+      "income": "Income",
+      "outcome": "Outcome"
+    }
+  },
+  "myTrips": {
+    "title": "Your trips, {{name}}",
+    "customerSubtitle": "Upcoming bookings and the trips you've taken",
+    "driverSubtitle": "The trips you're assigned to drive",
+    "upcoming": "Coming up",
+    "past": "Past trips",
+    "empty": "You don't have any trips yet."
+  },
+  "myInvoices": {
+    "title": "My invoices",
+    "subtitle": "Every invoice from your trips, ready to print",
+    "toPay": "To pay",
+    "overdue": "Overdue invoices",
+    "empty": "No invoices yet. They appear here after a trip is completed."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "subtitle": "Alerts and updates about your fleet, trips and invoices",
+    "bellLabel": "Notifications, {{count}} unread",
+    "markAllRead": "Mark all as read",
+    "seeAll": "See all notifications",
+    "empty": "You're all caught up.",
+    "unread": "Unread",
+    "all": "All",
+    "unreadOnly": "Unread ({{count}})",
+    "buckets": {
+      "today": "Today",
+      "week": "This week",
+      "earlier": "Earlier"
+    },
+    "kinds": {
+      "GEOFENCE_ENTERED": {
+        "title": "{{vehicle}} entered {{zone}}",
+        "body": "Zone entry detected from the live position."
+      },
+      "GEOFENCE_EXITED": {
+        "title": "{{vehicle}} left {{zone}}",
+        "body": "Zone exit detected from the live position."
+      },
+      "SPEED_LIMIT_EXCEEDED": {
+        "title": "{{vehicle}} is speeding in {{zone}}",
+        "body": "{{speed}} km/h where the limit is {{limit}} km/h."
+      },
+      "MAINTENANCE_SCHEDULED": {
+        "title": "Work scheduled for {{vehicle}}",
+        "body": "{{title}} on {{date}}."
+      },
+      "MAINTENANCE_STARTED": {
+        "title": "{{vehicle}} is in the workshop",
+        "body": "{{title}} has started."
+      },
+      "MAINTENANCE_COMPLETED": {
+        "title": "{{vehicle}} is back in service",
+        "body": "{{title}} is done."
+      },
+      "MAINTENANCE_OVERDUE": {
+        "title": "Work overdue for {{vehicle}}",
+        "body": "{{title}} was planned for {{date}}."
+      },
+      "TRIP_ASSIGNED": {
+        "title": "New trip with {{vehicle}}",
+        "body": "Starts {{start}}."
+      },
+      "TRIP_RESCHEDULED": {
+        "title": "Your trip with {{vehicle}} changed",
+        "body": "New start: {{start}}."
+      },
+      "TRIP_STARTED": {
+        "title": "Your trip has started",
+        "body": "{{vehicle}} is on its way."
+      },
+      "TRIP_COMPLETED": {
+        "title": "Trip completed",
+        "body": "{{vehicle}} covered {{distance}} km. Your invoice follows."
+      },
+      "TRIP_CANCELLED": {
+        "title": "Trip with {{vehicle}} cancelled",
+        "body": "{{reason}}"
+      },
+      "INVOICE_ISSUED": {
+        "title": "Invoice {{number}} is ready",
+        "body": "{{total}} TND, due {{dueDate}}."
+      },
+      "INVOICE_PAID": {
+        "title": "Invoice {{number}} paid",
+        "body": "{{total}} TND received. Thank you."
+      },
+      "INVOICE_OVERDUE": {
+        "title": "Invoice {{number}} is overdue",
+        "body": "{{total}} TND was due {{dueDate}}."
+      },
+      "LICENSE_EXPIRING": {
+        "title": "{{driver}}'s license expires soon",
+        "body": "Expiry date: {{date}}. Renew it to keep driving."
+      }
+    }
+  },
+  "booking": {
+    "title": "Book a trip",
+    "subtitle": "Pick where you're going and when. We'll choose the vehicle and driver.",
+    "where": "Where to?",
+    "when": "When?",
+    "from": "Pickup",
+    "to": "Destination",
+    "searchPlaceholder": "Search an address or place",
+    "useMyLocation": "Use my current location",
+    "clear": "Clear this location",
+    "swap": "Swap pickup and destination",
+    "tapForFrom": "Or tap the map to set the pickup",
+    "tapForTo": "Or tap the map to set the destination",
+    "now": "Leave now",
+    "later": "Schedule",
+    "pickTime": "Pick a departure time",
+    "noSlots": "No departure left today. Pick another day.",
+    "periods": {
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening"
+    },
+    "assignment": "Vehicle, driver and customer",
+    "automatic": "Chosen automatically",
+    "manual": "Set by you",
+    "pickForMe": "Pick the best available",
+    "noCustomer": "No customer",
+    "missing": {
+      "from": "Choose a pickup point to see the price.",
+      "to": "Now choose the destination.",
+      "time": "Pick a day and a departure time."
+    },
+    "calculating": "Calculating the route and price…",
+    "distance": "Distance",
+    "duration": "Driving time",
+    "minutes": "{{count}} min",
+    "arrival": "Arrival",
+    "estimatedPrice": "Estimated price",
+    "noVehicle": "No vehicle is free at that time. Try another time.",
+    "quoteFailed": "The price could not be calculated. Check your connection.",
+    "bookNow": "Book now",
+    "bookLater": "Schedule trip",
+    "booked": "Trip booked",
+    "map": "Route map"
+  },
+  "outcome": {
+    "stats": {
+      "toPay": "Left to pay",
+      "toPayHint": "{{count}} unpaid expenses",
+      "maintenance": "Maintenance spend",
+      "salaries": "Driver salaries",
+      "unpaid": "{{amount}} not paid yet",
+      "net": "Net this month",
+      "paidOut": "{{amount}} paid out"
+    },
+    "payroll": {
+      "title": "Upcoming payroll",
+      "subtitle": "Salaries due in the next 30 days, counted every 30 days from each hire date",
+      "total": "Expected",
+      "empty": "No salary is due in the next 30 days. Set a monthly salary on the driver profiles."
+    },
+    "kinds": {
+      "ALL": "All",
+      "MAINTENANCE": "Maintenance",
+      "SALARY": "Salaries"
+    },
+    "statuses": {
+      "ALL": "All",
+      "UNPAID": "Unpaid",
+      "PAID": "Paid",
+      "OVERDUE": "Overdue"
+    },
+    "fields": {
+      "description": "Expense",
+      "kind": "Type",
+      "related": "For",
+      "dueDate": "Due",
+      "status": "Status",
+      "amount": "Amount"
+    },
+    "salaryOf": "Salary · {{name}}",
+    "empty": "No expenses here. Completed work orders and driver salaries appear automatically.",
+    "pay": "Pay",
+    "paid": "Expense paid"
+  }
+}

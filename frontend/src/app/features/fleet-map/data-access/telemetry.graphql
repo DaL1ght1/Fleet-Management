@@ -1,0 +1,69 @@
+fragment PositionFields on VehiclePosition {
+  latitude
+  longitude
+  speedKph
+  headingDegrees
+  fuelLevelPercent
+  odometerKm
+  ignitionOn
+  recordedAt
+  moving
+  stale
+}
+
+query FleetPositions {
+  vehiclePositions {
+    ...PositionFields
+    vehicle {
+      id
+      licensePlate
+      make
+      model
+      status
+    }
+  }
+}
+
+query VehicleTelemetry($id: UUID!, $from: DateTime!, $to: DateTime!) {
+  vehicle(id: $id) {
+    id
+    lastPosition {
+      ...PositionFields
+    }
+    track(from: $from, to: $to) {
+      latitude
+      longitude
+      speedKph
+      recordedAt
+    }
+  }
+}
+
+query VehicleDevices($id: UUID!) {
+  vehicle(id: $id) {
+    id
+    telemetryDevices {
+      id
+      label
+      createdAt
+      lastSeenAt
+      revoked
+    }
+  }
+}
+
+mutation RegisterTelemetryDevice($vehicleId: UUID!, $label: String!) {
+  registerTelemetryDevice(vehicleId: $vehicleId, label: $label) {
+    apiKey
+    device {
+      id
+    }
+  }
+}
+
+mutation RevokeTelemetryDevice($id: UUID!) {
+  revokeTelemetryDevice(id: $id) {
+    id
+    revoked
+  }
+}

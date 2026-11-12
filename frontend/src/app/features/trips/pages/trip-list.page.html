@@ -1,0 +1,109 @@
+<app-page-header [title]="'trips.title' | translate" [subtitle]="'trips.subtitle' | translate">
+  <a mat-flat-button routerLink="new" *appHasRole="roles.MANAGEMENT">
+    <mat-icon>add_road</mat-icon>
+    {{ 'trips.schedule' | translate }}
+  </a>
+</app-page-header>
+
+<section class="filters">
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>{{ 'trips.fields.status' | translate }}</mat-label>
+    <mat-select [ngModel]="status()" (ngModelChange)="changeFilter(status.set, $event)">
+      <mat-option [value]="null">{{ 'common.all' | translate }}</mat-option>
+      @for (option of statuses; track option) {
+        <mat-option [value]="option">{{ 'status.' + option | translate }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>{{ 'trips.fields.type' | translate }}</mat-label>
+    <mat-select [ngModel]="type()" (ngModelChange)="changeFilter(type.set, $event)">
+      <mat-option [value]="null">{{ 'common.all' | translate }}</mat-option>
+      @for (option of types; track option) {
+        <mat-option [value]="option">{{ 'tripType.' + option | translate }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <app-date-field
+    [label]="'trips.from' | translate"
+    [ngModel]="from()"
+    (ngModelChange)="changeFilter(from.set, $event)"
+    [clearable]="true"
+    subscript="dynamic"
+  />
+  <app-date-field
+    [label]="'trips.to' | translate"
+    [ngModel]="to()"
+    (ngModelChange)="changeFilter(to.set, $event)"
+    [clearable]="true"
+    subscript="dynamic"
+  />
+</section>
+
+<app-load-state
+  [loading]="trips.isLoading() && !trips.hasValue()"
+  [failed]="trips.status() === 'error'"
+  [empty]="trips.hasValue() && rows().length === 0"
+  [emptyMessage]="'trips.empty' | translate"
+  (retry)="trips.reload()"
+>
+  <div class="table-card">
+    <div class="table-scroll">
+      <table mat-table [dataSource]="rows()">
+        <ng-container matColumnDef="schedule">
+          <th mat-header-cell *matHeaderCellDef>{{ 'trips.fields.schedule' | translate }}</th>
+          <td mat-cell [attr.data-label]="'trips.fields.schedule' | translate" *matCellDef="let trip">
+            <div class="strong">{{ trip.scheduledStart | date: 'medium' }}</div>
+            <div class="muted">→ {{ trip.scheduledEnd | date: 'shortTime' }}</div>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="route">
+          <th mat-header-cell *matHeaderCellDef>{{ 'trips.fields.route' | translate }}</th>
+          <td mat-cell [attr.data-label]="'trips.fields.route' | translate" *matCellDef="let trip" class="truncate">
+            <div>{{ trip.startLocation.city ?? trip.startLocation.address }}</div>
+            <div class="muted">{{ trip.endLocation.city ?? trip.endLocation.address }}</div>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="vehicle">
+          <th mat-header-cell *matHeaderCellDef>{{ 'trips.fields.vehicle' | translate }}</th>
+          <td mat-cell [attr.data-label]="'trips.fields.vehicle' | translate" *matCellDef="let trip">
+            {{ trip.vehicle.licensePlate }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="driver">
+          <th mat-header-cell *matHeaderCellDef>{{ 'trips.fields.driver' | translate }}</th>
+          <td mat-cell [attr.data-label]="'trips.fields.driver' | translate" *matCellDef="let trip">
+            {{ trip.driver?.fullName ?? '—' }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef>{{ 'trips.fields.type' | translate }}</th>
+          <td mat-cell [attr.data-label]="'trips.fields.type' | translate" *matCellDef="let trip">
+            {{ 'tripType.' + trip.type | translate }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>{{ 'trips.fields.status' | translate }}</th>
+          <td mat-cell [attr.data-label]="'trips.fields.status' | translate" *matCellDef="let trip">
+            <app-status-chip [status]="trip.status" />
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="cost">
+          <th mat-header-cell *matHeaderCellDef>{{ 'trips.fields.totalCost' | translate }}</th>
+          <td mat-cell [attr.data-label]="'trips.fields.totalCost' | translate" *matCellDef="let trip">
+            {{ trip.costs.totalCost | money }}
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let trip; columns: columns" class="clickable" (click)="open(trip.id)"></tr>
+      </table>
+    </div>
+    <mat-paginator
+      [length]="total()"
+      [pageIndex]="page()"
+      [pageSize]="size()"
+      [pageSizeOptions]="[10, 20, 50]"
+      (page)="changePage($event)"
+    />
+  </div>
+</app-load-state>

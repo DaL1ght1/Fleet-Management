@@ -1,0 +1,90 @@
+<app-page-header
+  [title]="(editing() ? 'maintenance.editTitle' : 'maintenance.scheduleTitle') | translate"
+  [subtitle]="'maintenance.formSubtitle' | translate"
+  [backLink]="editing() ? ['/maintenance', id()] : '/maintenance'"
+/>
+
+<form [formGroup]="form" (ngSubmit)="save()" class="card form">
+  <section class="form-section">
+    <header>
+      <h2>{{ 'maintenance.sections.what' | translate }}</h2>
+    </header>
+    <div class="kind-picker" role="radiogroup" [attr.aria-label]="'maintenance.fields.kind' | translate">
+      @for (option of kinds; track option) {
+        <button
+          type="button"
+          role="radio"
+          class="kind"
+          [attr.aria-checked]="form.controls.kind.value === option"
+          (click)="chooseKind(option)"
+        >
+          <mat-icon>{{ kindIcons[option] }}</mat-icon>
+          <span class="kind-name">{{ 'workOrderKind.' + option | translate }}</span>
+          <span class="kind-hint">{{ 'workOrderKindHint.' + option | translate }}</span>
+        </button>
+      }
+    </div>
+    <div class="form-grid">
+      <mat-form-field appearance="outline" class="span-all">
+        <mat-label>{{ 'maintenance.fields.title' | translate }}</mat-label>
+        <input matInput formControlName="title" [placeholder]="'maintenance.titlePlaceholder' | translate" />
+        <mat-error>{{ 'validation.required' | translate }}</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="span-all">
+        <mat-label>{{ 'maintenance.fields.description' | translate }}</mat-label>
+        <textarea matInput rows="3" formControlName="description"></textarea>
+      </mat-form-field>
+    </div>
+  </section>
+
+  <section class="form-section">
+    <header>
+      <h2>{{ 'maintenance.sections.when' | translate }}</h2>
+    </header>
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'maintenance.fields.vehicle' | translate }}</mat-label>
+        <mat-select formControlName="vehicleId">
+          @for (vehicle of vehicles.value() ?? []; track vehicle.id) {
+            <mat-option [value]="vehicle.id">
+              {{ vehicle.licensePlate }} · {{ vehicle.make }} {{ vehicle.model }}
+            </mat-option>
+          }
+        </mat-select>
+        <mat-error>{{ 'validation.required' | translate }}</mat-error>
+      </mat-form-field>
+      <app-date-field
+        [label]="'maintenance.fields.scheduledFor' | translate"
+        formControlName="scheduledFor"
+        [min]="today"
+        [required]="true"
+        [error]="
+          form.controls.scheduledFor.touched && form.controls.scheduledFor.invalid
+            ? ('validation.required' | translate)
+            : null
+        "
+      />
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'maintenance.fields.priority' | translate }}</mat-label>
+        <mat-select formControlName="priority">
+          @for (option of priorities; track option) {
+            <mat-option [value]="option">{{ 'priority.' + option | translate }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'maintenance.fields.vendor' | translate }}</mat-label>
+        <input matInput formControlName="vendor" />
+        <mat-icon matSuffix>storefront</mat-icon>
+      </mat-form-field>
+    </div>
+  </section>
+
+  <div class="form-actions">
+    <button mat-button type="button" (click)="cancel()">{{ 'common.cancel' | translate }}</button>
+    <button mat-flat-button type="submit" [disabled]="saving()">
+      <mat-icon>check</mat-icon>
+      {{ (editing() ? 'common.save' : 'maintenance.schedule') | translate }}
+    </button>
+  </div>
+</form>

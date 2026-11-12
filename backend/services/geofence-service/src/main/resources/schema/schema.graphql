@@ -1,0 +1,109 @@
+extend schema
+@link(url: "https://specs.apollo.dev/federation/v2.6", import: ["@key"])
+
+scalar UUID
+scalar DateTime
+
+type Vehicle @key(fields: "id") {
+    id: UUID!
+    currentGeofences: [Geofence!]!
+}
+
+enum GeofenceKind {
+    DEPOT
+    SERVICE_AREA
+    RESTRICTED
+}
+
+enum AlertSeverity {
+    INFO
+    WARNING
+    CRITICAL
+}
+
+enum AlertType {
+    VEHICLE_ENTERED
+    VEHICLE_EXITED
+    SPEED_LIMIT_EXCEEDED
+}
+
+type GeoPoint {
+    latitude: Float!
+    longitude: Float!
+}
+
+type Geofence @key(fields: "id") {
+    id: UUID!
+    name: String!
+    kind: GeofenceKind!
+    active: Boolean!
+    polygon: [GeoPoint!]
+    center: GeoPoint
+    radiusMeters: Float
+    speedLimitKph: Float
+    vehiclesInside: Int!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+}
+
+type GeofenceAlert {
+    id: UUID!
+    type: AlertType!
+    severity: AlertSeverity!
+    geofenceId: UUID!
+    geofenceName: String!
+    geofence: Geofence
+    vehicle: Vehicle!
+    speedLimitKph: Float
+    latitude: Float!
+    longitude: Float!
+    speedKph: Float!
+    occurredAt: DateTime!
+    acknowledged: Boolean!
+    acknowledgedAt: DateTime
+}
+
+type GeofenceAlertPage {
+    items: [GeofenceAlert!]!
+    totalCount: Int!
+    page: Int!
+    size: Int!
+    hasNext: Boolean!
+}
+
+input GeoPointInput {
+    latitude: Float!
+    longitude: Float!
+}
+
+input GeofenceInput {
+    name: String!
+    kind: GeofenceKind!
+    polygon: [GeoPointInput!]
+    center: GeoPointInput
+    radiusMeters: Float
+    speedLimitKph: Float
+}
+
+input GeofenceAlertFilter {
+    acknowledged: Boolean
+    severity: AlertSeverity
+    geofenceId: UUID
+    vehicleId: UUID
+}
+
+type Query {
+    geofences: [Geofence!]!
+    geofence(id: UUID!): Geofence
+    geofenceAlerts(filter: GeofenceAlertFilter, page: Int = 0, size: Int = 20): GeofenceAlertPage!
+    unacknowledgedAlertCount: Int!
+}
+
+type Mutation {
+    createGeofence(input: GeofenceInput!): Geofence!
+    updateGeofence(id: UUID!, input: GeofenceInput!): Geofence!
+    setGeofenceActive(id: UUID!, active: Boolean!): Geofence!
+    deleteGeofence(id: UUID!): Boolean!
+    acknowledgeGeofenceAlert(id: UUID!): GeofenceAlert!
+    acknowledgeAllGeofenceAlerts: Int!
+}

@@ -1,0 +1,102 @@
+<app-page-header [title]="'drivers.title' | translate" [subtitle]="'drivers.subtitle' | translate">
+  <a mat-flat-button routerLink="new" *appHasRole="roles.MANAGEMENT">
+    <mat-icon>person_add</mat-icon>
+    {{ 'drivers.register' | translate }}
+  </a>
+</app-page-header>
+
+<section class="filters">
+  <mat-form-field appearance="outline" subscriptSizing="dynamic" class="grow">
+    <mat-label>{{ 'drivers.searchPlaceholder' | translate }}</mat-label>
+    <mat-icon matPrefix>search</mat-icon>
+    <input matInput [ngModel]="search()" (ngModelChange)="changeFilter(search.set, $event)" />
+  </mat-form-field>
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>{{ 'drivers.fields.status' | translate }}</mat-label>
+    <mat-select [ngModel]="status()" (ngModelChange)="changeFilter(status.set, $event)">
+      <mat-option [value]="null">{{ 'common.all' | translate }}</mat-option>
+      @for (option of statuses; track option) {
+        <mat-option [value]="option">{{ 'status.' + option | translate }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-slide-toggle [ngModel]="availableOnly()" (ngModelChange)="changeFilter(availableOnly.set, $event)">
+    {{ 'drivers.availableOnly' | translate }}
+  </mat-slide-toggle>
+</section>
+
+<app-load-state
+  [loading]="drivers.isLoading() && !drivers.hasValue()"
+  [failed]="drivers.status() === 'error'"
+  [empty]="drivers.hasValue() && rows().length === 0"
+  [emptyMessage]="'drivers.empty' | translate"
+  (retry)="drivers.reload()"
+>
+  <div class="table-card">
+    <div class="table-scroll">
+      <table mat-table [dataSource]="rows()">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>{{ 'drivers.fields.name' | translate }}</th>
+          <td mat-cell [attr.data-label]="'drivers.fields.name' | translate" *matCellDef="let driver" class="strong">
+            {{ driver.fullName }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="contact">
+          <th mat-header-cell *matHeaderCellDef>{{ 'drivers.fields.contact' | translate }}</th>
+          <td mat-cell [attr.data-label]="'drivers.fields.contact' | translate" *matCellDef="let driver">
+            <div>{{ driver.email }}</div>
+            <div class="muted">{{ driver.phoneNumber }}</div>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="license">
+          <th mat-header-cell *matHeaderCellDef>{{ 'drivers.fields.license' | translate }}</th>
+          <td mat-cell [attr.data-label]="'drivers.fields.license' | translate" *matCellDef="let driver">
+            <div>{{ driver.licenseNumber }}</div>
+            <div class="muted" [class.error-text]="driver.licenseExpired">
+              {{ 'drivers.expires' | translate }} {{ driver.licenseExpiryDate | date: 'mediumDate' }}
+            </div>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>{{ 'drivers.fields.status' | translate }}</th>
+          <td mat-cell [attr.data-label]="'drivers.fields.status' | translate" *matCellDef="let driver">
+            <app-status-chip [status]="driver.status" />
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="availability">
+          <th mat-header-cell *matHeaderCellDef>{{ 'drivers.fields.availability' | translate }}</th>
+          <td mat-cell [attr.data-label]="'drivers.fields.availability' | translate" *matCellDef="let driver">
+            <mat-icon [class.success-text]="driver.available" [class.muted]="!driver.available">
+              {{ driver.available ? 'check_circle' : 'remove_circle_outline' }}
+            </mat-icon>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="rating">
+          <th mat-header-cell *matHeaderCellDef>{{ 'drivers.fields.rating' | translate }}</th>
+          <td mat-cell [attr.data-label]="'drivers.fields.rating' | translate" *matCellDef="let driver">
+            @if (driver.rating !== null) {
+              {{ driver.rating | number: '1.1-1' }} ★
+            } @else {
+              <span class="muted">—</span>
+            }
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="trips">
+          <th mat-header-cell *matHeaderCellDef>{{ 'drivers.fields.completedTrips' | translate }}</th>
+          <td mat-cell [attr.data-label]="'drivers.fields.completedTrips' | translate" *matCellDef="let driver">
+            {{ driver.completedTrips }}
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let driver; columns: columns" class="clickable" (click)="open(driver.id)"></tr>
+      </table>
+    </div>
+    <mat-paginator
+      [length]="total()"
+      [pageIndex]="page()"
+      [pageSize]="size()"
+      [pageSizeOptions]="[10, 20, 50]"
+      (page)="changePage($event)"
+    />
+  </div>
+</app-load-state>

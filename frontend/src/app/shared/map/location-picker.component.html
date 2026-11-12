@@ -1,0 +1,34 @@
+<section class="picker">
+  <h3>{{ label() }}</h3>
+  <div class="search">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>{{ 'map.search' | translate }}</mat-label>
+      <input
+        matInput
+        [ngModel]="query()"
+        [ngModelOptions]="{ standalone: true }"
+        (ngModelChange)="query.set($event)"
+        (keydown.enter)="$event.preventDefault(); search()"
+      />
+    </mat-form-field>
+    <button mat-stroked-button type="button" [disabled]="searching()" (click)="search()">
+      <mat-icon>search</mat-icon>
+      {{ 'map.find' | translate }}
+    </button>
+  </div>
+  @if (results().length) {
+    <mat-action-list class="results">
+      @for (result of results(); track result.address) {
+        <button mat-list-item type="button" (click)="choose(result)">{{ result.address }}</button>
+      }
+    </mat-action-list>
+  }
+  <div #host class="map"></div>
+  <p class="selection">
+    @if (location(); as selected) {
+      <mat-icon>place</mat-icon> {{ selected.address }}
+    } @else {
+      {{ 'map.clickToPick' | translate }}
+    }
+  </p>
+</section>

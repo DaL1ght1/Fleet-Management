@@ -1,0 +1,55 @@
+extend schema
+@link(url: "https://specs.apollo.dev/federation/v2.6", import: ["@key"])
+
+scalar UUID
+scalar DateTime
+
+type Vehicle @key(fields: "id") {
+    id: UUID!
+    lastPosition: VehiclePosition
+    track(from: DateTime!, to: DateTime!): [TrackPoint!]!
+    telemetryDevices: [TelemetryDevice!]!
+}
+
+type VehiclePosition {
+    vehicle: Vehicle!
+    latitude: Float!
+    longitude: Float!
+    speedKph: Float!
+    headingDegrees: Float
+    odometerKm: Float
+    fuelLevelPercent: Float
+    ignitionOn: Boolean
+    recordedAt: DateTime!
+    moving: Boolean!
+    stale: Boolean!
+}
+
+type TrackPoint {
+    latitude: Float!
+    longitude: Float!
+    speedKph: Float!
+    recordedAt: DateTime!
+}
+
+type TelemetryDevice {
+    id: UUID!
+    label: String!
+    createdAt: DateTime!
+    lastSeenAt: DateTime
+    revoked: Boolean!
+}
+
+type DeviceRegistration {
+    device: TelemetryDevice!
+    apiKey: String!
+}
+
+type Query {
+    vehiclePositions: [VehiclePosition!]!
+}
+
+type Mutation {
+    registerTelemetryDevice(vehicleId: UUID!, label: String!): DeviceRegistration!
+    revokeTelemetryDevice(id: UUID!): TelemetryDevice!
+}

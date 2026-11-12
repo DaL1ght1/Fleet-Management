@@ -1,0 +1,91 @@
+fragment GeofenceFields on Geofence {
+  id
+  name
+  kind
+  active
+  polygon {
+    latitude
+    longitude
+  }
+  center {
+    latitude
+    longitude
+  }
+  radiusMeters
+  speedLimitKph
+  vehiclesInside
+  updatedAt
+}
+
+query Geofences {
+  geofences {
+    ...GeofenceFields
+  }
+}
+
+query Geofence($id: UUID!) {
+  geofence(id: $id) {
+    ...GeofenceFields
+  }
+}
+
+query GeofenceAlerts($filter: GeofenceAlertFilter, $page: Int, $size: Int) {
+  geofenceAlerts(filter: $filter, page: $page, size: $size) {
+    items {
+      id
+      type
+      severity
+      geofenceId
+      geofenceName
+      speedKph
+      speedLimitKph
+      occurredAt
+      acknowledged
+      vehicle {
+        id
+        licensePlate
+      }
+    }
+    totalCount
+    page
+    size
+    hasNext
+  }
+}
+
+query UnacknowledgedAlertCount {
+  unacknowledgedAlertCount
+}
+
+mutation CreateGeofence($input: GeofenceInput!) {
+  createGeofence(input: $input) {
+    ...GeofenceFields
+  }
+}
+
+mutation UpdateGeofence($id: UUID!, $input: GeofenceInput!) {
+  updateGeofence(id: $id, input: $input) {
+    ...GeofenceFields
+  }
+}
+
+mutation SetGeofenceActive($id: UUID!, $active: Boolean!) {
+  setGeofenceActive(id: $id, active: $active) {
+    ...GeofenceFields
+  }
+}
+
+mutation DeleteGeofence($id: UUID!) {
+  deleteGeofence(id: $id)
+}
+
+mutation AcknowledgeGeofenceAlert($id: UUID!) {
+  acknowledgeGeofenceAlert(id: $id) {
+    id
+    acknowledged
+  }
+}
+
+mutation AcknowledgeAllGeofenceAlerts {
+  acknowledgeAllGeofenceAlerts
+}

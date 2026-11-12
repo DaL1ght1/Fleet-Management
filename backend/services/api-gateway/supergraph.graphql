@@ -1,0 +1,1114 @@
+schema
+  @link(url: "https://specs.apollo.dev/link/v1.0")
+  @link(url: "https://specs.apollo.dev/join/v0.3", for: EXECUTION)
+{
+  query: Query
+  mutation: Mutation
+}
+
+directive @join__enumValue(graph: join__Graph!) repeatable on ENUM_VALUE
+
+directive @join__field(graph: join__Graph, requires: join__FieldSet, provides: join__FieldSet, type: String, external: Boolean, override: String, usedOverridden: Boolean) repeatable on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+directive @join__graph(name: String!, url: String!) on ENUM_VALUE
+
+directive @join__implements(graph: join__Graph!, interface: String!) repeatable on OBJECT | INTERFACE
+
+directive @join__type(graph: join__Graph!, key: join__FieldSet, extension: Boolean! = false, resolvable: Boolean! = true, isInterfaceObject: Boolean! = false) repeatable on OBJECT | INTERFACE | UNION | ENUM | INPUT_OBJECT | SCALAR
+
+directive @join__unionMember(graph: join__Graph!, member: String!) repeatable on UNION
+
+directive @link(url: String, as: String, for: link__Purpose, import: [link__Import]) repeatable on SCHEMA
+
+enum AlertSeverity
+  @join__type(graph: GEOFENCE)
+{
+  INFO @join__enumValue(graph: GEOFENCE)
+  WARNING @join__enumValue(graph: GEOFENCE)
+  CRITICAL @join__enumValue(graph: GEOFENCE)
+}
+
+enum AlertType
+  @join__type(graph: GEOFENCE)
+{
+  VEHICLE_ENTERED @join__enumValue(graph: GEOFENCE)
+  VEHICLE_EXITED @join__enumValue(graph: GEOFENCE)
+  SPEED_LIMIT_EXCEEDED @join__enumValue(graph: GEOFENCE)
+}
+
+scalar BigDecimal
+  @join__type(graph: BILLING)
+  @join__type(graph: MAINTENANCE)
+  @join__type(graph: TRIPS)
+  @join__type(graph: USERS)
+  @join__type(graph: VEHICLES)
+
+type BillingStatistics
+  @join__type(graph: BILLING)
+{
+  drafts: Int!
+  outstanding: BigDecimal!
+  overdue: BigDecimal!
+  overdueCount: Int!
+  collectedThisMonth: BigDecimal!
+}
+
+input CompleteTripInput
+  @join__type(graph: TRIPS)
+{
+  distanceKm: BigDecimal!
+  fuelCost: BigDecimal
+  additionalFees: BigDecimal
+}
+
+input CompleteWorkOrderInput
+  @join__type(graph: MAINTENANCE)
+{
+  partsCost: BigDecimal
+  laborCost: BigDecimal
+  odometerKm: Long
+  resolutionNotes: String
+}
+
+type Customer
+  @join__type(graph: BILLING, key: "id", resolvable: false)
+  @join__type(graph: TRIPS, key: "id", resolvable: false)
+  @join__type(graph: USERS, key: "id")
+{
+  id: UUID!
+  accountId: UUID @join__field(graph: USERS)
+  firstName: String! @join__field(graph: USERS)
+  lastName: String! @join__field(graph: USERS)
+  fullName: String! @join__field(graph: USERS)
+  email: String! @join__field(graph: USERS)
+  phoneNumber: String @join__field(graph: USERS)
+  createdAt: DateTime! @join__field(graph: USERS)
+  updatedAt: DateTime! @join__field(graph: USERS)
+}
+
+input CustomerInput
+  @join__type(graph: USERS)
+{
+  firstName: String!
+  lastName: String!
+  email: String!
+  phoneNumber: String
+}
+
+type CustomerPage
+  @join__type(graph: USERS)
+{
+  items: [Customer!]!
+  totalCount: Int!
+  page: Int!
+  size: Int!
+  hasNext: Boolean!
+}
+
+scalar Date
+  @join__type(graph: BILLING)
+  @join__type(graph: MAINTENANCE)
+  @join__type(graph: USERS)
+  @join__type(graph: VEHICLES)
+
+scalar DateTime
+  @join__type(graph: BILLING)
+  @join__type(graph: GEOFENCE)
+  @join__type(graph: MAINTENANCE)
+  @join__type(graph: NOTIFICATIONS)
+  @join__type(graph: TELEMETRY)
+  @join__type(graph: TRIPS)
+  @join__type(graph: USERS)
+  @join__type(graph: VEHICLES)
+
+type DeviceRegistration
+  @join__type(graph: TELEMETRY)
+{
+  device: TelemetryDevice!
+  apiKey: String!
+}
+
+type Driver
+  @join__type(graph: BILLING, key: "id", resolvable: false)
+  @join__type(graph: TRIPS, key: "id", resolvable: false)
+  @join__type(graph: USERS, key: "id")
+{
+  id: UUID!
+  accountId: UUID @join__field(graph: USERS)
+  firstName: String! @join__field(graph: USERS)
+  lastName: String! @join__field(graph: USERS)
+  fullName: String! @join__field(graph: USERS)
+  email: String! @join__field(graph: USERS)
+  phoneNumber: String! @join__field(graph: USERS)
+  licenseNumber: String! @join__field(graph: USERS)
+  licenseExpiryDate: Date! @join__field(graph: USERS)
+  licenseExpired: Boolean! @join__field(graph: USERS)
+  status: DriverStatus! @join__field(graph: USERS)
+  dateOfBirth: Date @join__field(graph: USERS)
+  hireDate: Date! @join__field(graph: USERS)
+  monthlySalary: BigDecimal @join__field(graph: USERS)
+  nextPayday: Date @join__field(graph: USERS)
+  emergencyContact: EmergencyContact @join__field(graph: USERS)
+  currentTripId: UUID @join__field(graph: USERS)
+  available: Boolean! @join__field(graph: USERS)
+  rating: Float @join__field(graph: USERS)
+  ratingCount: Int! @join__field(graph: USERS)
+  completedTrips: Int! @join__field(graph: USERS)
+  createdAt: DateTime! @join__field(graph: USERS)
+  updatedAt: DateTime! @join__field(graph: USERS)
+}
+
+input DriverFilter
+  @join__type(graph: USERS)
+{
+  status: DriverStatus
+  available: Boolean
+  search: String
+}
+
+type DriverPage
+  @join__type(graph: USERS)
+{
+  items: [Driver!]!
+  totalCount: Int!
+  page: Int!
+  size: Int!
+  hasNext: Boolean!
+}
+
+type DriverStatistics
+  @join__type(graph: USERS)
+{
+  total: Int!
+  active: Int!
+  inactive: Int!
+  suspended: Int!
+  onLeave: Int!
+  available: Int!
+  onTrip: Int!
+  licensesExpiringSoon: Int!
+}
+
+enum DriverStatus
+  @join__type(graph: USERS)
+{
+  ACTIVE @join__enumValue(graph: USERS)
+  INACTIVE @join__enumValue(graph: USERS)
+  SUSPENDED @join__enumValue(graph: USERS)
+  ON_LEAVE @join__enumValue(graph: USERS)
+}
+
+type EmergencyContact
+  @join__type(graph: USERS)
+{
+  name: String!
+  phoneNumber: String!
+}
+
+input EmergencyContactInput
+  @join__type(graph: USERS)
+{
+  name: String!
+  phoneNumber: String!
+}
+
+type Expense
+  @join__type(graph: BILLING)
+{
+  id: UUID!
+  kind: ExpenseKind!
+  status: ExpenseStatus!
+  description: String
+  amount: BigDecimal!
+  currency: String!
+  dueDate: Date!
+  overdue: Boolean!
+  paidOn: Date
+  paymentMethod: PaymentMethod
+  vehicle: Vehicle
+  driver: Driver
+  workOrderId: UUID
+  createdAt: DateTime!
+}
+
+input ExpenseFilter
+  @join__type(graph: BILLING)
+{
+  kind: ExpenseKind
+  status: ExpenseStatus
+}
+
+enum ExpenseKind
+  @join__type(graph: BILLING)
+{
+  MAINTENANCE @join__enumValue(graph: BILLING)
+  SALARY @join__enumValue(graph: BILLING)
+}
+
+type ExpensePage
+  @join__type(graph: BILLING)
+{
+  items: [Expense!]!
+  totalCount: Int!
+  page: Int!
+  size: Int!
+  hasNext: Boolean!
+}
+
+type ExpenseStatistics
+  @join__type(graph: BILLING)
+{
+  maintenanceTotal: BigDecimal!
+  maintenanceUnpaid: BigDecimal!
+  salariesTotal: BigDecimal!
+  salariesUnpaid: BigDecimal!
+  unpaidTotal: BigDecimal!
+  unpaidCount: Int!
+  paidThisMonth: BigDecimal!
+}
+
+enum ExpenseStatus
+  @join__type(graph: BILLING)
+{
+  UNPAID @join__enumValue(graph: BILLING)
+  PAID @join__enumValue(graph: BILLING)
+}
+
+type FleetStatistics
+  @join__type(graph: VEHICLES)
+{
+  total: Int!
+  active: Int!
+  inactive: Int!
+  inMaintenance: Int!
+  inUse: Int!
+  maintenanceDue: Int!
+}
+
+enum FuelType
+  @join__type(graph: VEHICLES)
+{
+  GASOLINE @join__enumValue(graph: VEHICLES)
+  DIESEL @join__enumValue(graph: VEHICLES)
+  ELECTRIC @join__enumValue(graph: VEHICLES)
+  HYBRID @join__enumValue(graph: VEHICLES)
+}
+
+type Geofence
+  @join__type(graph: GEOFENCE, key: "id")
+{
+  id: UUID!
+  name: String!
+  kind: GeofenceKind!
+  active: Boolean!
+  polygon: [GeoPoint!]
+  center: GeoPoint
+  radiusMeters: Float
+  speedLimitKph: Float
+  vehiclesInside: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type GeofenceAlert
+  @join__type(graph: GEOFENCE)
+{
+  id: UUID!
+  type: AlertType!
+  severity: AlertSeverity!
+  geofenceId: UUID!
+  geofenceName: String!
+  geofence: Geofence
+  vehicle: Vehicle!
+  speedLimitKph: Float
+  latitude: Float!
+  longitude: Float!
+  speedKph: Float!
+  occurredAt: DateTime!
+  acknowledged: Boolean!
+  acknowledgedAt: DateTime
+}
+
+input GeofenceAlertFilter
+  @join__type(graph: GEOFENCE)
+{
+  acknowledged: Boolean
+  severity: AlertSeverity
+  geofenceId: UUID
+  vehicleId: UUID
+}
+
+type GeofenceAlertPage
+  @join__type(graph: GEOFENCE)
+{
+  items: [GeofenceAlert!]!
+  totalCount: Int!
+  page: Int!
+  size: Int!
+  hasNext: Boolean!
+}
+
+input GeofenceInput
+  @join__type(graph: GEOFENCE)
+{
+  name: String!
+  kind: GeofenceKind!
+  polygon: [GeoPointInput!]
+  center: GeoPointInput
+  radiusMeters: Float
+  speedLimitKph: Float
+}
+
+enum GeofenceKind
+  @join__type(graph: GEOFENCE)
+{
+  DEPOT @join__enumValue(graph: GEOFENCE)
+  SERVICE_AREA @join__enumValue(graph: GEOFENCE)
+  RESTRICTED @join__enumValue(graph: GEOFENCE)
+}
+
+type GeoPoint
+  @join__type(graph: GEOFENCE)
+{
+  latitude: Float!
+  longitude: Float!
+}
+
+input GeoPointInput
+  @join__type(graph: GEOFENCE)
+{
+  latitude: Float!
+  longitude: Float!
+}
+
+type Invoice
+  @join__type(graph: BILLING, key: "id")
+{
+  id: UUID!
+  number: String!
+  status: InvoiceStatus!
+  trip: Trip!
+  customer: Customer
+  vehicle: Vehicle!
+  lines: [InvoiceLine!]!
+  subtotal: BigDecimal!
+  taxRate: BigDecimal!
+  taxAmount: BigDecimal!
+  total: BigDecimal!
+  currency: String!
+  issuedOn: Date
+  dueDate: Date
+  paidOn: Date
+  paymentMethod: PaymentMethod
+  voidReason: String
+  overdue: Boolean!
+  createdAt: DateTime!
+}
+
+input InvoiceFilter
+  @join__type(graph: BILLING)
+{
+  status: InvoiceStatus
+  customerId: UUID
+  overdue: Boolean
+}
+
+type InvoiceLine
+  @join__type(graph: BILLING)
+{
+  description: String!
+  amount: BigDecimal!
+}
+
+type InvoicePage
+  @join__type(graph: BILLING)
+{
+  items: [Invoice!]!
+  totalCount: Int!
+  page: Int!
+  size: Int!
+  hasNext: Boolean!
+}
+
+enum InvoiceStatus
+  @join__type(graph: BILLING)
+{
+  DRAFT @join__enumValue(graph: BILLING)
+  ISSUED @join__enumValue(graph: BILLING)
+  PAID @join__enumValue(graph: BILLING)
+  VOID @join__enumValue(graph: BILLING)
+}
+
+scalar join__FieldSet
+
+enum join__Graph {
+  BILLING @join__graph(name: "billing", url: "http://billing-service:8080/graphql")
+  GEOFENCE @join__graph(name: "geofence", url: "http://geofence-service:8080/graphql")
+  MAINTENANCE @join__graph(name: "maintenance", url: "http://maintenance-service:8080/graphql")
+  NOTIFICATIONS @join__graph(name: "notifications", url: "http://notification-service:8080/graphql")
+  TELEMETRY @join__graph(name: "telemetry", url: "http://telemetry-service:8080/graphql")
+  TRIPS @join__graph(name: "trips", url: "http://trips-service:8080/graphql")
+  USERS @join__graph(name: "users", url: "http://user-service:8080/graphql")
+  VEHICLES @join__graph(name: "vehicles", url: "http://vehicles-service:8080/graphql")
+}
+
+scalar link__Import
+
+enum link__Purpose {
+  """
+  `SECURITY` features provide metadata necessary to securely resolve fields.
+  """
+  SECURITY
+
+  """
+  `EXECUTION` features provide metadata necessary for operation execution.
+  """
+  EXECUTION
+}
+
+type Location
+  @join__type(graph: TRIPS)
+{
+  latitude: Float!
+  longitude: Float!
+  address: String!
+  city: String
+  state: String
+  zipCode: String
+}
+
+input LocationInput
+  @join__type(graph: TRIPS)
+{
+  latitude: Float!
+  longitude: Float!
+  address: String!
+  city: String
+  state: String
+  zipCode: String
+}
+
+scalar Long
+  @join__type(graph: MAINTENANCE)
+  @join__type(graph: VEHICLES)
+
+type MaintenanceStatistics
+  @join__type(graph: MAINTENANCE)
+{
+  scheduled: Int!
+  inProgress: Int!
+  overdue: Int!
+  completedThisMonth: Int!
+  costThisMonth: BigDecimal!
+}
+
+type Mutation
+  @join__type(graph: BILLING)
+  @join__type(graph: GEOFENCE)
+  @join__type(graph: MAINTENANCE)
+  @join__type(graph: NOTIFICATIONS)
+  @join__type(graph: TELEMETRY)
+  @join__type(graph: TRIPS)
+  @join__type(graph: USERS)
+  @join__type(graph: VEHICLES)
+{
+  issueInvoice(id: UUID!, paymentTermDays: Int = 30): Invoice! @join__field(graph: BILLING)
+  markInvoicePaid(id: UUID!, method: PaymentMethod!): Invoice! @join__field(graph: BILLING)
+  voidInvoice(id: UUID!, reason: String!): Invoice! @join__field(graph: BILLING)
+  payExpense(id: UUID!, method: PaymentMethod!): Expense! @join__field(graph: BILLING)
+  createGeofence(input: GeofenceInput!): Geofence! @join__field(graph: GEOFENCE)
+  updateGeofence(id: UUID!, input: GeofenceInput!): Geofence! @join__field(graph: GEOFENCE)
+  setGeofenceActive(id: UUID!, active: Boolean!): Geofence! @join__field(graph: GEOFENCE)
+  deleteGeofence(id: UUID!): Boolean! @join__field(graph: GEOFENCE)
+  acknowledgeGeofenceAlert(id: UUID!): GeofenceAlert! @join__field(graph: GEOFENCE)
+  acknowledgeAllGeofenceAlerts: Int! @join__field(graph: GEOFENCE)
+  scheduleWorkOrder(input: WorkOrderInput!): WorkOrder! @join__field(graph: MAINTENANCE)
+  updateWorkOrder(id: UUID!, input: UpdateWorkOrderInput!): WorkOrder! @join__field(graph: MAINTENANCE)
+  startWorkOrder(id: UUID!): WorkOrder! @join__field(graph: MAINTENANCE)
+  completeWorkOrder(id: UUID!, input: CompleteWorkOrderInput!): WorkOrder! @join__field(graph: MAINTENANCE)
+  cancelWorkOrder(id: UUID!, reason: String!): WorkOrder! @join__field(graph: MAINTENANCE)
+  markNotificationRead(id: UUID!): Notification! @join__field(graph: NOTIFICATIONS)
+  markAllNotificationsRead: Int! @join__field(graph: NOTIFICATIONS)
+  registerTelemetryDevice(vehicleId: UUID!, label: String!): DeviceRegistration! @join__field(graph: TELEMETRY)
+  revokeTelemetryDevice(id: UUID!): TelemetryDevice! @join__field(graph: TELEMETRY)
+  scheduleTrip(input: ScheduleTripInput!): Trip! @join__field(graph: TRIPS)
+  requestTrip(input: TripRequestInput!): Trip! @join__field(graph: TRIPS)
+  updateTripPlan(id: UUID!, input: UpdateTripPlanInput!): Trip! @join__field(graph: TRIPS)
+  startTrip(id: UUID!): Trip! @join__field(graph: TRIPS)
+  completeTrip(id: UUID!, input: CompleteTripInput!): Trip! @join__field(graph: TRIPS)
+  cancelTrip(id: UUID!, reason: String!): Trip! @join__field(graph: TRIPS)
+  deleteTrip(id: UUID!): Boolean! @join__field(graph: TRIPS)
+  registerCustomer(input: CustomerInput!): Customer! @join__field(graph: USERS)
+  updateCustomer(id: UUID!, input: UpdateCustomerInput!): Customer! @join__field(graph: USERS)
+  deleteCustomer(id: UUID!): Boolean! @join__field(graph: USERS)
+  registerDriver(input: RegisterDriverInput!): Driver! @join__field(graph: USERS)
+  updateDriver(id: UUID!, input: UpdateDriverInput!): Driver! @join__field(graph: USERS)
+  changeDriverStatus(id: UUID!, status: DriverStatus!): Driver! @join__field(graph: USERS)
+  rateDriver(id: UUID!, rating: Int!): Driver! @join__field(graph: USERS)
+  deleteDriver(id: UUID!): Boolean! @join__field(graph: USERS)
+  registerVehicle(input: RegisterVehicleInput!): Vehicle! @join__field(graph: VEHICLES)
+  updateVehicle(id: UUID!, input: UpdateVehicleInput!): Vehicle! @join__field(graph: VEHICLES)
+  changeVehicleStatus(id: UUID!, status: VehicleStatus!): Vehicle! @join__field(graph: VEHICLES)
+  recordOdometerReading(id: UUID!, mileage: Long!): Vehicle! @join__field(graph: VEHICLES)
+  completeMaintenance(id: UUID!, date: Date): Vehicle! @join__field(graph: VEHICLES)
+  deleteVehicle(id: UUID!): Boolean! @join__field(graph: VEHICLES)
+}
+
+type Notification
+  @join__type(graph: NOTIFICATIONS, key: "id")
+{
+  id: UUID!
+  kind: NotificationKind!
+  severity: NotificationSeverity!
+  params: [NotificationParam!]!
+  link: String
+  read: Boolean!
+  createdAt: DateTime!
+}
+
+enum NotificationKind
+  @join__type(graph: NOTIFICATIONS)
+{
+  GEOFENCE_ENTERED @join__enumValue(graph: NOTIFICATIONS)
+  GEOFENCE_EXITED @join__enumValue(graph: NOTIFICATIONS)
+  SPEED_LIMIT_EXCEEDED @join__enumValue(graph: NOTIFICATIONS)
+  MAINTENANCE_SCHEDULED @join__enumValue(graph: NOTIFICATIONS)
+  MAINTENANCE_STARTED @join__enumValue(graph: NOTIFICATIONS)
+  MAINTENANCE_COMPLETED @join__enumValue(graph: NOTIFICATIONS)
+  MAINTENANCE_OVERDUE @join__enumValue(graph: NOTIFICATIONS)
+  TRIP_ASSIGNED @join__enumValue(graph: NOTIFICATIONS)
+  TRIP_RESCHEDULED @join__enumValue(graph: NOTIFICATIONS)
+  TRIP_STARTED @join__enumValue(graph: NOTIFICATIONS)
+  TRIP_COMPLETED @join__enumValue(graph: NOTIFICATIONS)
+  TRIP_CANCELLED @join__enumValue(graph: NOTIFICATIONS)
+  INVOICE_ISSUED @join__enumValue(graph: NOTIFICATIONS)
+  INVOICE_PAID @join__enumValue(graph: NOTIFICATIONS)
+  INVOICE_OVERDUE @join__enumValue(graph: NOTIFICATIONS)
+  LICENSE_EXPIRING @join__enumValue(graph: NOTIFICATIONS)
+}
+
+type NotificationPage
+  @join__type(graph: NOTIFICATIONS)
+{
+  items: [Notification!]!
+  totalCount: Int!
+  page: Int!
+  size: Int!
+  hasNext: Boolean!
+}
+
+type NotificationParam
+  @join__type(graph: NOTIFICATIONS)
+{
+  key: String!
+  value: String!
+}
+
+enum NotificationSeverity
+  @join__type(graph: NOTIFICATIONS)
+{
+  INFO @join__enumValue(graph: NOTIFICATIONS)
+  WARNING @join__enumValue(graph: NOTIFICATIONS)
+  CRITICAL @join__enumValue(graph: NOTIFICATIONS)
+}
+
+enum PaymentMethod
+  @join__type(graph: BILLING)
+{
+  CASH @join__enumValue(graph: BILLING)
+  CARD @join__enumValue(graph: BILLING)
+  BANK_TRANSFER @join__enumValue(graph: BILLING)
+}
+
+type Query
+  @join__type(graph: BILLING)
+  @join__type(graph: GEOFENCE)
+  @join__type(graph: MAINTENANCE)
+  @join__type(graph: NOTIFICATIONS)
+  @join__type(graph: TELEMETRY)
+  @join__type(graph: TRIPS)
+  @join__type(graph: USERS)
+  @join__type(graph: VEHICLES)
+{
+  invoice(id: UUID!): Invoice @join__field(graph: BILLING)
+  invoices(filter: InvoiceFilter, page: Int = 0, size: Int = 20): InvoicePage! @join__field(graph: BILLING)
+  billingStatistics: BillingStatistics! @join__field(graph: BILLING)
+  myInvoices(page: Int = 0, size: Int = 20): InvoicePage! @join__field(graph: BILLING)
+  expenses(filter: ExpenseFilter, page: Int = 0, size: Int = 20): ExpensePage! @join__field(graph: BILLING)
+  expenseStatistics: ExpenseStatistics! @join__field(graph: BILLING)
+  upcomingSalaries(days: Int = 30): [UpcomingSalary!]! @join__field(graph: BILLING)
+  geofences: [Geofence!]! @join__field(graph: GEOFENCE)
+  geofence(id: UUID!): Geofence @join__field(graph: GEOFENCE)
+  geofenceAlerts(filter: GeofenceAlertFilter, page: Int = 0, size: Int = 20): GeofenceAlertPage! @join__field(graph: GEOFENCE)
+  unacknowledgedAlertCount: Int! @join__field(graph: GEOFENCE)
+  workOrder(id: UUID!): WorkOrder @join__field(graph: MAINTENANCE)
+  workOrders(filter: WorkOrderFilter, page: Int = 0, size: Int = 20): WorkOrderPage! @join__field(graph: MAINTENANCE)
+  maintenanceStatistics: MaintenanceStatistics! @join__field(graph: MAINTENANCE)
+  myNotifications(unreadOnly: Boolean = false, page: Int = 0, size: Int = 20): NotificationPage! @join__field(graph: NOTIFICATIONS)
+  unreadNotificationCount: Int! @join__field(graph: NOTIFICATIONS)
+  vehiclePositions: [VehiclePosition!]! @join__field(graph: TELEMETRY)
+  trip(id: UUID!): Trip @join__field(graph: TRIPS)
+  trips(filter: TripFilter, page: Int = 0, size: Int = 20): TripPage! @join__field(graph: TRIPS)
+  tripStatistics: TripStatistics! @join__field(graph: TRIPS)
+  myTrips(page: Int = 0, size: Int = 20): TripPage! @join__field(graph: TRIPS)
+  tripQuote(input: TripRequestInput!): TripQuote! @join__field(graph: TRIPS)
+  customer(id: UUID!): Customer @join__field(graph: USERS)
+  customers(search: String, page: Int = 0, size: Int = 20): CustomerPage! @join__field(graph: USERS)
+  driver(id: UUID!): Driver @join__field(graph: USERS)
+  drivers(filter: DriverFilter, page: Int = 0, size: Int = 20): DriverPage! @join__field(graph: USERS)
+  driverStatistics: DriverStatistics! @join__field(graph: USERS)
+  myDriverProfile: Driver @join__field(graph: USERS)
+  vehicle(id: UUID!): Vehicle @join__field(graph: VEHICLES)
+  vehicleByLicensePlate(licensePlate: String!): Vehicle @join__field(graph: VEHICLES)
+  vehicleByVin(vin: String!): Vehicle @join__field(graph: VEHICLES)
+  vehicles(filter: VehicleFilter, page: Int = 0, size: Int = 20): VehiclePage! @join__field(graph: VEHICLES)
+  fleetStatistics: FleetStatistics! @join__field(graph: VEHICLES)
+}
+
+input RegisterDriverInput
+  @join__type(graph: USERS)
+{
+  accountId: UUID
+  firstName: String!
+  lastName: String!
+  email: String!
+  phoneNumber: String!
+  licenseNumber: String!
+  licenseExpiryDate: Date!
+  dateOfBirth: Date
+  hireDate: Date
+  emergencyContact: EmergencyContactInput
+  monthlySalary: BigDecimal
+}
+
+input RegisterVehicleInput
+  @join__type(graph: VEHICLES)
+{
+  make: String!
+  model: String!
+  year: Int!
+  licensePlate: String!
+  vin: String!
+  color: String!
+  mileage: Long!
+  fuelType: FuelType!
+  seatingCapacity: Int!
+  dailyRate: BigDecimal!
+  gpsEnabled: Boolean!
+  lastMaintenanceDate: Date!
+  maintenanceIntervalDays: Int!
+}
+
+input ScheduleTripInput
+  @join__type(graph: TRIPS)
+{
+  type: TripType!
+  vehicleId: UUID!
+  driverId: UUID
+  customerId: UUID
+  startLocation: LocationInput!
+  endLocation: LocationInput!
+  waypoints: [LocationInput!]
+  scheduledStart: DateTime!
+  scheduledEnd: DateTime!
+  estimatedDurationMinutes: Int
+  costs: TripCostsInput
+  notes: String
+  customerNotes: String
+  internalNotes: String
+}
+
+type TelemetryDevice
+  @join__type(graph: TELEMETRY)
+{
+  id: UUID!
+  label: String!
+  createdAt: DateTime!
+  lastSeenAt: DateTime
+  revoked: Boolean!
+}
+
+type TrackPoint
+  @join__type(graph: TELEMETRY)
+{
+  latitude: Float!
+  longitude: Float!
+  speedKph: Float!
+  recordedAt: DateTime!
+}
+
+type Trip
+  @join__type(graph: BILLING, key: "id")
+  @join__type(graph: TRIPS, key: "id")
+{
+  id: UUID!
+  invoice: Invoice @join__field(graph: BILLING)
+  type: TripType! @join__field(graph: TRIPS)
+  status: TripStatus! @join__field(graph: TRIPS)
+  vehicle: Vehicle! @join__field(graph: TRIPS)
+  driver: Driver @join__field(graph: TRIPS)
+  customer: Customer @join__field(graph: TRIPS)
+  startLocation: Location! @join__field(graph: TRIPS)
+  endLocation: Location! @join__field(graph: TRIPS)
+  waypoints: [Location!]! @join__field(graph: TRIPS)
+  scheduledStart: DateTime! @join__field(graph: TRIPS)
+  scheduledEnd: DateTime! @join__field(graph: TRIPS)
+  startedAt: DateTime @join__field(graph: TRIPS)
+  completedAt: DateTime @join__field(graph: TRIPS)
+  estimatedDurationMinutes: Int @join__field(graph: TRIPS)
+  actualDurationMinutes: Int @join__field(graph: TRIPS)
+  distanceKm: BigDecimal @join__field(graph: TRIPS)
+  costs: TripCosts! @join__field(graph: TRIPS)
+  notes: String @join__field(graph: TRIPS)
+  customerNotes: String @join__field(graph: TRIPS)
+  internalNotes: String @join__field(graph: TRIPS)
+  cancellationReason: String @join__field(graph: TRIPS)
+  createdAt: DateTime! @join__field(graph: TRIPS)
+  updatedAt: DateTime! @join__field(graph: TRIPS)
+}
+
+type TripCosts
+  @join__type(graph: TRIPS)
+{
+  baseRate: BigDecimal
+  fuelCost: BigDecimal
+  additionalFees: BigDecimal
+  totalCost: BigDecimal
+}
+
+input TripCostsInput
+  @join__type(graph: TRIPS)
+{
+  baseRate: BigDecimal
+  fuelCost: BigDecimal
+  additionalFees: BigDecimal
+}
+
+input TripFilter
+  @join__type(graph: TRIPS)
+{
+  status: TripStatus
+  type: TripType
+  vehicleId: UUID
+  driverId: UUID
+  customerId: UUID
+  scheduledFrom: DateTime
+  scheduledTo: DateTime
+}
+
+type TripPage
+  @join__type(graph: TRIPS)
+{
+  items: [Trip!]!
+  totalCount: Int!
+  page: Int!
+  size: Int!
+  hasNext: Boolean!
+}
+
+type TripQuote
+  @join__type(graph: TRIPS)
+{
+  distanceKm: BigDecimal!
+  durationMinutes: Int!
+  departAt: DateTime!
+  arriveAt: DateTime!
+  price: BigDecimal!
+  vehicleAvailable: Boolean!
+}
+
+input TripRequestInput
+  @join__type(graph: TRIPS)
+{
+  from: LocationInput!
+  to: LocationInput!
+  departAt: DateTime
+  routeDistanceKm: BigDecimal
+  routeDurationMinutes: Int
+  type: TripType
+  vehicleId: UUID
+  driverId: UUID
+  customerId: UUID
+  notes: String
+}
+
+type TripStatistics
+  @join__type(graph: TRIPS)
+{
+  total: Int!
+  scheduled: Int!
+  inProgress: Int!
+  completed: Int!
+  cancelled: Int!
+  totalDistanceKm: BigDecimal!
+  totalRevenue: BigDecimal!
+}
+
+enum TripStatus
+  @join__type(graph: TRIPS)
+{
+  SCHEDULED @join__enumValue(graph: TRIPS)
+  IN_PROGRESS @join__enumValue(graph: TRIPS)
+  COMPLETED @join__enumValue(graph: TRIPS)
+  CANCELLED @join__enumValue(graph: TRIPS)
+}
+
+enum TripType
+  @join__type(graph: TRIPS)
+{
+  RENTAL @join__enumValue(graph: TRIPS)
+  MAINTENANCE @join__enumValue(graph: TRIPS)
+  RELOCATION @join__enumValue(graph: TRIPS)
+  EMERGENCY @join__enumValue(graph: TRIPS)
+}
+
+type UpcomingSalary
+  @join__type(graph: BILLING)
+{
+  driver: Driver!
+  driverName: String
+  payday: Date!
+  amount: BigDecimal!
+}
+
+input UpdateCustomerInput
+  @join__type(graph: USERS)
+{
+  firstName: String
+  lastName: String
+  email: String
+  phoneNumber: String
+}
+
+input UpdateDriverInput
+  @join__type(graph: USERS)
+{
+  accountId: UUID
+  firstName: String
+  lastName: String
+  email: String
+  phoneNumber: String
+  licenseNumber: String
+  licenseExpiryDate: Date
+  dateOfBirth: Date
+  hireDate: Date
+  emergencyContact: EmergencyContactInput
+  monthlySalary: BigDecimal
+}
+
+input UpdateTripPlanInput
+  @join__type(graph: TRIPS)
+{
+  type: TripType
+  vehicleId: UUID
+  driverId: UUID
+  customerId: UUID
+  startLocation: LocationInput
+  endLocation: LocationInput
+  waypoints: [LocationInput!]
+  scheduledStart: DateTime
+  scheduledEnd: DateTime
+  estimatedDurationMinutes: Int
+  costs: TripCostsInput
+  notes: String
+  customerNotes: String
+  internalNotes: String
+}
+
+input UpdateVehicleInput
+  @join__type(graph: VEHICLES)
+{
+  make: String
+  model: String
+  year: Int
+  licensePlate: String
+  color: String
+  fuelType: FuelType
+  seatingCapacity: Int
+  dailyRate: BigDecimal
+  gpsEnabled: Boolean
+  maintenanceIntervalDays: Int
+}
+
+input UpdateWorkOrderInput
+  @join__type(graph: MAINTENANCE)
+{
+  kind: WorkOrderKind
+  priority: WorkOrderPriority
+  title: String
+  description: String
+  vendor: String
+  scheduledFor: Date
+}
+
+scalar UUID
+  @join__type(graph: BILLING)
+  @join__type(graph: GEOFENCE)
+  @join__type(graph: MAINTENANCE)
+  @join__type(graph: NOTIFICATIONS)
+  @join__type(graph: TELEMETRY)
+  @join__type(graph: TRIPS)
+  @join__type(graph: USERS)
+  @join__type(graph: VEHICLES)
+
+type Vehicle
+  @join__type(graph: BILLING, key: "id", resolvable: false)
+  @join__type(graph: GEOFENCE, key: "id")
+  @join__type(graph: MAINTENANCE, key: "id")
+  @join__type(graph: TELEMETRY, key: "id")
+  @join__type(graph: TRIPS, key: "id", resolvable: false)
+  @join__type(graph: VEHICLES, key: "id")
+{
+  id: UUID!
+  currentGeofences: [Geofence!]! @join__field(graph: GEOFENCE)
+  workOrders: [WorkOrder!]! @join__field(graph: MAINTENANCE)
+  lastPosition: VehiclePosition @join__field(graph: TELEMETRY)
+  track(from: DateTime!, to: DateTime!): [TrackPoint!]! @join__field(graph: TELEMETRY)
+  telemetryDevices: [TelemetryDevice!]! @join__field(graph: TELEMETRY)
+  make: String! @join__field(graph: VEHICLES)
+  model: String! @join__field(graph: VEHICLES)
+  year: Int! @join__field(graph: VEHICLES)
+  licensePlate: String! @join__field(graph: VEHICLES)
+  vin: String! @join__field(graph: VEHICLES)
+  color: String! @join__field(graph: VEHICLES)
+  mileage: Long! @join__field(graph: VEHICLES)
+  fuelType: FuelType! @join__field(graph: VEHICLES)
+  seatingCapacity: Int! @join__field(graph: VEHICLES)
+  dailyRate: BigDecimal! @join__field(graph: VEHICLES)
+  gpsEnabled: Boolean! @join__field(graph: VEHICLES)
+  status: VehicleStatus! @join__field(graph: VEHICLES)
+  lastMaintenanceDate: Date! @join__field(graph: VEHICLES)
+  maintenanceIntervalDays: Int! @join__field(graph: VEHICLES)
+  nextMaintenanceDate: Date! @join__field(graph: VEHICLES)
+  maintenanceDue: Boolean! @join__field(graph: VEHICLES)
+  currentTripId: UUID @join__field(graph: VEHICLES)
+  inUse: Boolean! @join__field(graph: VEHICLES)
+  createdAt: DateTime! @join__field(graph: VEHICLES)
+  updatedAt: DateTime! @join__field(graph: VEHICLES)
+}
+
+input VehicleFilter
+  @join__type(graph: VEHICLES)
+{
+  status: VehicleStatus
+  fuelType: FuelType
+  search: String
+  maintenanceDue: Boolean
+}
+
+type VehiclePage
+  @join__type(graph: VEHICLES)
+{
+  items: [Vehicle!]!
+  totalCount: Int!
+  page: Int!
+  size: Int!
+  hasNext: Boolean!
+}
+
+type VehiclePosition
+  @join__type(graph: TELEMETRY)
+{
+  vehicle: Vehicle!
+  latitude: Float!
+  longitude: Float!
+  speedKph: Float!
+  headingDegrees: Float
+  odometerKm: Float
+  fuelLevelPercent: Float
+  ignitionOn: Boolean
+  recordedAt: DateTime!
+  moving: Boolean!
+  stale: Boolean!
+}
+
+enum VehicleStatus
+  @join__type(graph: VEHICLES)
+{
+  ACTIVE @join__enumValue(graph: VEHICLES)
+  INACTIVE @join__enumValue(graph: VEHICLES)
+  MAINTENANCE @join__enumValue(graph: VEHICLES)
+}
+
+type WorkOrder
+  @join__type(graph: MAINTENANCE, key: "id")
+{
+  id: UUID!
+  vehicle: Vehicle!
+  kind: WorkOrderKind!
+  priority: WorkOrderPriority!
+  status: WorkOrderStatus!
+  title: String!
+  description: String
+  vendor: String
+  scheduledFor: Date!
+  overdue: Boolean!
+  autoGenerated: Boolean!
+  startedAt: DateTime
+  completedAt: DateTime
+  odometerKm: Long
+  partsCost: BigDecimal
+  laborCost: BigDecimal
+  totalCost: BigDecimal!
+  resolutionNotes: String
+  cancellationReason: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input WorkOrderFilter
+  @join__type(graph: MAINTENANCE)
+{
+  status: WorkOrderStatus
+  kind: WorkOrderKind
+  vehicleId: UUID
+  overdue: Boolean
+}
+
+input WorkOrderInput
+  @join__type(graph: MAINTENANCE)
+{
+  vehicleId: UUID!
+  kind: WorkOrderKind!
+  priority: WorkOrderPriority!
+  title: String!
+  description: String
+  vendor: String
+  scheduledFor: Date!
+}
+
+enum WorkOrderKind
+  @join__type(graph: MAINTENANCE)
+{
+  PREVENTIVE @join__enumValue(graph: MAINTENANCE)
+  REPAIR @join__enumValue(graph: MAINTENANCE)
+  INSPECTION @join__enumValue(graph: MAINTENANCE)
+}
+
+type WorkOrderPage
+  @join__type(graph: MAINTENANCE)
+{
+  items: [WorkOrder!]!
+  totalCount: Int!
+  page: Int!
+  size: Int!
+  hasNext: Boolean!
+}
+
+enum WorkOrderPriority
+  @join__type(graph: MAINTENANCE)
+{
+  LOW @join__enumValue(graph: MAINTENANCE)
+  MEDIUM @join__enumValue(graph: MAINTENANCE)
+  HIGH @join__enumValue(graph: MAINTENANCE)
+  CRITICAL @join__enumValue(graph: MAINTENANCE)
+}
+
+enum WorkOrderStatus
+  @join__type(graph: MAINTENANCE)
+{
+  SCHEDULED @join__enumValue(graph: MAINTENANCE)
+  IN_PROGRESS @join__enumValue(graph: MAINTENANCE)
+  COMPLETED @join__enumValue(graph: MAINTENANCE)
+  CANCELLED @join__enumValue(graph: MAINTENANCE)
+}

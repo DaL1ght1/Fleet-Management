@@ -1,0 +1,104 @@
+.table-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-surface);
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: var(--shadow-raised);
+
+  .table-scroll {
+    overflow-x: auto;
+  }
+
+  table {
+    inline-size: 100%;
+  }
+
+  th.mat-mdc-header-cell {
+    font-size: var(--text-sm);
+    white-space: nowrap;
+    background: var(--surface-sunken);
+  }
+
+  .mat-mdc-paginator {
+    border-block-start: 1px solid var(--line);
+  }
+}
+
+.clickable {
+  cursor: pointer;
+  transition: background var(--duration) var(--ease-out);
+
+  &:hover {
+    background: var(--surface-hover);
+  }
+}
+
+@media (max-width: 720px) {
+  .table-card {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    overflow: visible;
+
+    table.mat-mdc-table,
+    table.mat-mdc-table tbody {
+      display: grid;
+      gap: var(--space-3);
+      background: transparent;
+    }
+
+    thead {
+      display: none;
+    }
+
+    tr.mat-mdc-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3) var(--space-4);
+      block-size: auto;
+      padding: var(--space-4);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-surface);
+      background: var(--surface);
+      box-shadow: var(--shadow-raised);
+    }
+
+    td.mat-mdc-cell {
+      display: grid;
+      justify-items: start;
+      gap: 2px;
+      padding: 0;
+      border: 0;
+      min-inline-size: 0;
+      overflow-wrap: anywhere;
+
+      &::before {
+        content: attr(data-label);
+        font-size: var(--text-xs);
+        color: var(--ink-faint);
+        font-weight: 500;
+      }
+
+      &:first-child {
+        grid-column: 1 / -1;
+        font-size: var(--text-lg);
+        font-weight: 600;
+
+        &::before {
+          display: none;
+        }
+      }
+
+      &:not([data-label])::before,
+      &[data-label='']::before {
+        display: none;
+      }
+    }
+
+    .mat-mdc-paginator {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-surface);
+      background: var(--surface);
+    }
+  }
+}

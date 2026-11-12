@@ -1,0 +1,3 @@
+com.pcd.shared.security.SmartStreetSecurityAutoConfiguration
+com.pcd.shared.messaging.MessagingAutoConfiguration
+com.pcd.shared.graphql.GraphQlErrorAutoConfiguration

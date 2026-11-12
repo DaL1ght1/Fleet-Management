@@ -1,0 +1,87 @@
+<app-page-header
+  [title]="'geofences.alertsTitle' | translate"
+  [subtitle]="'geofences.alertsSubtitle' | translate"
+  backLink="/geofences"
+>
+  <button mat-stroked-button [disabled]="!total()" (click)="acknowledgeAll()">
+    <mat-icon>done_all</mat-icon>
+    {{ 'geofences.acknowledgeAll' | translate }}
+  </button>
+</app-page-header>
+
+<section class="filters">
+  <mat-slide-toggle [checked]="openOnly()" (change)="changeOpenOnly($event.checked)">
+    {{ 'geofences.openOnly' | translate }}
+  </mat-slide-toggle>
+</section>
+
+<app-load-state
+  [loading]="alerts.isLoading() && !alerts.hasValue()"
+  [failed]="alerts.status() === 'error'"
+  [empty]="alerts.hasValue() && rows().length === 0"
+  [emptyMessage]="'geofences.noAlerts' | translate"
+  (retry)="alerts.reload()"
+>
+  <div class="table-card">
+    <div class="table-scroll">
+      <table mat-table [dataSource]="rows()">
+        <ng-container matColumnDef="severity">
+          <th mat-header-cell *matHeaderCellDef>{{ 'geofences.fields.severity' | translate }}</th>
+          <td mat-cell [attr.data-label]="'geofences.fields.severity' | translate" *matCellDef="let alert">
+            <span [class]="'severity severity-' + alert.severity">{{ 'severity.' + alert.severity | translate }}</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="occurredAt">
+          <th mat-header-cell *matHeaderCellDef>{{ 'geofences.fields.occurredAt' | translate }}</th>
+          <td mat-cell [attr.data-label]="'geofences.fields.occurredAt' | translate" *matCellDef="let alert">
+            {{ alert.occurredAt | date: 'medium' }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="vehicle">
+          <th mat-header-cell *matHeaderCellDef>{{ 'trips.fields.vehicle' | translate }}</th>
+          <td mat-cell [attr.data-label]="'trips.fields.vehicle' | translate" *matCellDef="let alert">
+            <a [routerLink]="['/vehicles', alert.vehicle.id]">{{ alert.vehicle.licensePlate }}</a>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef>{{ 'geofences.fields.event' | translate }}</th>
+          <td mat-cell [attr.data-label]="'geofences.fields.event' | translate" *matCellDef="let alert">
+            {{ 'alertType.' + alert.type | translate }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="zone">
+          <th mat-header-cell *matHeaderCellDef>{{ 'geofences.fields.zone' | translate }}</th>
+          <td mat-cell [attr.data-label]="'geofences.fields.zone' | translate" *matCellDef="let alert">
+            {{ alert.geofenceName }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="speed">
+          <th mat-header-cell *matHeaderCellDef>{{ 'fleetMap.speed' | translate }}</th>
+          <td mat-cell [attr.data-label]="'fleetMap.speed' | translate" *matCellDef="let alert">
+            {{ alert.speedKph | number: '1.0-0' }} km/h
+            @if (alert.speedLimitKph) {
+              <span class="muted">/ {{ alert.speedLimitKph | number: '1.0-0' }}</span>
+            }
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let alert">
+            @if (!alert.acknowledged) {
+              <button mat-button (click)="acknowledge(alert.id)">{{ 'geofences.acknowledge' | translate }}</button>
+            }
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let alert; columns: columns"></tr>
+      </table>
+    </div>
+    <mat-paginator
+      [length]="total()"
+      [pageIndex]="page()"
+      [pageSize]="size()"
+      [pageSizeOptions]="[10, 20, 50]"
+      (page)="changePage($event)"
+    />
+  </div>
+</app-load-state>

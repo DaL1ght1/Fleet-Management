@@ -1,0 +1,254 @@
+name: smart-street
+
+x-service-defaults: &service-defaults
+  restart: unless-stopped
+  networks: [smartstreet]
+
+x-subgraph-environment: &subgraph-environment
+  DB_USERNAME: ${POSTGRES_USER:?POSTGRES_USER is required}
+  DB_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+  KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+  ROUTER_SECRET: ${ROUTER_SECRET:?ROUTER_SECRET is required}
+  GRAPHIQL_ENABLED: ${GRAPHIQL_ENABLED:-false}
+  JAVA_OPTS: -XX:MaxRAMPercentage=75
+
+x-subgraph-dependencies: &subgraph-dependencies
+  databases:
+    condition: service_completed_successfully
+  kafka:
+    condition: service_healthy
+
+services:
+  postgresql:
+    <<: *service-defaults
+    image: postgres:15.14
+    environment:
+      POSTGRES_DB: SmartS
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "127.0.0.1:5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d SmartS"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  databases:
+    image: postgres:15.14
+    networks: [smartstreet]
+    restart: "no"
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    environment:
+      PGHOST: postgresql
+      PGUSER: ${POSTGRES_USER:?POSTGRES_USER is required}
+      PGPASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      PGDATABASE: SmartS
+    volumes:
+      - ./deploy/postgres/create-databases.sql:/create-databases.sql:ro
+    command: ["psql", "-v", "ON_ERROR_STOP=1", "-f", "/create-databases.sql"]
+
+  mailpit:
+    <<: *service-defaults
+    image: axllent/mailpit:v1.27
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: "true"
+      MP_SMTP_AUTH_ALLOW_INSECURE: "true"
+    ports:
+      - "127.0.0.1:8025:8025"
+
+  zookeeper:
+    <<: *service-defaults
+    image: confluentinc/cp-zookeeper:7.5.1
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+  kafka:
+    <<: *service-defaults
+    image: confluentinc/cp-kafka:7.5.1
+    depends_on:
+      zookeeper:
+        condition: service_started
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,HOST:PLAINTEXT
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:9092,HOST://0.0.0.0:29092
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,HOST://localhost:29092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_LOG4J_LOGGERS: kafka=WARN,org.apache.kafka=WARN
+    ports:
+      - "127.0.0.1:29092:29092"
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9092 > /dev/null 2>&1"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+      start_period: 20s
+
+  keycloak:
+    <<: *service-defaults
+    image: quay.io/keycloak/keycloak:26.7.4
+    command: ["start-dev", "--import-realm"]
+    depends_on:
+      databases:
+        condition: service_completed_successfully
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgresql:5432/keycloak
+      KC_DB_USERNAME: ${POSTGRES_USER:?POSTGRES_USER is required}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      KC_HEALTH_ENABLED: "true"
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN:?KEYCLOAK_ADMIN is required}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?KEYCLOAK_ADMIN_PASSWORD is required}
+      IDENTITY_CLIENT_SECRET: ${IDENTITY_CLIENT_SECRET:?IDENTITY_CLIENT_SECRET is required}
+    ports:
+      - "127.0.0.1:8083:8080"
+    volumes:
+      - ./deploy/keycloak/import:/opt/keycloak/data/import:ro
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/9000 && printf 'GET /health/ready HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n' >&3 && grep -q UP <&3"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  identity-service:
+    <<: *service-defaults
+    build: { context: ./backend, args: { SERVICE: identity-service } }
+    image: smartstreet/identity-service:dev
+    environment:
+      <<: *subgraph-environment
+      DB_URL: jdbc:postgresql://postgresql:5432/identity
+      IDENTITY_CLIENT_SECRET: ${IDENTITY_CLIENT_SECRET:?IDENTITY_CLIENT_SECRET is required}
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:4200}
+      SECURE_COOKIES: ${SECURE_COOKIES:-false}
+    ports:
+      - "127.0.0.1:8086:8080"
+    depends_on:
+      <<: *subgraph-dependencies
+      keycloak:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+
+  api-gateway:
+    <<: *service-defaults
+    image: ghcr.io/apollographql/router:v2.6.0
+    command: ["--supergraph", "/etc/router/supergraph.graphql", "--config", "/etc/router/router.yaml"]
+    depends_on:
+      user-service:
+        condition: service_healthy
+      vehicles-service:
+        condition: service_healthy
+      trips-service:
+        condition: service_healthy
+      telemetry-service:
+        condition: service_healthy
+      geofence-service:
+        condition: service_healthy
+      maintenance-service:
+        condition: service_healthy
+      billing-service:
+        condition: service_healthy
+      notification-service:
+        condition: service_healthy
+    environment:
+      APOLLO_ROUTER_LOG: info
+      ROUTER_SECRET: ${ROUTER_SECRET:?ROUTER_SECRET is required}
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:4200}
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./backend/services/api-gateway/router.yaml:/etc/router/router.yaml:ro
+      - ./backend/services/api-gateway/supergraph.graphql:/etc/router/supergraph.graphql:ro
+      - ./backend/services/api-gateway/rhai:/etc/router/rhai:ro
+
+  vehicles-service:
+    <<: *service-defaults
+    build: { context: ./backend, args: { SERVICE: vehicles-service } }
+    image: smartstreet/vehicles-service:dev
+    environment:
+      <<: *subgraph-environment
+      DB_URL: jdbc:postgresql://postgresql:5432/vehicle
+    depends_on: *subgraph-dependencies
+
+  user-service:
+    <<: *service-defaults
+    build: { context: ./backend, args: { SERVICE: user-service } }
+    image: smartstreet/user-service:dev
+    environment:
+      <<: *subgraph-environment
+      DB_URL: jdbc:postgresql://postgresql:5432/users
+    depends_on: *subgraph-dependencies
+
+  trips-service:
+    <<: *service-defaults
+    build: { context: ./backend, args: { SERVICE: trips-service } }
+    image: smartstreet/trips-service:dev
+    environment:
+      <<: *subgraph-environment
+      DB_URL: jdbc:postgresql://postgresql:5432/trips
+    depends_on: *subgraph-dependencies
+
+  telemetry-service:
+    <<: *service-defaults
+    build: { context: ./backend, args: { SERVICE: telemetry-service } }
+    image: smartstreet/telemetry-service:dev
+    environment:
+      <<: *subgraph-environment
+      DB_URL: jdbc:postgresql://postgresql:5432/telemetry
+    ports:
+      - "8085:8080"
+    depends_on: *subgraph-dependencies
+
+  geofence-service:
+    <<: *service-defaults
+    build: { context: ./backend, args: { SERVICE: geofence-service } }
+    image: smartstreet/geofence-service:dev
+    environment:
+      <<: *subgraph-environment
+      DB_URL: jdbc:postgresql://postgresql:5432/geofence
+    depends_on: *subgraph-dependencies
+
+  maintenance-service:
+    <<: *service-defaults
+    build: { context: ./backend, args: { SERVICE: maintenance-service } }
+    image: smartstreet/maintenance-service:dev
+    environment:
+      <<: *subgraph-environment
+      DB_URL: jdbc:postgresql://postgresql:5432/maintenance
+    depends_on: *subgraph-dependencies
+
+  billing-service:
+    <<: *service-defaults
+    build: { context: ./backend, args: { SERVICE: billing-service } }
+    image: smartstreet/billing-service:dev
+    environment:
+      <<: *subgraph-environment
+      DB_URL: jdbc:postgresql://postgresql:5432/billing
+    depends_on: *subgraph-dependencies
+
+  notification-service:
+    <<: *service-defaults
+    build: { context: ./backend, args: { SERVICE: notification-service } }
+    image: smartstreet/notification-service:dev
+    environment:
+      <<: *subgraph-environment
+      DB_URL: jdbc:postgresql://postgresql:5432/notifications
+    depends_on: *subgraph-dependencies
+
+networks:
+  smartstreet:
+    driver: bridge
+
+volumes:
+  postgres:

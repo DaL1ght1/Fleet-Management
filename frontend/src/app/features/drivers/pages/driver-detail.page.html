@@ -1,0 +1,109 @@
+<app-load-state
+  [loading]="driver.isLoading() && !driver.hasValue()"
+  [failed]="driver.status() === 'error'"
+  [empty]="driver.hasValue() && !driver.value()"
+  [emptyMessage]="'drivers.notFound' | translate"
+  (retry)="driver.reload()"
+>
+  @if (driver.value(); as current) {
+    <app-page-header [title]="current.fullName" [subtitle]="current.email" backLink="/drivers">
+      <app-status-chip [status]="current.status" />
+      <ng-container *appHasRole="roles.MANAGEMENT">
+        <a mat-stroked-button [routerLink]="['edit']">
+          <mat-icon>edit</mat-icon>
+          {{ 'common.edit' | translate }}
+        </a>
+        <button mat-stroked-button [matMenuTriggerFor]="statusMenu">
+          <mat-icon>swap_horiz</mat-icon>
+          {{ 'drivers.changeStatus' | translate }}
+        </button>
+        <mat-menu #statusMenu="matMenu">
+          @for (option of statuses; track option) {
+            <button mat-menu-item [disabled]="option === current.status" (click)="changeStatus(option)">
+              {{ 'status.' + option | translate }}
+            </button>
+          }
+        </mat-menu>
+      </ng-container>
+      <button mat-stroked-button class="destructive" *appHasRole="roles.ADMIN" (click)="remove()">
+        <mat-icon>delete</mat-icon>
+        {{ 'common.delete' | translate }}
+      </button>
+    </app-page-header>
+
+    <div class="card-grid">
+      <section class="card">
+        <h2>{{ 'drivers.sections.contact' | translate }}</h2>
+        <dl class="facts">
+          <dt>{{ 'drivers.fields.phoneNumber' | translate }}</dt>
+          <dd>{{ current.phoneNumber }}</dd>
+          <dt>{{ 'drivers.fields.dateOfBirth' | translate }}</dt>
+          <dd>{{ (current.dateOfBirth | date: 'mediumDate') ?? '—' }}</dd>
+          <dt>{{ 'drivers.fields.hireDate' | translate }}</dt>
+          <dd>{{ current.hireDate | date: 'mediumDate' }}</dd>
+          <dt>{{ 'drivers.fields.monthlySalary' | translate }}</dt>
+          <dd>{{ current.monthlySalary | money }}</dd>
+          @if (current.nextPayday && current.monthlySalary) {
+            <dt>{{ 'drivers.fields.nextPayday' | translate }}</dt>
+            <dd>{{ current.nextPayday | date: 'mediumDate' }}</dd>
+          }
+          <dt>{{ 'drivers.fields.emergencyContact' | translate }}</dt>
+          <dd>
+            @if (current.emergencyContact; as contact) {
+              {{ contact.name }} · {{ contact.phoneNumber }}
+            } @else {
+              —
+            }
+          </dd>
+        </dl>
+      </section>
+
+      <section class="card">
+        <h2>{{ 'drivers.sections.license' | translate }}</h2>
+        <dl class="facts">
+          <dt>{{ 'drivers.fields.licenseNumber' | translate }}</dt>
+          <dd>{{ current.licenseNumber }}</dd>
+          <dt>{{ 'drivers.fields.licenseExpiry' | translate }}</dt>
+          <dd [class.error-text]="current.licenseExpired">
+            {{ current.licenseExpiryDate | date: 'mediumDate' }}
+            @if (current.licenseExpired) {
+              · {{ 'drivers.licenseExpired' | translate }}
+            }
+          </dd>
+        </dl>
+      </section>
+
+      <section class="card">
+        <h2>{{ 'drivers.sections.performance' | translate }}</h2>
+        <dl class="facts">
+          <dt>{{ 'drivers.fields.completedTrips' | translate }}</dt>
+          <dd>{{ current.completedTrips }}</dd>
+          <dt>{{ 'drivers.fields.rating' | translate }}</dt>
+          <dd>
+            @if (current.rating !== null) {
+              {{ current.rating | number: '1.1-1' }} ★ ({{ current.ratingCount }})
+            } @else {
+              {{ 'drivers.notRated' | translate }}
+            }
+          </dd>
+          <dt>{{ 'drivers.fields.currentTrip' | translate }}</dt>
+          <dd>
+            @if (current.currentTripId) {
+              <a [routerLink]="['/trips', current.currentTripId]">{{ 'drivers.viewTrip' | translate }}</a>
+            } @else {
+              {{ (current.available ? 'drivers.available' : 'drivers.unavailable') | translate }}
+            }
+          </dd>
+        </dl>
+        <div class="rating" *appHasRole="roles.MANAGEMENT">
+          <span>{{ 'drivers.rate' | translate }}</span>
+          @for (value of ratingScale; track value) {
+            <button mat-icon-button [matTooltip]="value + ' ★'" (click)="rate(value)">
+              <mat-icon>star</mat-icon>
+            </button>
+          }
+        </div>
+      </section>
+    </div>
+  }
+</app-load-state>

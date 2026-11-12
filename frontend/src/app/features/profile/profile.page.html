@@ -1,0 +1,176 @@
+<section class="hero">
+  <span class="avatar" aria-hidden="true">{{ initials() }}</span>
+  <div class="who">
+    <h1>{{ displayName() }}</h1>
+    <p>{{ account()?.email }}</p>
+    <div class="roles">
+      @for (role of accountRoles(); track role) {
+        <span class="role">{{ 'roles.' + role | translate }}</span>
+      }
+    </div>
+  </div>
+</section>
+
+<div class="layout">
+  <nav class="tabs" [attr.aria-label]="'profile.menu' | translate">
+    <button type="button" [attr.aria-current]="section() === 'details'" (click)="section.set('details')">
+      <mat-icon>person</mat-icon>
+      <span>{{ 'profile.sections.details' | translate }}</span>
+    </button>
+    <button type="button" [attr.aria-current]="section() === 'security'" (click)="section.set('security')">
+      <mat-icon>lock</mat-icon>
+      <span>{{ 'profile.sections.security' | translate }}</span>
+    </button>
+    <button
+      type="button"
+      *appHasRole="roles.MANAGEMENT"
+      [attr.aria-current]="section() === 'team'"
+      (click)="section.set('team')"
+    >
+      <mat-icon>group_add</mat-icon>
+      <span>{{ 'profile.sections.team' | translate }}</span>
+    </button>
+  </nav>
+
+  <div class="panels">
+    @switch (section()) {
+      @case ('details') {
+        <form class="card" [formGroup]="details" (ngSubmit)="saveDetails()">
+          <header class="panel-head">
+            <h2>{{ 'profile.sections.details' | translate }}</h2>
+            <p class="muted">{{ 'profile.detailsHint' | translate }}</p>
+          </header>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'auth.fields.firstName' | translate }}</mat-label>
+              <input matInput formControlName="firstName" autocomplete="given-name" />
+              <mat-error>{{ 'validation.required' | translate }}</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'auth.fields.lastName' | translate }}</mat-label>
+              <input matInput formControlName="lastName" autocomplete="family-name" />
+              <mat-error>{{ 'validation.required' | translate }}</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="span-all">
+              <mat-label>{{ 'auth.fields.email' | translate }}</mat-label>
+              <input matInput type="email" formControlName="email" autocomplete="email" />
+              <mat-icon matPrefix>mail</mat-icon>
+              <mat-error>{{ 'validation.email' | translate }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-actions">
+            <button mat-flat-button type="submit" [disabled]="details.pristine || saving() === 'details'">
+              <mat-icon>check</mat-icon>
+              {{ 'common.saveChanges' | translate }}
+            </button>
+          </div>
+        </form>
+
+        @if (driver.value(); as driverProfile) {
+          <section class="card driver">
+            <header class="panel-head">
+              <h2>{{ 'profile.driverProfile' | translate }}</h2>
+              <app-status-chip [status]="driverProfile.status" />
+            </header>
+            <dl class="facts">
+              <dt>{{ 'drivers.fields.licenseNumber' | translate }}</dt>
+              <dd>{{ driverProfile.licenseNumber }}</dd>
+              <dt>{{ 'drivers.fields.licenseExpiry' | translate }}</dt>
+              <dd [class.error-text]="driverProfile.licenseExpired">
+                {{ driverProfile.licenseExpiryDate | date: 'mediumDate' }}
+              </dd>
+              <dt>{{ 'drivers.fields.completedTrips' | translate }}</dt>
+              <dd>{{ driverProfile.completedTrips }}</dd>
+              <dt>{{ 'drivers.fields.rating' | translate }}</dt>
+              <dd>
+                {{
+                  driverProfile.rating !== null
+                    ? (driverProfile.rating | number: '1.1-1') + ' ★'
+                    : ('drivers.notRated' | translate)
+                }}
+              </dd>
+            </dl>
+            @if (driverProfile.currentTripId) {
+              <div class="form-actions">
+                <a mat-flat-button [routerLink]="['/trips', driverProfile.currentTripId]">
+                  <mat-icon>route</mat-icon>
+                  {{ 'profile.currentTrip' | translate }}
+                </a>
+              </div>
+            }
+          </section>
+        }
+      }
+      @case ('security') {
+        <form class="card" [formGroup]="security" #securityForm="ngForm" (ngSubmit)="changePassword(securityForm)">
+          <header class="panel-head">
+            <h2>{{ 'profile.changePassword' | translate }}</h2>
+            <p class="muted">{{ 'profile.securityHint' | translate }}</p>
+          </header>
+          <div class="password-fields">
+            <app-password-field
+              [control]="security.controls.currentPassword"
+              [label]="'profile.currentPassword' | translate"
+            />
+            <app-password-field
+              [control]="security.controls.newPassword"
+              [label]="'auth.fields.newPassword' | translate"
+              autocomplete="new-password"
+              [showStrength]="true"
+            />
+            <app-password-field
+              [control]="security.controls.confirmation"
+              [label]="'auth.fields.confirmPassword' | translate"
+              autocomplete="new-password"
+            />
+          </div>
+          <div class="form-actions">
+            <button mat-flat-button type="submit" [disabled]="saving() === 'security'">
+              <mat-icon>lock_reset</mat-icon>
+              {{ 'profile.changePassword' | translate }}
+            </button>
+          </div>
+        </form>
+      }
+      @case ('team') {
+        <form class="card" [formGroup]="invitation" #inviteForm="ngForm" (ngSubmit)="invite(inviteForm)">
+          <header class="panel-head">
+            <h2>{{ 'profile.inviteTitle' | translate }}</h2>
+            <p class="muted">{{ 'profile.inviteHint' | translate }}</p>
+          </header>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'auth.fields.firstName' | translate }}</mat-label>
+              <input matInput formControlName="firstName" />
+              <mat-error>{{ 'validation.required' | translate }}</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'auth.fields.lastName' | translate }}</mat-label>
+              <input matInput formControlName="lastName" />
+              <mat-error>{{ 'validation.required' | translate }}</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'auth.fields.email' | translate }}</mat-label>
+              <input matInput type="email" formControlName="email" />
+              <mat-error>{{ 'validation.email' | translate }}</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'profile.role' | translate }}</mat-label>
+              <mat-select formControlName="role">
+                @for (role of invitableRoles(); track role) {
+                  <mat-option [value]="role">{{ 'roles.' + role | translate }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="form-actions">
+            <button mat-flat-button type="submit" [disabled]="saving() === 'team'">
+              <mat-icon>send</mat-icon>
+              {{ 'profile.sendInvitation' | translate }}
+            </button>
+          </div>
+        </form>
+      }
+    }
+  </div>
+</div>

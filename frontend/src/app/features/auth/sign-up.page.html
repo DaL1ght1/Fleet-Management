@@ -1,0 +1,57 @@
+<header class="intro">
+  <h1>{{ 'auth.signUp.title' | translate }}</h1>
+  <p>{{ 'auth.signUp.subtitle' | translate }}</p>
+</header>
+
+@if (error(); as failure) {
+  <p class="notice error" role="alert">
+    <mat-icon>error</mat-icon>
+    <span>{{ failure.key | translate: { detail: failure.detail } }}</span>
+  </p>
+}
+
+<form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <div class="two-columns">
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'auth.fields.firstName' | translate }}</mat-label>
+      <input matInput formControlName="firstName" autocomplete="given-name" />
+      <mat-error>{{ 'validation.required' | translate }}</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'auth.fields.lastName' | translate }}</mat-label>
+      <input matInput formControlName="lastName" autocomplete="family-name" />
+      <mat-error>{{ 'validation.required' | translate }}</mat-error>
+    </mat-form-field>
+  </div>
+
+  <mat-form-field appearance="outline">
+    <mat-label>{{ 'auth.fields.email' | translate }}</mat-label>
+    <input matInput type="email" formControlName="email" autocomplete="email" inputmode="email" />
+    <mat-icon matPrefix>mail</mat-icon>
+    @if (form.controls.email.hasError('email')) {
+      <mat-error>{{ 'validation.email' | translate }}</mat-error>
+    } @else {
+      <mat-error>{{ 'validation.required' | translate }}</mat-error>
+    }
+  </mat-form-field>
+
+  <app-password-field
+    [control]="form.controls.password"
+    [label]="'auth.fields.newPassword' | translate"
+    autocomplete="new-password"
+    [showStrength]="true"
+  />
+
+  <button mat-flat-button class="submit" type="submit" [disabled]="busy()">
+    @if (busy()) {
+      <mat-spinner diameter="20" />
+    } @else {
+      {{ 'auth.signUp.submit' | translate }}
+    }
+  </button>
+</form>
+
+<p class="switch">
+  {{ 'auth.signUp.haveAccount' | translate }}
+  <a routerLink="/sign-in">{{ 'auth.signUp.signIn' | translate }}</a>
+</p>

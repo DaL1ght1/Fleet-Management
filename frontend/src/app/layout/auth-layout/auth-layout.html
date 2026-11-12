@@ -1,0 +1,40 @@
+<div class="auth">
+  <aside class="road-panel">
+    <div class="brand">
+      <app-brand-mark [size]="44" />
+      <span>SmartStreet</span>
+    </div>
+
+    <svg class="road" viewBox="0 0 600 720" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <path id="route" class="asphalt" d="M-40 640 C 160 640, 140 430, 300 400 S 470 160, 660 120" />
+      <path class="lane" d="M-40 640 C 160 640, 140 430, 300 400 S 470 160, 660 120" />
+      <path class="branch" d="M300 400 C 360 470, 470 520, 660 520" />
+      <circle class="stop" cx="300" cy="400" r="9" />
+      <circle class="stop" cx="520" cy="520" r="7" />
+      <circle class="stop" cx="120" cy="612" r="7" />
+      <g class="vehicle">
+        <circle r="13" />
+        <circle r="5" class="vehicle-core" />
+      </g>
+    </svg>
+
+    <div class="pitch">
+      <h1>{{ 'auth.hero.title' | translate }}</h1>
+      <p>{{ 'auth.hero.body' | translate }}</p>
+    </div>
+  </aside>
+
+  <main class="form-panel">
+    <header class="form-panel-header">
+      <div class="compact-brand">
+        <app-brand-mark [size]="36" />
+        <span>SmartStreet</span>
+      </div>
+      <app-preference-controls />
+    </header>
+    <div class="form-slot">
+      <router-outlet />
+    </div>
+    <footer class="muted">© SmartStreet</footer>
+  </main>
+</div>

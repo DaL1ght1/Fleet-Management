@@ -1,0 +1,68 @@
+<app-load-state
+  [loading]="invoice.isLoading() && !invoice.hasValue()"
+  [failed]="invoice.status() === 'error'"
+  [empty]="invoice.hasValue() && !invoice.value()"
+  [emptyMessage]="'billing.notFound' | translate"
+  (retry)="invoice.reload()"
+>
+  @if (invoice.value(); as current) {
+    <div class="no-print">
+      <app-page-header [title]="current.number" [subtitle]="'billing.detailSubtitle' | translate" backLink="/billing" />
+    </div>
+
+    <div class="layout">
+      <app-invoice-document [invoice]="current" [billTo]="current.customer" />
+
+      <aside class="actions card no-print">
+        @switch (current.status) {
+          @case ('DRAFT') {
+            <h2>{{ 'billing.issueTitle' | translate }}</h2>
+            <p class="muted">{{ 'billing.issueHint' | translate }}</p>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>{{ 'billing.paymentTerms' | translate }}</mat-label>
+              <mat-select [ngModel]="paymentTerm()" (ngModelChange)="paymentTerm.set($event)">
+                @for (days of terms; track days) {
+                  <mat-option [value]="days">{{ 'billing.termDays' | translate: { days } }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            <button mat-flat-button (click)="issue()" [disabled]="busy()">
+              <mat-icon>send</mat-icon>
+              {{ 'billing.issue' | translate }}
+            </button>
+          }
+          @case ('ISSUED') {
+            <h2>{{ 'billing.collectTitle' | translate }}</h2>
+            <p class="muted">{{ 'billing.collectHint' | translate }}</p>
+            <button mat-flat-button [matMenuTriggerFor]="methodMenu" [disabled]="busy()">
+              <mat-icon>paid</mat-icon>
+              {{ 'billing.markPaid' | translate }}
+            </button>
+            <mat-menu #methodMenu="matMenu">
+              @for (method of methods; track method) {
+                <button mat-menu-item (click)="markPaid(method)">{{ 'paymentMethod.' + method | translate }}</button>
+              }
+            </mat-menu>
+          }
+          @default {
+            <h2>{{ 'invoiceStatus.' + current.status | translate }}</h2>
+          }
+        }
+        <button mat-stroked-button (click)="print()">
+          <mat-icon>print</mat-icon>
+          {{ 'billing.print' | translate }}
+        </button>
+        <a mat-stroked-button [routerLink]="['/trips', current.trip.id]">
+          <mat-icon>route</mat-icon>
+          {{ 'billing.viewTrip' | translate }}
+        </a>
+        @if (current.status === 'DRAFT' || current.status === 'ISSUED') {
+          <button mat-button class="destructive" (click)="voidInvoice()" [disabled]="busy()">
+            <mat-icon>block</mat-icon>
+            {{ 'billing.void' | translate }}
+          </button>
+        }
+      </aside>
+    </div>
+  }
+</app-load-state>

@@ -1,0 +1,26 @@
+query MyTrips($page: Int, $size: Int) {
+  myTrips(page: $page, size: $size) {
+    items {
+      ...TripSummary
+      distanceKm
+      startedAt
+      completedAt
+    }
+    totalCount
+    page
+    size
+    hasNext
+  }
+}
+
+query MyInvoices($page: Int, $size: Int) {
+  myInvoices(page: $page, size: $size) {
+    items {
+      ...InvoiceDocument
+    }
+    totalCount
+    page
+    size
+    hasNext
+  }
+}

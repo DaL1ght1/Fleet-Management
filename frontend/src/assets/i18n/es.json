@@ -1,0 +1,846 @@
+{
+  "navigation": {
+    "geofences": "Geocercas",
+    "fleetMap": "Mapa en vivo",
+    "dashboard": "Panel",
+    "trips": "Viajes",
+    "vehicles": "Vehículos",
+    "drivers": "Conductores",
+    "customers": "Clientes",
+    "groups": {
+      "operations": "Operaciones",
+      "fleet": "Flota",
+      "business": "Negocio",
+      "mine": "Mi espacio"
+    },
+    "maintenance": "Mantenimiento",
+    "billing": "Facturación",
+    "myTrips": "Mis viajes",
+    "myInvoices": "Mis facturas",
+    "notifications": "Notificaciones",
+    "bookTrip": "Reservar un viaje"
+  },
+  "dashboard": {
+    "welcome": "Qué bueno verte, {{name}}",
+    "utilization": "El {{value}} % de los vehículos activos está en viaje",
+    "scheduledTrips": "{{count}} programados",
+    "activeTrips": "Viajes en curso",
+    "revenue": "Ingresos",
+    "distance": "{{value}} km recorridos",
+    "availableDrivers": "Conductores disponibles",
+    "upcomingTrips": "Próximos viajes",
+    "viewAll": "Ver todo",
+    "noUpcomingTrips": "No hay viajes programados.",
+    "openMap": "Abrir mapa en vivo",
+    "scheduleTrip": "Programar un viaje",
+    "onTheRoad": "{{inUse}} de {{total}} vehículos en ruta",
+    "segments": {
+      "inUse": "En viaje",
+      "available": "Disponibles",
+      "maintenance": "En mantenimiento",
+      "inactive": "Inactivos"
+    },
+    "attention": {
+      "title": "Requiere atención",
+      "clear": "Nada requiere tu atención ahora.",
+      "alerts": "Alertas de zona abiertas",
+      "overdueMaintenance": "Órdenes de trabajo atrasadas",
+      "maintenanceDue": "Vehículos con servicio pendiente",
+      "overdueInvoices": "Facturas vencidas",
+      "draftInvoices": "Facturas pendientes de emitir",
+      "licenses": "Licencias que vencen en 30 días"
+    },
+    "driversOnTrip": "{{count}} en viaje"
+  },
+  "geofenceKind": {
+    "DEPOT": "Depósito",
+    "SERVICE_AREA": "Zona de servicio",
+    "RESTRICTED": "Zona restringida"
+  },
+  "geofenceKindHint": {
+    "DEPOT": "Las entradas y salidas se registran a título informativo.",
+    "SERVICE_AREA": "Salir de esta zona genera una alerta crítica.",
+    "RESTRICTED": "Entrar en esta zona genera una alerta crítica."
+  },
+  "severity": {
+    "INFO": "Info",
+    "WARNING": "Aviso",
+    "CRITICAL": "Crítico"
+  },
+  "alertType": {
+    "VEHICLE_ENTERED": "Entrada en la zona",
+    "VEHICLE_EXITED": "Salida de la zona",
+    "SPEED_LIMIT_EXCEEDED": "Límite de velocidad superado"
+  },
+  "geofences": {
+    "title": "Geocercas",
+    "subtitle": "Depósitos, zonas de servicio y zonas restringidas",
+    "create": "Nueva zona",
+    "createTitle": "Crear una zona",
+    "editTitle": "Editar zona",
+    "alerts": "Alertas",
+    "alertsTitle": "Alertas de zona",
+    "alertsSubtitle": "Entradas, salidas y excesos de velocidad detectados en vivo",
+    "empty": "Aún no hay zonas definidas.",
+    "active": "Activa",
+    "vehiclesInside": "{{count}} vehículos dentro",
+    "polygon": "Polígono",
+    "circle": "Círculo",
+    "polygonHint": "Haz clic en el mapa para añadir vértices ({{count}} por ahora, al menos 3).",
+    "circleHint": "Haz clic en el mapa para situar el centro.",
+    "undo": "Deshacer",
+    "clear": "Borrar",
+    "shapeMissing": "Dibuja la zona en el mapa antes de guardar.",
+    "created": "Zona creada",
+    "updated": "Zona actualizada",
+    "deleted": "Zona eliminada",
+    "deleteTitle": "¿Eliminar esta zona?",
+    "deleteMessage": "La vigilancia se detiene de inmediato. Se conservan las alertas anteriores.",
+    "acknowledge": "Confirmar",
+    "acknowledgeAll": "Confirmar todas",
+    "acknowledged": "Alertas confirmadas",
+    "openOnly": "Solo alertas abiertas",
+    "noAlerts": "No hay alertas.",
+    "fields": {
+      "name": "Nombre",
+      "kind": "Tipo",
+      "speedLimit": "Límite de velocidad",
+      "radius": "Radio",
+      "severity": "Gravedad",
+      "occurredAt": "Hora",
+      "event": "Evento",
+      "zone": "Zona"
+    }
+  },
+  "common": {
+    "done": "Hecho",
+    "all": "Todos",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "dismiss": "Cerrar",
+    "edit": "Editar",
+    "loadFailed": "No se pudieron cargar los datos.",
+    "no": "No",
+    "yes": "Sí",
+    "remove": "Quitar",
+    "retry": "Reintentar",
+    "save": "Guardar",
+    "saveChanges": "Guardar cambios",
+    "showMore": "Mostrar más",
+    "date": "Fecha",
+    "time": "Hora",
+    "clear": "Borrar"
+  },
+  "fleetMap": {
+    "title": "Mapa de la flota en vivo",
+    "subtitle": "Las posiciones se actualizan cada 10 segundos",
+    "refresh": "Actualizar",
+    "moving": "{{count}} en movimiento",
+    "idle": "{{count}} detenidos",
+    "stale": "{{count}} sin señal",
+    "speed": "Velocidad",
+    "fuel": "Nivel de combustible",
+    "odometer": "Cuentakilómetros",
+    "lastUpdate": "Última actualización",
+    "openVehicle": "Abrir vehículo",
+    "selectVehicle": "Selecciona un vehículo en el mapa.",
+    "noPositions": "Ningún vehículo ha enviado su posición todavía."
+  },
+  "telemetry": {
+    "title": "Seguimiento en vivo",
+    "noData": "Aún no se ha recibido ninguna posición de este vehículo.",
+    "pointsToday": "Posiciones en las últimas 24 h",
+    "devices": "Dispositivos de seguimiento",
+    "register": "Añadir dispositivo",
+    "registerTitle": "Añadir un dispositivo de seguimiento",
+    "deviceLabel": "Nombre del dispositivo",
+    "registered": "Dispositivo añadido",
+    "keyTitle": "Clave del dispositivo",
+    "keyWarning": "Configura el dispositivo con esta clave ahora. Solo se muestra una vez.",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "revoke": "Revocar",
+    "revokeTitle": "¿Revocar este dispositivo?",
+    "revokeMessage": "El dispositivo ya no podrá enviar posiciones.",
+    "revoked": "Dispositivo revocado",
+    "revokedState": "revocado",
+    "lastSeen": "visto por última vez",
+    "neverSeen": "nunca conectado",
+    "noDevices": "No hay ningún dispositivo instalado."
+  },
+  "app": {
+    "menu": "Menú",
+    "toggleTheme": "Cambiar tema",
+    "language": "Idioma"
+  },
+  "status": {
+    "ACTIVE": "Activo",
+    "INACTIVE": "Inactivo",
+    "MAINTENANCE": "Mantenimiento",
+    "SUSPENDED": "Suspendido",
+    "ON_LEAVE": "De permiso",
+    "SCHEDULED": "Programado",
+    "IN_PROGRESS": "En curso",
+    "COMPLETED": "Completado",
+    "CANCELLED": "Cancelado",
+    "OVERDUE": "Atrasado"
+  },
+  "fuel": {
+    "GASOLINE": "Gasolina",
+    "DIESEL": "Diésel",
+    "ELECTRIC": "Eléctrico",
+    "HYBRID": "Híbrido"
+  },
+  "tripType": {
+    "RENTAL": "Alquiler",
+    "MAINTENANCE": "Mantenimiento",
+    "RELOCATION": "Traslado",
+    "EMERGENCY": "Emergencia"
+  },
+  "roles": {
+    "ADMIN": "Administrador",
+    "MANAGER": "Gestor de flota",
+    "DRIVER": "Conductor",
+    "USER": "Cliente"
+  },
+  "errors": {
+    "network": "Error de red. Comprueba tu conexión e inténtalo de nuevo.",
+    "sessionExpired": "Tu sesión ha caducado. Inicia sesión de nuevo.",
+    "forbidden": "No tienes permiso para realizar esta acción.",
+    "rateLimited": "Demasiadas solicitudes. Espera un momento.",
+    "unavailable": "El servicio no está disponible temporalmente.",
+    "unexpected": "Se produjo un error inesperado."
+  },
+  "validation": {
+    "required": "Este campo es obligatorio",
+    "email": "Introduce un correo válido",
+    "phone": "Introduce un teléfono válido",
+    "uuid": "Introduce un identificador de cuenta válido",
+    "vin": "Un VIN tiene 17 caracteres sin I, O ni Q",
+    "nonNegative": "Debe ser cero o más",
+    "positive": "Debe ser mayor que cero",
+    "range": "Debe estar entre {{min}} y {{max}}",
+    "yearRange": "Debe estar entre 1950 y {{max}}",
+    "scheduleOrder": "El fin debe ser posterior al inicio",
+    "locations": "Elige un origen y un destino",
+    "passwordLength": "Usa entre 8 y 128 caracteres",
+    "passwordMix": "Incluye al menos una letra y un número",
+    "passwordMismatch": "Las contraseñas no coinciden"
+  },
+  "map": {
+    "search": "Buscar una dirección",
+    "find": "Buscar",
+    "clickToPick": "Busca o haz clic en el mapa para elegir un lugar"
+  },
+  "vehicles": {
+    "title": "Vehículos",
+    "subtitle": "Registro, estado y mantenimiento de la flota",
+    "register": "Registrar vehículo",
+    "registerTitle": "Registrar un vehículo",
+    "editTitle": "Editar vehículo",
+    "searchPlaceholder": "Matrícula, VIN, marca o modelo",
+    "maintenanceDueOnly": "Solo mantenimiento pendiente",
+    "empty": "Ningún vehículo coincide con estos filtros.",
+    "notFound": "Este vehículo no existe.",
+    "onTrip": "En viaje",
+    "available": "Disponible",
+    "viewTrip": "Ver el viaje actual",
+    "changeStatus": "Cambiar estado",
+    "newOdometerReading": "Nueva lectura del cuentakilómetros",
+    "record": "Registrar",
+    "vinHint": "17 caracteres, en el permiso de circulación",
+    "days": "{{count}} días",
+    "daysSuffix": "días",
+    "registered": "Vehículo registrado",
+    "updated": "Vehículo actualizado",
+    "statusChanged": "Estado cambiado",
+    "odometerRecorded": "Lectura registrada",
+    "deleted": "Vehículo eliminado",
+    "deleteTitle": "¿Eliminar este vehículo?",
+    "deleteMessage": "El vehículo se retirará de la flota. No se puede deshacer.",
+    "sections": {
+      "identity": "Identidad",
+      "usage": "Uso",
+      "maintenance": "Mantenimiento"
+    },
+    "fields": {
+      "vehicle": "Vehículo",
+      "make": "Marca",
+      "model": "Modelo",
+      "year": "Año",
+      "licensePlate": "Matrícula",
+      "vin": "VIN",
+      "color": "Color",
+      "status": "Estado",
+      "fuelType": "Combustible",
+      "mileage": "Kilometraje",
+      "dailyRate": "Tarifa diaria",
+      "seatingCapacity": "Plazas",
+      "gpsEnabled": "Rastreador GPS instalado",
+      "currentTrip": "Viaje actual",
+      "lastMaintenance": "Último mantenimiento",
+      "maintenanceInterval": "Intervalo de mantenimiento",
+      "nextMaintenance": "Próximo mantenimiento"
+    }
+  },
+  "drivers": {
+    "title": "Conductores",
+    "subtitle": "Licencias, disponibilidad y rendimiento",
+    "register": "Añadir conductor",
+    "registerTitle": "Añadir un conductor",
+    "editTitle": "Editar conductor",
+    "searchPlaceholder": "Nombre, correo o licencia",
+    "availableOnly": "Solo disponibles",
+    "empty": "Ningún conductor coincide con estos filtros.",
+    "notFound": "Este conductor no existe.",
+    "expires": "Caduca",
+    "licenseExpired": "Caducada",
+    "notRated": "Sin valoraciones",
+    "available": "Disponible",
+    "unavailable": "No disponible",
+    "viewTrip": "Ver el viaje actual",
+    "changeStatus": "Cambiar estado",
+    "rate": "Valorar el último viaje",
+    "accountHint": "Id de usuario de Keycloak, vincula el inicio de sesión con este perfil",
+    "registered": "Conductor añadido",
+    "updated": "Conductor actualizado",
+    "statusChanged": "Estado cambiado",
+    "rated": "Valoración guardada",
+    "deleted": "Conductor eliminado",
+    "deleteTitle": "¿Eliminar este conductor?",
+    "deleteMessage": "Se eliminará el perfil. No se puede deshacer.",
+    "sections": {
+      "contact": "Contacto",
+      "license": "Licencia",
+      "performance": "Rendimiento"
+    },
+    "fields": {
+      "name": "Nombre",
+      "firstName": "Nombre",
+      "lastName": "Apellidos",
+      "email": "Correo",
+      "phoneNumber": "Teléfono",
+      "contact": "Contacto",
+      "license": "Licencia",
+      "licenseNumber": "Número de licencia",
+      "licenseExpiry": "Caducidad de la licencia",
+      "dateOfBirth": "Fecha de nacimiento",
+      "hireDate": "Fecha de contratación",
+      "emergencyContact": "Contacto de emergencia",
+      "emergencyContactName": "Nombre del contacto de emergencia",
+      "emergencyContactPhone": "Teléfono del contacto de emergencia",
+      "accountId": "Cuenta de acceso",
+      "status": "Estado",
+      "availability": "Disponible",
+      "rating": "Valoración",
+      "completedTrips": "Viajes completados",
+      "currentTrip": "Viaje actual",
+      "monthlySalary": "Salario mensual",
+      "nextPayday": "Próximo pago"
+    },
+    "salaryHint": "Se paga cada 30 días desde la contratación"
+  },
+  "customers": {
+    "title": "Clientes",
+    "subtitle": "Personas y empresas que alquilan tus vehículos",
+    "register": "Añadir cliente",
+    "registerTitle": "Añadir un cliente",
+    "editTitle": "Editar cliente",
+    "searchPlaceholder": "Nombre o correo",
+    "empty": "No se encontraron clientes.",
+    "registered": "Cliente añadido",
+    "updated": "Cliente actualizado",
+    "deleted": "Cliente eliminado",
+    "deleteTitle": "¿Eliminar este cliente?",
+    "deleteMessage": "Se eliminará el cliente. No se puede deshacer.",
+    "fields": {
+      "name": "Nombre",
+      "firstName": "Nombre",
+      "lastName": "Apellidos",
+      "email": "Correo",
+      "phoneNumber": "Teléfono",
+      "since": "Cliente desde"
+    }
+  },
+  "trips": {
+    "title": "Viajes",
+    "subtitle": "Planificación, ejecución y costes",
+    "schedule": "Programar viaje",
+    "scheduleTitle": "Programar un viaje",
+    "rescheduleTitle": "Reprogramar viaje",
+    "reschedule": "Reprogramar",
+    "from": "Desde",
+    "to": "Hasta",
+    "empty": "Ningún viaje coincide con estos filtros.",
+    "notFound": "Este viaje no existe.",
+    "unassigned": "Sin conductor",
+    "onTrip": "en viaje",
+    "busy": "ocupado",
+    "minutes": "min",
+    "addStop": "Añadir parada",
+    "start": "Iniciar viaje",
+    "complete": "Finalizar viaje",
+    "completeTitle": "Finalizar este viaje",
+    "cancelTrip": "Cancelar viaje",
+    "cancelTitle": "¿Cancelar este viaje?",
+    "cancellationReason": "Motivo de cancelación",
+    "scheduled": "Viaje programado",
+    "rescheduled": "Viaje reprogramado",
+    "started": "Viaje iniciado",
+    "completed": "Viaje finalizado",
+    "cancelled": "Viaje cancelado",
+    "deleted": "Viaje eliminado",
+    "deleteTitle": "¿Eliminar este viaje?",
+    "deleteMessage": "El viaje se eliminará del historial. No se puede deshacer.",
+    "sections": {
+      "route": "Ruta",
+      "assignment": "Asignación",
+      "timing": "Horario",
+      "costs": "Costes",
+      "notes": "Notas"
+    },
+    "fields": {
+      "type": "Tipo",
+      "status": "Estado",
+      "schedule": "Programado",
+      "route": "Ruta",
+      "vehicle": "Vehículo",
+      "driver": "Conductor",
+      "start": "Origen",
+      "end": "Destino",
+      "stop": "Parada {{index}}",
+      "scheduledStart": "Inicio previsto",
+      "scheduledEnd": "Fin prevista",
+      "startedAt": "Iniciado a las",
+      "completedAt": "Finalizado a las",
+      "estimatedDuration": "Duración estimada",
+      "duration": "Duración",
+      "distance": "Distancia",
+      "baseRate": "Tarifa base",
+      "fuelCost": "Coste de combustible",
+      "additionalFees": "Cargos adicionales",
+      "totalCost": "Total",
+      "notes": "Notas",
+      "customerNotes": "Notas para el cliente",
+      "internalNotes": "Notas internas",
+      "customer": "Cliente"
+    }
+  },
+  "profile": {
+    "driverProfile": "Perfil de conductor",
+    "currentTrip": "Abrir el viaje actual",
+    "logout": "Cerrar sesión",
+    "menu": "Ajustes de la cuenta",
+    "sections": {
+      "details": "Datos personales",
+      "security": "Contraseña",
+      "team": "Invitar al equipo"
+    },
+    "detailsHint": "Tu nombre aparece en viajes y facturas. Cambiar el correo cambia cómo inicias sesión.",
+    "saved": "Perfil guardado",
+    "changePassword": "Cambiar contraseña",
+    "securityHint": "Cambiarla cierra tu sesión en otros dispositivos.",
+    "currentPassword": "Contraseña actual",
+    "passwordChanged": "Contraseña cambiada",
+    "errors": {
+      "wrongPassword": "La contraseña actual no es correcta."
+    },
+    "inviteTitle": "Invitar a un compañero",
+    "inviteHint": "Recibirá un correo con un enlace para elegir su contraseña, válido 3 días.",
+    "role": "Rol",
+    "sendInvitation": "Enviar invitación",
+    "invitationSent": "Invitación enviada"
+  },
+  "auth": {
+    "hero": {
+      "title": "Cada vehículo, viaje y factura en una sola ruta.",
+      "body": "Sigue la flota en vivo, planifica viajes y mantenimiento, y factura a tus clientes sin cambiar de herramienta."
+    },
+    "fields": {
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "newPassword": "Nueva contraseña",
+      "confirmPassword": "Confirma la contraseña",
+      "firstName": "Nombre",
+      "lastName": "Apellido"
+    },
+    "showPassword": "Mostrar contraseña",
+    "hidePassword": "Ocultar contraseña",
+    "passwordHint": "Al menos 8 caracteres con una letra y un número",
+    "backToSignIn": "Volver a iniciar sesión",
+    "signIn": {
+      "title": "Iniciar sesión",
+      "subtitle": "Bienvenido de nuevo. Usa el correo vinculado a tu cuenta.",
+      "forgot": "¿Olvidaste tu contraseña?",
+      "submit": "Iniciar sesión",
+      "newHere": "¿Cliente nuevo?",
+      "createAccount": "Crea una cuenta",
+      "expired": "Tu sesión terminó. Inicia sesión de nuevo para continuar.",
+      "passwordSet": "Tu contraseña está lista. Inicia sesión con ella."
+    },
+    "signUp": {
+      "title": "Crea tu cuenta",
+      "subtitle": "Reserva viajes y guarda todas tus facturas en un solo lugar.",
+      "submit": "Crear cuenta",
+      "haveAccount": "¿Ya tienes una cuenta?",
+      "signIn": "Inicia sesión"
+    },
+    "forgot": {
+      "title": "Restablece tu contraseña",
+      "subtitle": "Introduce tu correo y te enviaremos un enlace para elegir una nueva contraseña.",
+      "submit": "Enviar enlace",
+      "sentTitle": "Revisa tu bandeja de entrada",
+      "sentBody": "Si {{email}} tiene una cuenta, el enlace va en camino. Caduca en 30 minutos."
+    },
+    "reset": {
+      "title": "Elige una nueva contraseña",
+      "subtitle": "Se cerrará tu sesión en los demás dispositivos.",
+      "submit": "Guardar contraseña"
+    },
+    "activate": {
+      "title": "Activa tu cuenta",
+      "subtitle": "Elige la contraseña con la que entrarás en SmartStreet.",
+      "submit": "Activar cuenta"
+    },
+    "errors": {
+      "invalidCredentials": "Ese correo y contraseña no coinciden con ninguna cuenta.",
+      "emailTaken": "Ya hay una cuenta con este correo.",
+      "linkExpired": "Este enlace no es válido o ha caducado. Solicita uno nuevo.",
+      "rejected": "{{detail}}"
+    }
+  },
+  "workOrderKind": {
+    "PREVENTIVE": "Servicio preventivo",
+    "REPAIR": "Reparación",
+    "INSPECTION": "Inspección"
+  },
+  "workOrderKindHint": {
+    "PREVENTIVE": "Servicio programado por fecha o kilometraje",
+    "REPAIR": "Corregir una avería o daño",
+    "INSPECTION": "Revisión técnica o de seguridad"
+  },
+  "priority": {
+    "LOW": "Baja",
+    "MEDIUM": "Media",
+    "HIGH": "Alta",
+    "CRITICAL": "Crítica"
+  },
+  "maintenance": {
+    "title": "Mantenimiento",
+    "subtitle": "Órdenes de trabajo de servicio, reparaciones e inspecciones",
+    "schedule": "Programar trabajo",
+    "scheduleTitle": "Programar una orden de trabajo",
+    "editTitle": "Editar orden de trabajo",
+    "formSubtitle": "El vehículo sale de servicio al empezar el trabajo y vuelve al terminar.",
+    "sections": {
+      "what": "Qué hay que hacer",
+      "when": "Vehículo y fecha",
+      "details": "Detalles",
+      "outcome": "Resultado",
+      "complete": "Cerrar la orden"
+    },
+    "completeHint": "Registra el coste y el kilometraje. El vehículo vuelve al servicio.",
+    "titlePlaceholder": "Cambiar pastillas de freno delanteras",
+    "fields": {
+      "title": "Trabajo",
+      "vehicle": "Vehículo",
+      "kind": "Tipo",
+      "priority": "Prioridad",
+      "status": "Estado",
+      "scheduledFor": "Prevista para",
+      "vendor": "Taller o proveedor",
+      "description": "Notas",
+      "partsCost": "Piezas",
+      "laborCost": "Mano de obra",
+      "totalCost": "Coste",
+      "odometer": "Lectura del odómetro",
+      "resolutionNotes": "Qué se hizo"
+    },
+    "stats": {
+      "scheduled": "Programadas",
+      "inProgress": "En el taller",
+      "overdue": "Atrasadas",
+      "overdueHint": "Pasada la fecha prevista",
+      "costThisMonth": "Gastado este mes",
+      "completed": "{{count}} completadas"
+    },
+    "overdueOnly": "Solo atrasadas",
+    "empty": "Ninguna orden coincide con estos filtros.",
+    "autoGenerated": "Creada automáticamente según el plan de servicio",
+    "notFound": "Esta orden no existe.",
+    "start": "Iniciar trabajo",
+    "complete": "Completar orden",
+    "cancel": "Cancelar orden",
+    "cancelTitle": "¿Cancelar esta orden?",
+    "cancelReason": "Motivo",
+    "cancelledBecause": "Cancelada: {{reason}}",
+    "scheduled": "Orden programada",
+    "updated": "Orden actualizada",
+    "started": "Trabajo iniciado",
+    "completed": "Orden completada",
+    "cancelled": "Orden cancelada",
+    "workOrders": "Órdenes de trabajo",
+    "noneForVehicle": "Aún no hay órdenes para este vehículo."
+  },
+  "invoiceStatus": {
+    "DRAFT": "Borrador",
+    "ISSUED": "Emitida",
+    "PAID": "Pagada",
+    "VOID": "Anulada",
+    "OVERDUE": "Vencida"
+  },
+  "paymentMethod": {
+    "CASH": "Efectivo",
+    "CARD": "Tarjeta",
+    "BANK_TRANSFER": "Transferencia"
+  },
+  "billing": {
+    "title": "Facturación",
+    "subtitle": "Ingresos por viajes y gastos de mantenimiento y salarios",
+    "detailSubtitle": "Revisa, emite y registra el pago",
+    "views": {
+      "all": "Todas",
+      "drafts": "Borradores",
+      "outstanding": "Pendientes de pago",
+      "overdue": "Vencidas",
+      "paid": "Pagadas"
+    },
+    "stats": {
+      "outstanding": "Pendiente de cobro",
+      "overdue": "Vencido",
+      "overdueCount": "{{count}} facturas vencidas",
+      "collected": "Cobrado este mes",
+      "collectedHint": "{{amount}} cobrados este mes",
+      "drafts": "Borradores",
+      "draftsHint": "Listas para revisar y emitir"
+    },
+    "empty": "Aún no hay facturas aquí.",
+    "notFound": "Esta factura no existe.",
+    "fields": {
+      "number": "Factura",
+      "customer": "Cliente",
+      "vehicle": "Vehículo",
+      "createdAt": "Creada",
+      "issuedOn": "Emitida",
+      "dueDate": "Vence",
+      "paidOn": "Pagada",
+      "status": "Estado",
+      "subtotal": "Subtotal",
+      "tax": "IVA {{rate}}",
+      "total": "Total"
+    },
+    "document": {
+      "title": "Factura",
+      "issuer": "Servicios de flota y movilidad · Túnez",
+      "billTo": "Facturado a",
+      "walkIn": "Sin cuenta de cliente",
+      "trip": "Viaje",
+      "description": "Descripción",
+      "amount": "Importe",
+      "terms": "Paga antes del vencimiento en efectivo, tarjeta o transferencia. Importes en dinares tunecinos.",
+      "voided": "Anulada: {{reason}}"
+    },
+    "issueTitle": "Emitir esta factura",
+    "issueHint": "El cliente recibe un aviso y la ve en su cuenta.",
+    "paymentTerms": "Plazo de pago",
+    "termDays": "{{days}} días",
+    "issue": "Emitir factura",
+    "collectTitle": "Registrar el pago",
+    "collectHint": "Elige cómo pagó el cliente.",
+    "markPaid": "Marcar como pagada",
+    "print": "Imprimir o guardar en PDF",
+    "viewTrip": "Abrir el viaje",
+    "void": "Anular factura",
+    "voidTitle": "¿Anular esta factura?",
+    "voidReason": "Motivo",
+    "issued": "Factura emitida",
+    "paid": "Pago registrado",
+    "voided": "Factura anulada",
+    "tabs": {
+      "income": "Ingresos",
+      "outcome": "Gastos"
+    }
+  },
+  "myTrips": {
+    "title": "Tus viajes, {{name}}",
+    "customerSubtitle": "Próximas reservas y viajes realizados",
+    "driverSubtitle": "Los viajes que tienes asignados",
+    "upcoming": "Próximos",
+    "past": "Viajes anteriores",
+    "empty": "Aún no tienes viajes."
+  },
+  "myInvoices": {
+    "title": "Mis facturas",
+    "subtitle": "Todas las facturas de tus viajes, listas para imprimir",
+    "toPay": "Por pagar",
+    "overdue": "Facturas vencidas",
+    "empty": "Aún no hay facturas. Aparecen aquí al terminar un viaje."
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "subtitle": "Alertas y novedades sobre tu flota, viajes y facturas",
+    "bellLabel": "Notificaciones, {{count}} sin leer",
+    "markAllRead": "Marcar todo como leído",
+    "seeAll": "Ver todas las notificaciones",
+    "empty": "Estás al día.",
+    "unread": "Sin leer",
+    "all": "Todas",
+    "unreadOnly": "Sin leer ({{count}})",
+    "buckets": {
+      "today": "Hoy",
+      "week": "Esta semana",
+      "earlier": "Anteriores"
+    },
+    "kinds": {
+      "GEOFENCE_ENTERED": {
+        "title": "{{vehicle}} entró en {{zone}}",
+        "body": "Entrada detectada desde la posición en vivo."
+      },
+      "GEOFENCE_EXITED": {
+        "title": "{{vehicle}} salió de {{zone}}",
+        "body": "Salida detectada desde la posición en vivo."
+      },
+      "SPEED_LIMIT_EXCEEDED": {
+        "title": "{{vehicle}} excede la velocidad en {{zone}}",
+        "body": "{{speed}} km/h con un límite de {{limit}} km/h."
+      },
+      "MAINTENANCE_SCHEDULED": {
+        "title": "Trabajo programado para {{vehicle}}",
+        "body": "{{title}} el {{date}}."
+      },
+      "MAINTENANCE_STARTED": {
+        "title": "{{vehicle}} está en el taller",
+        "body": "{{title}} ha comenzado."
+      },
+      "MAINTENANCE_COMPLETED": {
+        "title": "{{vehicle}} vuelve al servicio",
+        "body": "{{title}} está terminado."
+      },
+      "MAINTENANCE_OVERDUE": {
+        "title": "Trabajo atrasado para {{vehicle}}",
+        "body": "{{title}} estaba previsto para el {{date}}."
+      },
+      "TRIP_ASSIGNED": {
+        "title": "Nuevo viaje con {{vehicle}}",
+        "body": "Empieza {{start}}."
+      },
+      "TRIP_RESCHEDULED": {
+        "title": "Tu viaje con {{vehicle}} cambió",
+        "body": "Nuevo inicio: {{start}}."
+      },
+      "TRIP_STARTED": {
+        "title": "Tu viaje ha comenzado",
+        "body": "{{vehicle}} está en camino."
+      },
+      "TRIP_COMPLETED": {
+        "title": "Viaje completado",
+        "body": "{{vehicle}} recorrió {{distance}} km. Tu factura llegará pronto."
+      },
+      "TRIP_CANCELLED": {
+        "title": "Viaje con {{vehicle}} cancelado",
+        "body": "{{reason}}"
+      },
+      "INVOICE_ISSUED": {
+        "title": "La factura {{number}} está lista",
+        "body": "{{total}} TND, vence el {{dueDate}}."
+      },
+      "INVOICE_PAID": {
+        "title": "Factura {{number}} pagada",
+        "body": "{{total}} TND recibidos. Gracias."
+      },
+      "INVOICE_OVERDUE": {
+        "title": "La factura {{number}} está vencida",
+        "body": "{{total}} TND vencían el {{dueDate}}."
+      },
+      "LICENSE_EXPIRING": {
+        "title": "La licencia de {{driver}} vence pronto",
+        "body": "Fecha de vencimiento: {{date}}. Renuévala para seguir conduciendo."
+      }
+    }
+  },
+  "booking": {
+    "title": "Reservar un viaje",
+    "subtitle": "Elige adónde y cuándo. Nosotros elegimos el vehículo y el conductor.",
+    "where": "¿Adónde vas?",
+    "when": "¿Cuándo?",
+    "from": "Recogida",
+    "to": "Destino",
+    "searchPlaceholder": "Busca una dirección o lugar",
+    "useMyLocation": "Usar mi ubicación",
+    "clear": "Borrar este lugar",
+    "swap": "Intercambiar recogida y destino",
+    "tapForFrom": "O toca el mapa para fijar la recogida",
+    "tapForTo": "O toca el mapa para fijar el destino",
+    "now": "Salir ahora",
+    "later": "Programar",
+    "pickTime": "Elige la hora de salida",
+    "noSlots": "No quedan salidas hoy. Elige otro día.",
+    "periods": {
+      "morning": "Mañana",
+      "afternoon": "Tarde",
+      "evening": "Noche"
+    },
+    "assignment": "Vehículo, conductor y cliente",
+    "automatic": "Elegidos automáticamente",
+    "manual": "Definidos por ti",
+    "pickForMe": "Elegir el mejor disponible",
+    "noCustomer": "Sin cliente",
+    "missing": {
+      "from": "Elige la recogida para ver el precio.",
+      "to": "Ahora elige el destino.",
+      "time": "Elige un día y una hora de salida."
+    },
+    "calculating": "Calculando la ruta y el precio…",
+    "distance": "Distancia",
+    "duration": "Duración",
+    "minutes": "{{count}} min",
+    "arrival": "Llegada",
+    "estimatedPrice": "Precio estimado",
+    "noVehicle": "No hay vehículos libres a esa hora. Prueba otra hora.",
+    "quoteFailed": "No se pudo calcular el precio. Revisa tu conexión.",
+    "bookNow": "Reservar ahora",
+    "bookLater": "Programar viaje",
+    "booked": "Viaje reservado",
+    "map": "Mapa de la ruta"
+  },
+  "outcome": {
+    "stats": {
+      "toPay": "Pendiente de pago",
+      "toPayHint": "{{count}} gastos sin pagar",
+      "maintenance": "Gasto en mantenimiento",
+      "salaries": "Salarios de conductores",
+      "unpaid": "{{amount}} sin pagar",
+      "net": "Neto del mes",
+      "paidOut": "{{amount}} pagados"
+    },
+    "payroll": {
+      "title": "Próximas nóminas",
+      "subtitle": "Salarios a pagar en los próximos 30 días, cada 30 días desde cada contratación",
+      "total": "Previsto",
+      "empty": "No hay salarios en los próximos 30 días. Indica el salario mensual en cada conductor."
+    },
+    "kinds": {
+      "ALL": "Todos",
+      "MAINTENANCE": "Mantenimiento",
+      "SALARY": "Salarios"
+    },
+    "statuses": {
+      "ALL": "Todos",
+      "UNPAID": "Sin pagar",
+      "PAID": "Pagados",
+      "OVERDUE": "Atrasado"
+    },
+    "fields": {
+      "description": "Gasto",
+      "kind": "Tipo",
+      "related": "Para",
+      "dueDate": "Vence",
+      "status": "Estado",
+      "amount": "Importe"
+    },
+    "salaryOf": "Salario · {{name}}",
+    "empty": "No hay gastos. Las órdenes completadas y los salarios aparecen automáticamente.",
+    "pay": "Pagar",
+    "paid": "Gasto pagado"
+  }
+}

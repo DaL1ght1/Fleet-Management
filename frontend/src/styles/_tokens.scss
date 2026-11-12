@@ -1,0 +1,158 @@
+:root {
+  --font-ui: 'Barlow', system-ui, sans-serif;
+  --font-display: 'Barlow Condensed', 'Barlow', system-ui, sans-serif;
+
+  --asphalt-950: #0e1318;
+  --asphalt-900: #161d24;
+  --asphalt-800: #1f2830;
+  --asphalt-700: #2b3640;
+  --asphalt-600: #3c4955;
+  --asphalt-300: #a7b3bd;
+  --asphalt-200: #c9d2d9;
+
+  --signal-500: #ffc233;
+  --signal-400: #ffd166;
+  --signal-ink: #2a2000;
+
+  --route-700: #075955;
+  --route-600: #0b7a75;
+  --route-500: #12968f;
+  --route-100: #d6efed;
+
+  --brake-600: #c4363a;
+  --brake-100: #fbe2e2;
+  --amber-700: #8a5a00;
+  --amber-100: #fff1cc;
+  --sky-700: #1f5f9e;
+  --sky-100: #dde9f7;
+  --moss-700: #2f6b31;
+  --moss-100: #dcefdc;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.1875rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+  --text-3xl: 2.75rem;
+  --text-4xl: 3.75rem;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  --radius-control: 8px;
+  --radius-surface: 14px;
+  --radius-panel: 22px;
+  --radius-pill: 999px;
+
+  --rail-width: 248px;
+  --topbar-height: 64px;
+  --content-max: 1360px;
+
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --duration: 180ms;
+}
+
+:root,
+:root[data-theme='light'] {
+  --bg: #eef1f0;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-sunken: #e4e9e8;
+  --surface-hover: #f3f6f5;
+  --line: #d6dddc;
+  --line-strong: #b9c3c2;
+  --ink: #17202a;
+  --ink-muted: #56636f;
+  --ink-faint: #85919b;
+  --accent: var(--route-600);
+  --accent-strong: var(--route-700);
+  --accent-soft: var(--route-100);
+  --danger: var(--brake-600);
+  --danger-soft: var(--brake-100);
+  --warning: var(--amber-700);
+  --warning-soft: var(--amber-100);
+  --info: var(--sky-700);
+  --info-soft: var(--sky-100);
+  --success: var(--moss-700);
+  --success-soft: var(--moss-100);
+  --neutral-soft: #e6eaec;
+  --shadow-raised: 0 1px 0 rgb(23 32 42 / 4%), 0 8px 24px -12px rgb(23 32 42 / 18%);
+  --shadow-float: 0 18px 40px -16px rgb(23 32 42 / 35%);
+  --chart-in-use: #d29a00;
+  --chart-available: #00968c;
+  --chart-maintenance: #c93a3f;
+  --chart-inactive: #6f82c4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #11161b;
+    --surface: #182027;
+    --surface-raised: #1d262e;
+    --surface-sunken: #0d1216;
+    --surface-hover: #212b34;
+    --line: #2a353f;
+    --line-strong: #3a4753;
+    --ink: #e7ecef;
+    --ink-muted: #a3afb9;
+    --ink-faint: #75828d;
+    --accent: #3fc1b8;
+    --accent-strong: #6fd6ce;
+    --accent-soft: #123a38;
+    --danger: #ff7b7b;
+    --danger-soft: #3d1c1e;
+    --warning: #ffcf66;
+    --warning-soft: #3a2f12;
+    --info: #8cc0f5;
+    --info-soft: #172c42;
+    --success: #8fd690;
+    --success-soft: #1a3320;
+    --neutral-soft: #26313a;
+    --shadow-raised: 0 1px 0 rgb(0 0 0 / 30%), 0 10px 28px -14px rgb(0 0 0 / 60%);
+    --shadow-float: 0 22px 48px -18px rgb(0 0 0 / 70%);
+    --chart-in-use: #b98a10;
+    --chart-available: #1fa89f;
+    --chart-maintenance: #e05a5c;
+    --chart-inactive: #7186cc;
+  }
+}
+
+:root[data-theme='dark'] {
+  --bg: #11161b;
+  --surface: #182027;
+  --surface-raised: #1d262e;
+  --surface-sunken: #0d1216;
+  --surface-hover: #212b34;
+  --line: #2a353f;
+  --line-strong: #3a4753;
+  --ink: #e7ecef;
+  --ink-muted: #a3afb9;
+  --ink-faint: #75828d;
+  --accent: #3fc1b8;
+  --accent-strong: #6fd6ce;
+  --accent-soft: #123a38;
+  --danger: #ff7b7b;
+  --danger-soft: #3d1c1e;
+  --warning: #ffcf66;
+  --warning-soft: #3a2f12;
+  --info: #8cc0f5;
+  --info-soft: #172c42;
+  --success: #8fd690;
+  --success-soft: #1a3320;
+  --neutral-soft: #26313a;
+  --shadow-raised: 0 1px 0 rgb(0 0 0 / 30%), 0 10px 28px -14px rgb(0 0 0 / 60%);
+  --shadow-float: 0 22px 48px -18px rgb(0 0 0 / 70%);
+  --chart-in-use: #b98a10;
+  --chart-available: #1fa89f;
+  --chart-maintenance: #e05a5c;
+  --chart-inactive: #7186cc;
+}

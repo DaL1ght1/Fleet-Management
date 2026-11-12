@@ -1,0 +1,39 @@
+fragment NotificationFields on Notification {
+  id
+  kind
+  severity
+  params {
+    key
+    value
+  }
+  link
+  read
+  createdAt
+}
+
+query MyNotifications($unreadOnly: Boolean, $page: Int, $size: Int) {
+  myNotifications(unreadOnly: $unreadOnly, page: $page, size: $size) {
+    items {
+      ...NotificationFields
+    }
+    totalCount
+    page
+    size
+    hasNext
+  }
+}
+
+query UnreadNotificationCount {
+  unreadNotificationCount
+}
+
+mutation MarkNotificationRead($id: UUID!) {
+  markNotificationRead(id: $id) {
+    id
+    read
+  }
+}
+
+mutation MarkAllNotificationsRead {
+  markAllNotificationsRead
+}

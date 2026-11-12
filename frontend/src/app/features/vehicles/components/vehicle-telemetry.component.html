@@ -1,0 +1,56 @@
+<section class="card span-2">
+  <h2>{{ 'telemetry.title' | translate }}</h2>
+  @if (telemetry.value(); as vehicle) {
+    @if (vehicle.lastPosition; as position) {
+      <app-track-map [track]="vehicle.track" [current]="position" [currentLabel]="licensePlate()" />
+      <dl class="facts">
+        <dt>{{ 'fleetMap.lastUpdate' | translate }}</dt>
+        <dd [class.warning-text]="position.stale">{{ position.recordedAt | date: 'medium' }}</dd>
+        <dt>{{ 'fleetMap.speed' | translate }}</dt>
+        <dd>{{ position.speedKph | number: '1.0-0' }} km/h</dd>
+        <dt>{{ 'fleetMap.fuel' | translate }}</dt>
+        <dd>{{ position.fuelLevelPercent !== null ? (position.fuelLevelPercent | number: '1.0-0') + ' %' : '—' }}</dd>
+        <dt>{{ 'telemetry.pointsToday' | translate }}</dt>
+        <dd>{{ vehicle.track.length }}</dd>
+      </dl>
+    } @else {
+      <p class="muted">{{ 'telemetry.noData' | translate }}</p>
+    }
+  }
+
+  <ng-container *appHasRole="roles.MANAGEMENT">
+    <div class="section-heading">
+      <h3>{{ 'telemetry.devices' | translate }}</h3>
+      <button mat-stroked-button (click)="registerDevice()">
+        <mat-icon>add</mat-icon>
+        {{ 'telemetry.register' | translate }}
+      </button>
+    </div>
+    <ul class="device-list">
+      @for (device of devices.value() ?? []; track device.id) {
+        <li [class.muted]="device.revoked">
+          <mat-icon>sensors</mat-icon>
+          <span class="grow">
+            <strong>{{ device.label }}</strong>
+            <span class="muted">
+              @if (device.revoked) {
+                · {{ 'telemetry.revokedState' | translate }}
+              } @else if (device.lastSeenAt) {
+                · {{ 'telemetry.lastSeen' | translate }} {{ device.lastSeenAt | date: 'short' }}
+              } @else {
+                · {{ 'telemetry.neverSeen' | translate }}
+              }
+            </span>
+          </span>
+          @if (!device.revoked) {
+            <button mat-button class="destructive" (click)="revoke(device.id)">
+              {{ 'telemetry.revoke' | translate }}
+            </button>
+          }
+        </li>
+      } @empty {
+        <li class="muted">{{ 'telemetry.noDevices' | translate }}</li>
+      }
+    </ul>
+  </ng-container>
+</section>

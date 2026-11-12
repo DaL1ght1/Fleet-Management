@@ -1,0 +1,197 @@
+extend schema
+@link(url: "https://specs.apollo.dev/federation/v2.6", import: ["@key"])
+
+scalar UUID
+scalar BigDecimal
+scalar DateTime
+
+type Vehicle @key(fields: "id", resolvable: false) {
+    id: UUID!
+}
+
+type Driver @key(fields: "id", resolvable: false) {
+    id: UUID!
+}
+
+type Customer @key(fields: "id", resolvable: false) {
+    id: UUID!
+}
+
+enum TripType {
+    RENTAL
+    MAINTENANCE
+    RELOCATION
+    EMERGENCY
+}
+
+enum TripStatus {
+    SCHEDULED
+    IN_PROGRESS
+    COMPLETED
+    CANCELLED
+}
+
+type Location {
+    latitude: Float!
+    longitude: Float!
+    address: String!
+    city: String
+    state: String
+    zipCode: String
+}
+
+type TripCosts {
+    baseRate: BigDecimal
+    fuelCost: BigDecimal
+    additionalFees: BigDecimal
+    totalCost: BigDecimal
+}
+
+type Trip @key(fields: "id") {
+    id: UUID!
+    type: TripType!
+    status: TripStatus!
+    vehicle: Vehicle!
+    driver: Driver
+    customer: Customer
+    startLocation: Location!
+    endLocation: Location!
+    waypoints: [Location!]!
+    scheduledStart: DateTime!
+    scheduledEnd: DateTime!
+    startedAt: DateTime
+    completedAt: DateTime
+    estimatedDurationMinutes: Int
+    actualDurationMinutes: Int
+    distanceKm: BigDecimal
+    costs: TripCosts!
+    notes: String
+    customerNotes: String
+    internalNotes: String
+    cancellationReason: String
+    createdAt: DateTime!
+    updatedAt: DateTime!
+}
+
+type TripPage {
+    items: [Trip!]!
+    totalCount: Int!
+    page: Int!
+    size: Int!
+    hasNext: Boolean!
+}
+
+type TripStatistics {
+    total: Int!
+    scheduled: Int!
+    inProgress: Int!
+    completed: Int!
+    cancelled: Int!
+    totalDistanceKm: BigDecimal!
+    totalRevenue: BigDecimal!
+}
+
+input LocationInput {
+    latitude: Float!
+    longitude: Float!
+    address: String!
+    city: String
+    state: String
+    zipCode: String
+}
+
+input TripCostsInput {
+    baseRate: BigDecimal
+    fuelCost: BigDecimal
+    additionalFees: BigDecimal
+}
+
+input TripFilter {
+    status: TripStatus
+    type: TripType
+    vehicleId: UUID
+    driverId: UUID
+    customerId: UUID
+    scheduledFrom: DateTime
+    scheduledTo: DateTime
+}
+
+input ScheduleTripInput {
+    type: TripType!
+    vehicleId: UUID!
+    driverId: UUID
+    customerId: UUID
+    startLocation: LocationInput!
+    endLocation: LocationInput!
+    waypoints: [LocationInput!]
+    scheduledStart: DateTime!
+    scheduledEnd: DateTime!
+    estimatedDurationMinutes: Int
+    costs: TripCostsInput
+    notes: String
+    customerNotes: String
+    internalNotes: String
+}
+
+input UpdateTripPlanInput {
+    type: TripType
+    vehicleId: UUID
+    driverId: UUID
+    customerId: UUID
+    startLocation: LocationInput
+    endLocation: LocationInput
+    waypoints: [LocationInput!]
+    scheduledStart: DateTime
+    scheduledEnd: DateTime
+    estimatedDurationMinutes: Int
+    costs: TripCostsInput
+    notes: String
+    customerNotes: String
+    internalNotes: String
+}
+
+input TripRequestInput {
+    from: LocationInput!
+    to: LocationInput!
+    departAt: DateTime
+    routeDistanceKm: BigDecimal
+    routeDurationMinutes: Int
+    type: TripType
+    vehicleId: UUID
+    driverId: UUID
+    customerId: UUID
+    notes: String
+}
+
+type TripQuote {
+    distanceKm: BigDecimal!
+    durationMinutes: Int!
+    departAt: DateTime!
+    arriveAt: DateTime!
+    price: BigDecimal!
+    vehicleAvailable: Boolean!
+}
+
+input CompleteTripInput {
+    distanceKm: BigDecimal!
+    fuelCost: BigDecimal
+    additionalFees: BigDecimal
+}
+
+type Query {
+    trip(id: UUID!): Trip
+    trips(filter: TripFilter, page: Int = 0, size: Int = 20): TripPage!
+    tripStatistics: TripStatistics!
+    myTrips(page: Int = 0, size: Int = 20): TripPage!
+    tripQuote(input: TripRequestInput!): TripQuote!
+}
+
+type Mutation {
+    scheduleTrip(input: ScheduleTripInput!): Trip!
+    requestTrip(input: TripRequestInput!): Trip!
+    updateTripPlan(id: UUID!, input: UpdateTripPlanInput!): Trip!
+    startTrip(id: UUID!): Trip!
+    completeTrip(id: UUID!, input: CompleteTripInput!): Trip!
+    cancelTrip(id: UUID!, reason: String!): Trip!
+    deleteTrip(id: UUID!): Boolean!
+}
